@@ -42,12 +42,14 @@ export async function desiredPages(): Promise<Desired[]> {
     for (const sc of c.publishedServiceCities)
       add({ url: urls.serviceCity(sc.serviceSlug, c.slug), type: "SERVICE_CITY", entityId: `${sc.serviceSlug}|${c.slug}`, isIndexable: true, inSitemap: true, qualityScore: 80, lastmod: sc.updatedAt });
   }
-  const proSlugs = new Set(plan.cities.filter((c) => c.cityHub).flatMap((c) => c.proSlugs));
-  for (const s of proSlugs) add({ url: urls.pro(s), type: "PRO", entityId: s, isIndexable: true, inSitemap: true, qualityScore: 75 });
+  const proSlugs = new Set(plan.cities.flatMap((c) => c.proSlugs));
+  const proIndexable = new Set(plan.cities.flatMap((c) => c.proIndexableSlugs));
+  // placeholder artists (no real photo or thin bio) exist but are noindex + out of the sitemap until media/bio is added
+  for (const s of proSlugs) add({ url: urls.pro(s), type: "PRO", entityId: s, isIndexable: proIndexable.has(s), inSitemap: proIndexable.has(s), qualityScore: proIndexable.has(s) ? 75 : 30 });
   return out;
 }
 
-/** Persists desired pages; pages that no longer qualify are kept but flipped to noindex + out of sitemap. */
+/** Persists desired pages. Pages that no longer qualify are DELETED, so the URL stops resolving (404, or 410 for legacy URLs). */
 export async function syncPages() {
   const desired = await desiredPages();
   const urlsSet = new Set(desired.map((d) => d.url));
@@ -58,6 +60,6 @@ export async function syncPages() {
       create: d,
     });
   }
-  const stale = await prisma.page.updateMany({ where: { url: { notIn: [...urlsSet] } }, data: { isIndexable: false, inSitemap: false } });
-  return { upserted: desired.length, deactivated: stale.count };
+  const stale = await prisma.page.deleteMany({ where: { url: { notIn: [...urlsSet] } } });
+  return { upserted: desired.length, removed: stale.count };
 }

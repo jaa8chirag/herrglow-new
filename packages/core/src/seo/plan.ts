@@ -1,7 +1,7 @@
 import { prisma } from "@herrglow/db";
 import { MIN_PROS_FOR_CITY_HUB, MIN_PROS_FOR_SERVICE_CITY } from "./thresholds";
+import { proIsIndexable } from "./pros";
 
-export const MIN_PRO_BIO_CHARS = 200;
 /** Area-page gate: (≥2 active pros cover it OR ≥1 lead came from it) AND has landmarks AND ≥1 nearby area. */
 export const MIN_PROS_FOR_AREA = 2;
 
@@ -18,12 +18,16 @@ export interface CityPlan {
   areaPages: number;
   /** areas listed as text under "Areas we serve" only */
   areaTextOnly: number;
+  /** artist pages that exist (active pro covering this city) */
   artistPages: number;
+  /** …of which pass the quality gate (real photo + ≥50 words bio) and are indexable */
+  artistIndexable: number;
   // concrete lists (used by Page sync / sitemaps)
   areaSlugs: string[];
   /** published service×city pages */
   publishedServiceCities: { serviceSlug: string; updatedAt: Date }[];
   proSlugs: string[];
+  proIndexableSlugs: string[];
 }
 
 export interface SitePlan {
@@ -56,7 +60,7 @@ export async function planPages(): Promise<SitePlan> {
     (servicesByPro.get(ps.proId) ?? servicesByPro.set(ps.proId, new Set()).get(ps.proId)!).add(ps.serviceId);
   }
   const pros = await prisma.pro.findMany({ where: { status: "ACTIVE" }, select: { id: true, slug: true, photo: true, bio: true } });
-  const proInfo = new Map(pros.map((p) => [p.id, { slug: p.slug, ok: !!p.photo && (p.bio?.length ?? 0) >= MIN_PRO_BIO_CHARS }]));
+  const proInfo = new Map(pros.map((p) => [p.id, { slug: p.slug, ok: proIsIndexable(p) }]));
 
   const cities: CityPlan[] = [];
   for (const c of allCities.filter((x) => x.isActive)) {
@@ -77,17 +81,18 @@ export async function planPages(): Promise<SitePlan> {
       // an area whose slug equals the city slug is the city hub itself, never a separate page
       return a.slug !== c.slug && (activePros >= MIN_PROS_FOR_AREA || a.leadCount >= 1) && a.landmarks.length >= 1 && a._count.nearby >= 1;
     });
-    const proSlugs = [...cityPros].filter((p) => proInfo.get(p)?.ok).map((p) => proInfo.get(p)!.slug);
+    const proSlugs = [...cityPros].filter((p) => proInfo.has(p)).map((p) => proInfo.get(p)!.slug);
+    const proIndexableSlugs = [...cityPros].filter((p) => proInfo.get(p)?.ok).map((p) => proInfo.get(p)!.slug);
 
     cities.push({
       city: c.name, slug: c.slug, activePros: cityPros.size, cityHub,
       serviceCityEligible: cityHub ? eligible.size : 0,
       serviceCityDrafts: cityHub ? drafts : 0, serviceCityPublished: cityHub ? publishedRows.length : 0,
       areasTotal: c.areas.length, areaPages: cityHub ? areas.length : 0, areaTextOnly: cityHub ? c.areas.length - areas.length : c.areas.length,
-      artistPages: proSlugs.length,
+      artistPages: cityHub ? proSlugs.length : 0, artistIndexable: cityHub ? proIndexableSlugs.length : 0,
       areaSlugs: cityHub ? areas.map((a) => a.slug) : [],
       publishedServiceCities: cityHub ? publishedRows.map((r) => ({ serviceSlug: serviceSlug.get(r.serviceId)!, updatedAt: r.generatedAt ?? new Date() })) : [],
-      proSlugs,
+      proSlugs: cityHub ? proSlugs : [], proIndexableSlugs: cityHub ? proIndexableSlugs : [],
     });
   }
   const [blogs, categories] = await Promise.all([

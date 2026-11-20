@@ -10,7 +10,7 @@ export function buildRobots(host: string | null, allowed = indexingAllowed()): M
   }
   return {
     rules: [{ userAgent: "*", allow: "/", disallow: DISALLOWED_PATHS }],
-    sitemap: `${SITE_URL}/sitemap-index.xml`,
+    sitemap: `${SITE_URL}/sitemap.xml`,
     host: SITE_URL,
   };
 }

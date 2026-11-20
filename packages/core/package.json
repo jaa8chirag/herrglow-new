@@ -18,6 +18,7 @@
     "typecheck": "tsc --noEmit",
     "page-preview": "tsx scripts/page-preview.ts",
     "generate-drafts": "tsx scripts/generate-drafts.ts",
-    "sync-pages": "tsx scripts/sync-pages.ts"
+    "sync-pages": "tsx scripts/sync-pages.ts",
+    "legacy-audit": "tsx scripts/legacy-audit.ts"
   }
 }

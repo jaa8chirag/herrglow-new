@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { findPage, urls } from "@herrglow/core";
+import { findPage, proIsIndexable, urls } from "@herrglow/core";
 import { Badge, Container, Section, SectionHeading } from "@herrglow/ui";
 import { BookingForm } from "@/components/BookingForm";
 import { Breadcrumbs, Html } from "@/components/parts";
@@ -22,7 +22,7 @@ export async function generateMetadata(props: PageProps<"/artists/[slug]">): Pro
   return buildMetadata({
     title: pro.seoTitle || `${pro.name}: ${pro.providerType === "MAKEOVER_ARTIST" ? "Makeup Artist" : "Beautician"}${where ? ` in ${where}` : ""}`,
     description: pro.seoDescription || `${pro.name}${pro.specialization ? `, specialising in ${pro.specialization}` : ""}${pro.experienceYears ? ` with ${pro.experienceYears}+ years of experience` : ""}. Book at home${where ? ` in ${where}` : ""}.`,
-    path: urls.pro(slug), image: mediaUrl(pro.photo), type: "profile", indexable: page?.isIndexable ?? false,
+    path: urls.pro(slug), image: mediaUrl(pro.photo), type: "profile", indexable: (page?.isIndexable ?? false) && proIsIndexable(pro),
   });
 }
 

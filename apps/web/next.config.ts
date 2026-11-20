@@ -3,9 +3,6 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   transpilePackages: ["@herrglow/db", "@herrglow/core", "@herrglow/ui"],
   serverExternalPackages: ["@prisma/client", "pg"],
-  async redirects() {
-    return [{ source: "/sitemap.xml", destination: "/sitemap-index.xml", permanent: true }];
-  },
   images: { loader: "custom", loaderFile: "./src/lib/image-loader.ts" },
   turbopack: {
     // Tailwind v4 loader (shipped by the Next.js scaffold)
