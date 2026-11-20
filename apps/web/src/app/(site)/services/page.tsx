@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { GridSkeleton } from "@/components/GridSkeleton";
 import { getAllServicesForExplorer } from "@herrglow/core";
 import { Container, Section } from "@herrglow/ui";
 import { PageHero } from "@/components/page/PageHero";
@@ -15,7 +17,7 @@ export const metadata: Metadata = buildMetadata({
 
 const num = (v: unknown) => (v == null ? null : Number(v));
 
-export default async function ServicesIndex() {
+async function ServicesGrid() {
   const [cats, all, keys] = await Promise.all([getCategories(), getAllServicesForExplorer(), getMediaKeys()]);
   const items = all.map((s) => {
     const prices = [s.offerPrice ?? s.price, ...s.variants.map((v) => v.offerPrice ?? v.price)].map((n) => (n == null ? NaN : Number(n))).filter((n) => n > 0);
@@ -25,11 +27,17 @@ export default async function ServicesIndex() {
     };
   });
   return (
+    <Section className="pt-6">
+      <Container><ServiceExplorer items={items} categories={cats.map((c) => ({ slug: c.slug, name: c.name }))} /></Container>
+    </Section>
+  );
+}
+
+export default function ServicesIndex() {
+  return (
     <>
       <PageHero crumbs={[{ name: "Services", path: "/services" }]} eyebrow="Services" title="Everything we offer, at your home" intro="Bridal and party makeup, salon, facials, nails, hair, mehndi and packages. Filter by category or search by name." />
-      <Section className="pt-6">
-        <Container><ServiceExplorer items={items} categories={cats.map((c) => ({ slug: c.slug, name: c.name }))} /></Container>
-      </Section>
+      <Suspense fallback={<GridSkeleton />}><ServicesGrid /></Suspense>
     </>
   );
 }
