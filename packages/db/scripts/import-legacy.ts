@@ -1,0 +1,247 @@
+/**
+ * Legacy MySQL dump → Postgres (content tables only).
+ *
+ *   pnpm --filter @herrglow/db import:legacy --dump <path-to.sql>           # DRY RUN (default)
+ *   pnpm --filter @herrglow/db import:legacy --dump <path-to.sql> --apply   # write to DATABASE_URL
+ *
+ * Safety:
+ *  - never reads password/hash columns or mail_* settings; users, beauticians' logins, leads and
+ *    other personal-data tables are NOT imported by this script (later stage).
+ *  - replaces Glow Makeover branding with HerrGlow.
+ *  - idempotent for services/areas/blogs/packages (upsert); testimonials/gallery only if table empty.
+ */
+import { mkdirSync, writeFileSync } from "node:fs";
+import { parseDump, type Row } from "./mysql-dump";
+import { prisma } from "../src/index";
+
+const args = process.argv.slice(2);
+const flag = (n: string) => args.includes(`--${n}`);
+const opt = (n: string) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : undefined; };
+const dumpPath = opt("dump") ?? process.env.LEGACY_DUMP;
+const APPLY = flag("apply");
+if (!dumpPath) { console.error("Missing --dump <file.sql>"); process.exit(1); }
+
+// ───────── helpers ─────────
+const rebrand = (s: string) =>
+  s
+    .replace(/glowmakeover\.co\.in/gi, "herrglow.com")
+    .replace(/glow\s*makeover(\s+co\.?)?/gi, "HerrGlow")
+    .replace(/glowmakeoverco/gi, "herrglow");
+const str = (v: unknown): string | null => (v == null || v === "" ? null : rebrand(String(v)));
+const num = (v: unknown): number | null => (v == null || v === "" ? null : Number(v));
+const slugify = (s: string) => s.toLowerCase().trim().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const titleCase = (s: string) => s.trim().toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase());
+const status = (v: unknown) => (v === "inactive" ? "INACTIVE" : "ACTIVE") as "ACTIVE" | "INACTIVE";
+const json = (v: unknown) => {
+  if (v == null || v === "") return undefined;
+  try { return JSON.parse(rebrand(String(v))); } catch { return undefined; }
+};
+/** Legacy HTML was sometimes escaped twice (`<p>&lt;p&gt;…`). Decode once when that pattern is present. */
+const fixHtml = (v: unknown): string | null => {
+  let s = str(v);
+  if (!s) return s;
+  if (/&lt;\/?(p|h[1-6]|ul|li|strong|br)\b/i.test(s))
+    s = s.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&amp;/g, "&");
+  return s;
+};
+const words = (html: string | null) => (html ? html.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length : 0);
+
+const report: Record<string, unknown> = { mode: APPLY ? "APPLY" : "DRY-RUN" };
+const warn: string[] = [];
+
+// ───────── load ─────────
+const d = parseDump(dumpPath, new Set([
+  "services", "locations", "location_service", "blogs", "testimonials", "galleries",
+  "packages", "package_service", "site_settings",
+]));
+const T = (n: string): Row[] => d.get(n) ?? [];
+
+// ───────── categories ─────────
+const CATEGORY: Record<string, { slug: string; name: string; sort: number }> = {
+  makeup: { slug: "makeup", name: "Makeup", sort: 1 },
+  salon: { slug: "salon-at-home", name: "Salon at Home", sort: 2 },
+  facial: { slug: "salon-at-home", name: "Salon at Home", sort: 2 }, // merged: only 2 facial services
+  hair: { slug: "hair", name: "Hair", sort: 3 },
+  "nail-care-extension": { slug: "nails", name: "Nails", sort: 4 },
+  mehndi: { slug: "mehndi", name: "Mehndi", sort: 5 },
+  "pre-bridal": { slug: "pre-bridal", name: "Pre-Bridal", sort: 6 },
+};
+const categories = [...new Map(Object.values(CATEGORY).map((c) => [c.slug, c])).values()];
+
+// ───────── services (+ clean slugs for city-baked ones) ─────────
+const CITY_SUFFIX = /-(in-)?(gaur-city|noida-extension|greater-noida|noida|ghaziabad|delhi|gurugram|faridabad)$/;
+const redirects: { fromPath: string; toPath: string; note: string }[] = [];
+const usedSlugs = new Set<string>();
+const legacyServiceSlugs = T("services").map((s) => String(s.slug));
+const services = T("services").map((s) => {
+  const old = String(s.slug);
+  let slug = old;
+  if (CITY_SUFFIX.test(old)) {
+    const clean = old.replace(CITY_SUFFIX, "");
+    if (legacyServiceSlugs.includes(clean) || usedSlugs.has(clean)) warn.push(`slug collision: ${old} → ${clean} (kept old slug, needs manual merge)`);
+    else { slug = clean; redirects.push({ fromPath: `/services/${old}`, toPath: `/services/${clean}`, note: "legacy service slug had a city baked in; legacy URL pattern unverified until audit-pack" }); }
+  }
+  usedSlugs.add(slug);
+  const pt = String(s.provider_type ?? "").toLowerCase();
+  return {
+    id: `svc_${s.id}`,
+    legacyId: Number(s.id),
+    slug,
+    title: rebrand(String(s.title)),
+    categoryId: CATEGORY[String(s.category)]?.slug ?? "makeup",
+    providerType: (/artist|makeover/.test(pt) ? "MAKEOVER_ARTIST" : pt === "beautician" ? "BEAUTICIAN" : "BOTH") as "BOTH",
+    shortDescription: str(s.short_description),
+    description: fixHtml(s.description),
+    features: str(s.features),
+    price: num(s.price),
+    offerPrice: num(s.offer_price),
+    priceLabel: str(s.price_label),
+    duration: str(s.duration),
+    image: str(s.image),
+    imageAlt: str(s.image_alt),
+    seoTitle: str(s.seo_title),
+    seoDescription: str(s.seo_description),
+    faqs: json(s.faqs),
+    featured: s.featured === 1,
+    sort: Number(s.display_order ?? 0),
+    status: status(s.status),
+  };
+});
+for (const s of services) if (!CATEGORY[String(T("services").find((x) => `svc_${x.id}` === s.id)!.category)]) warn.push(`service ${s.slug}: unknown category`);
+
+// ───────── cities & areas ─────────
+const DELHI_ZONES = new Set(["delhi", "new delhi", "south delhi", "west delhi", "north west delhi", "east delhi", "north delhi", "central delhi", "north east delhi", "south east delhi", "rohini"]);
+function cityOf(raw: unknown): { name: string; zone: string | null } | null {
+  const c = String(raw ?? "").trim();
+  if (!c) return null;
+  const k = c.toLowerCase();
+  if (k === "maharastra") return null; // ambiguous state-as-city, needs review
+  if (DELHI_ZONES.has(k)) return { name: "Delhi", zone: k === "delhi" || k === "new delhi" ? null : titleCase(c) };
+  return { name: titleCase(c), zone: null };
+}
+const cities = new Map<string, { slug: string; name: string }>();
+const areaCity = new Map<string, string>(); // legacy location id → city slug
+const unmapped: string[] = [];
+const areas = T("locations").flatMap((l) => {
+  const c = cityOf(l.city);
+  if (!c) { unmapped.push(`${l.name} (city="${l.city ?? ""}")`); return []; }
+  const citySlug = slugify(c.name);
+  cities.set(citySlug, { slug: citySlug, name: c.name });
+  areaCity.set(String(l.id), citySlug);
+  return [{
+    id: `area_${l.id}`,
+    legacyId: Number(l.id),
+    citySlug,
+    slug: String(l.slug),
+    name: rebrand(String(l.name)),
+    zone: c.zone,
+    latitude: num(l.latitude),
+    longitude: num(l.longitude),
+    radiusKm: num(l.service_radius_km),
+    landmarks: (str(l.nearby_landmarks) ?? "").split(",").map((x) => x.trim()).filter(Boolean),
+    nearbyAreaIds: ((json(l.nearby_location_ids) as number[] | undefined) ?? []).map((i) => `area_${i}`),
+    content: fixHtml(l.content),
+    faqs: json(l.faqs),
+    seoTitle: str(l.seo_title),
+    seoDescription: str(l.seo_description),
+    showOnHome: l.show_on_home === 1,
+    status: status(l.status),
+  }];
+});
+const knownAreaIds = new Set(areas.map((a) => a.id));
+for (const a of areas) a.nearbyAreaIds = a.nearbyAreaIds.filter((i) => knownAreaIds.has(i));
+
+// location_service (24k) → distinct service × city
+const svcCity = new Set<string>();
+for (const r of T("location_service")) {
+  const city = areaCity.get(String(r.location_id));
+  if (city) svcCity.add(`svc_${r.service_id}|${city}`);
+}
+const serviceCities = [...svcCity].map((k) => { const [serviceId, cityId] = k.split("|"); return { serviceId: serviceId!, cityId: cityId! }; });
+
+// ───────── content ─────────
+const blogs = T("blogs").map((b) => {
+  const content = fixHtml(b.content);
+  const wc = words(content);
+  if (wc < 350) warn.push(`thin blog (${wc} words): ${b.slug}`);
+  return {
+    slug: String(b.slug), title: rebrand(String(b.title)), image: str(b.image), imageAlt: str(b.image_alt),
+    excerpt: str(b.excerpt), content, authorName: str(b.author_name) ? "HerrGlow" : null,
+    seoTitle: str(b.seo_title), seoDescription: str(b.seo_description),
+    status: status(b.status), publishedAt: b.created_at ? new Date(String(b.created_at).replace(" ", "T") + "Z") : new Date(),
+  };
+});
+const testimonials = T("testimonials").map((t) => ({
+  name: String(t.name), photo: str(t.photo), location: str(t.location), serviceName: str(t.service_name),
+  rating: Number(t.rating ?? 5), review: rebrand(String(t.review)), status: status(t.status), sort: Number(t.sort_order ?? 0),
+}));
+const gallery = T("galleries").map((g) => ({
+  title: rebrand(String(g.title)),
+  mediaType: (g.media_type === "video" ? "VIDEO" : g.media_type === "youtube" ? "YOUTUBE" : "IMAGE") as "IMAGE",
+  mediaPath: str(g.media_path), thumbnail: str(g.thumbnail_path), youtubeId: str(g.youtube_id),
+  alt: rebrand(String(g.title)), category: str(g.category), status: status(g.status), sort: Number(g.sort_order ?? 0),
+}));
+const packages = T("packages").map((p) => ({
+  id: `pkg_${p.id}`, slug: String(p.slug), title: rebrand(String(p.title)), shortDescription: str(p.short_description),
+  description: fixHtml(p.description), price: num(p.price), offerPrice: num(p.offer_price), duration: str(p.duration),
+  image: str(p.image), status: status(p.status),
+}));
+const packageServices = T("package_service").map((r) => ({ packageId: `pkg_${r.package_id}`, serviceId: `svc_${r.service_id}` }));
+
+// ───────── site settings (allowlist; NEVER mail_*) ─────────
+const SETTINGS_ALLOW = new Set([
+  "site_tagline", "cta_primary_text", "cta_secondary_text", "offer_strip_text", "whatsapp_prefill_text",
+  "home_hero_badge", "home_hero_title", "home_hero_highlight", "home_hero_description", "home_hero_note",
+  "home_hero_card_title", "home_hero_card_text", "home_hero_primary_image_alt", "home_hero_secondary_image_alt",
+  "festival_offer_name", "festival_offer_percent", "festival_offer_enabled",
+]);
+const settings: { key: string; value: string | null }[] = [
+  { key: "site_name", value: "HerrGlow" },
+  { key: "site_url", value: "https://herrglow.com" },
+  // empty by default → UI hides call/WhatsApp, JSON-LD omits telephone
+  { key: "whatsapp_number", value: null },
+  { key: "contact_phone", value: null },
+  { key: "contact_email", value: null },
+  ...T("site_settings").filter((s) => SETTINGS_ALLOW.has(String(s.key))).map((s) => ({ key: String(s.key), value: str(s.value) })),
+];
+const skippedSettings = T("site_settings").filter((s) => !SETTINGS_ALLOW.has(String(s.key))).map((s) => String(s.key));
+
+// ───────── report ─────────
+Object.assign(report, {
+  counts: {
+    categories: categories.length, services: services.length, cities: cities.size, areas: areas.length,
+    serviceCities: `${serviceCities.length} (from ${T("location_service").length} location_service rows)`,
+    blogs: blogs.length, testimonials: testimonials.length, gallery: gallery.length,
+    packages: packages.length, settings: settings.length, redirects: redirects.length,
+  },
+  citiesByAreaCount: Object.fromEntries([...cities.keys()].map((c) => [c, areas.filter((a) => a.citySlug === c).length])),
+  unmappedLocations: unmapped,
+  redirects, skippedSettings, warnings: warn,
+});
+mkdirSync(new URL("../../../infra/import/out/", import.meta.url), { recursive: true });
+writeFileSync(new URL("../../../infra/import/out/report.json", import.meta.url), JSON.stringify(report, null, 2));
+console.log(JSON.stringify({ ...report, citiesByAreaCount: undefined, redirects: undefined }, null, 2));
+
+if (!APPLY) { console.log("\nDRY RUN — nothing written. Full report: infra/import/out/report.json. Re-run with --apply."); process.exit(0); }
+
+// ───────── write ─────────
+const chunk = <T>(a: T[], n = 1000) => Array.from({ length: Math.ceil(a.length / n) }, (_, i) => a.slice(i * n, i * n + n));
+await prisma.$transaction(async (tx) => {
+  for (const c of categories) await tx.category.upsert({ where: { slug: c.slug }, update: { name: c.name, sort: c.sort }, create: { id: c.slug, ...c } });
+  for (const c of cities.values()) await tx.city.upsert({ where: { slug: c.slug }, update: { name: c.name }, create: { id: c.slug, ...c } });
+  for (const s of services) {
+    const { categoryId, ...rest } = s;
+    await tx.service.upsert({ where: { id: s.id }, update: { ...rest, category: { connect: { slug: categoryId } } } as never, create: { ...rest, categoryId } as never });
+  }
+  for (const a of areas) await tx.area.upsert({ where: { id: a.id }, update: a as never, create: a as never });
+  for (const part of chunk(serviceCities)) await tx.serviceCity.createMany({ data: part, skipDuplicates: true });
+  for (const b of blogs) await tx.blog.upsert({ where: { slug: b.slug }, update: b, create: b });
+  for (const p of packages) await tx.package.upsert({ where: { id: p.id }, update: p as never, create: p as never });
+  await tx.packageService.createMany({ data: packageServices, skipDuplicates: true });
+  if ((await tx.testimonial.count()) === 0) await tx.testimonial.createMany({ data: testimonials });
+  if ((await tx.galleryItem.count()) === 0) await tx.galleryItem.createMany({ data: gallery });
+  for (const s of settings) await tx.siteSetting.upsert({ where: { key: s.key }, update: { value: s.value }, create: s });
+  for (const r of redirects) await tx.redirect.upsert({ where: { fromPath: r.fromPath }, update: r, create: r });
+}, { timeout: 120_000 });
+console.log("\nAPPLIED.");
+await prisma.$disconnect();
