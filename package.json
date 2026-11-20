@@ -13,6 +13,16 @@
     "db:migrate": "pnpm --filter @herrglow/db migrate",
     "db:generate": "pnpm --filter @herrglow/db generate",
     "import:legacy": "pnpm --filter @herrglow/db import:legacy",
-    "typecheck": "pnpm -r run typecheck"
-  }
+    "typecheck": "pnpm -r run typecheck",
+    "import:media": "tsx scripts/import-legacy-media.ts",
+    "shots": "tsx scripts/screenshots.ts"
+  },
+  "devDependencies": {
+    "@herrglow/core": "workspace:*",
+    "@herrglow/db": "workspace:*",
+    "playwright": "^1.65.1",
+    "sharp": "^0.35.5",
+    "tsx": "^4.23.15"
+  },
+  "type": "module"
 }

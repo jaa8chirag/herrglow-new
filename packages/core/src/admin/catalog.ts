@@ -4,12 +4,14 @@ import { sanitizeRichHtml, wordCount } from "./html";
 import { faqsToText, textToFaqs } from "./review";
 import { planPages } from "../seo/plan";
 import { syncPages } from "../seo/pages";
+import { mediaKeySet } from "./media";
 
 const PAGE = 40;
 
 /* ───────────── Services ───────────── */
-export interface ServiceFilter { q?: string; categoryId?: string; status?: Status; page?: number }
-const sWhere = (f: ServiceFilter) => ({
+export interface ServiceFilter { q?: string; categoryId?: string; status?: Status; page?: number; needsPhoto?: boolean }
+const sWhere = (f: ServiceFilter, keys: string[] = []) => ({
+  ...(f.needsPhoto ? { OR: [{ image: null }, { image: { notIn: keys } }] } : {}),
   mergedIntoId: null,
   ...(f.status ? { status: f.status } : {}),
   ...(f.categoryId ? { categoryId: f.categoryId } : {}),
@@ -18,15 +20,18 @@ const sWhere = (f: ServiceFilter) => ({
 
 export async function listServicesAdmin(f: ServiceFilter) {
   const page = Math.max(1, f.page ?? 1);
-  const [rows, total, categories] = await Promise.all([
+  const keyList = [...(await mediaKeySet())];
+  const [rows, total, categories, needsPhotoCount] = await Promise.all([
     prisma.service.findMany({
-      where: sWhere(f), orderBy: [{ leadCount: "desc" }, { title: "asc" }], skip: (page - 1) * PAGE, take: PAGE,
-      select: { id: true, title: true, slug: true, status: true, price: true, offerPrice: true, leadCount: true, description: true, category: { select: { name: true } }, _count: { select: { variants: true, addons: true } } },
+      where: sWhere(f, keyList), orderBy: [{ leadCount: "desc" }, { title: "asc" }], skip: (page - 1) * PAGE, take: PAGE,
+      select: { id: true, title: true, slug: true, status: true, price: true, offerPrice: true, leadCount: true, description: true, image: true, category: { select: { name: true } }, _count: { select: { variants: true, addons: true } } },
     }),
-    prisma.service.count({ where: sWhere(f) }),
+    prisma.service.count({ where: sWhere(f, keyList) }),
     prisma.category.findMany({ orderBy: { sort: "asc" }, select: { id: true, name: true } }),
+    prisma.service.count({ where: { ...sWhere({ status: "ACTIVE", needsPhoto: true }, keyList) } }),
   ]);
-  return { total, page, pages: Math.max(1, Math.ceil(total / PAGE)), categories, items: rows.map((r) => ({ ...r, words: wordCount(r.description), price: r.offerPrice ?? r.price })) };
+  const have = new Set(keyList);
+  return { total, page, pages: Math.max(1, Math.ceil(total / PAGE)), categories, needsPhotoCount, items: rows.map((r) => ({ ...r, hasPhoto: !!r.image && have.has(r.image), words: wordCount(r.description), price: r.offerPrice ?? r.price })) };
 }
 
 export async function getServiceAdmin(id: string) {

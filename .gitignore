@@ -30,3 +30,6 @@ audit-pack.zip
 
 # local dev uploads (production uses Cloudflare R2)
 apps/web/public/media/
+
+# old site photos to import (storage/app/public copy)
+legacy-media/

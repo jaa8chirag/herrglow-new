@@ -5,10 +5,11 @@ import { mediaKeySet } from "./media";
 import { proNoindexReason } from "../seo/pros";
 import { syncPages } from "../seo/pages";
 
-export interface ProFilter { q?: string; status?: ProStatus; needsCoverage?: boolean; page?: number }
+export interface ProFilter { q?: string; status?: ProStatus; needsCoverage?: boolean; needsPhoto?: boolean; page?: number }
 const PAGE = 40;
 
-const whereOf = (f: ProFilter) => ({
+const whereOf = (f: ProFilter, keys: string[] = []) => ({
+  ...(f.needsPhoto ? { status: "ACTIVE" as const, OR: [{ photo: null }, { photo: { notIn: keys } }] } : {}),
   ...(f.status ? { status: f.status } : {}),
   ...(f.needsCoverage ? { status: "ACTIVE" as const, coverage: { none: {} } } : {}),
   ...(f.q ? { name: { contains: f.q, mode: "insensitive" as const } } : {}),
@@ -16,16 +17,18 @@ const whereOf = (f: ProFilter) => ({
 
 export async function listProsAdmin(f: ProFilter) {
   const page = Math.max(1, f.page ?? 1);
-  const [rows, total, keys] = await Promise.all([
+  const keyList = [...(await mediaKeySet())];
+  const [rows, total, keys, needsPhotoCount] = await Promise.all([
     prisma.pro.findMany({
-      where: whereOf(f), orderBy: { name: "asc" }, skip: (page - 1) * PAGE, take: PAGE,
+      where: whereOf(f, keyList), orderBy: { name: "asc" }, skip: (page - 1) * PAGE, take: PAGE,
       select: { id: true, name: true, slug: true, providerType: true, status: true, photo: true, bio: true, _count: { select: { services: true, coverage: true } }, coverage: { select: { area: { select: { city: { select: { isActive: true } } } } } } },
     }),
-    prisma.pro.count({ where: whereOf(f) }),
+    prisma.pro.count({ where: whereOf(f, keyList) }),
     mediaKeySet(),
+    prisma.pro.count({ where: whereOf({ needsPhoto: true }, keyList) }),
   ]);
   return {
-    total, page, pages: Math.max(1, Math.ceil(total / PAGE)),
+    total, page, needsPhotoCount, pages: Math.max(1, Math.ceil(total / PAGE)),
     items: rows.map((p) => ({
       id: p.id, name: p.name, slug: p.slug, providerType: p.providerType, status: p.status,
       services: p._count.services, coverage: p._count.coverage,
@@ -33,6 +36,7 @@ export async function listProsAdmin(f: ProFilter) {
       /** active artist with zero coverage anywhere: cannot appear on any page */
       needsCoverage: p.status === "ACTIVE" && p._count.coverage === 0,
       noindexReason: proNoindexReason(p, keys),
+      hasPhoto: !!p.photo && keys.has(p.photo),
     })),
   };
 }

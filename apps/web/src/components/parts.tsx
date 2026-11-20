@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { Badge, Card, Price, cn } from "@herrglow/ui";
 import { JsonLd, breadcrumbLd } from "@/lib/seo/jsonld";
+import { getMediaKeys } from "@/lib/data";
+import { realImage } from "@/lib/media";
+import { Photo } from "@/components/Photo";
 
 /* ───────── Breadcrumbs (UI + schema) ───────── */
 export function Breadcrumbs({ items }: { items: { name: string; path: string }[] }) {
@@ -46,18 +49,21 @@ export function Html({ html, className }: { html: string; className?: string }) 
 }
 
 /* ───────── Cards ───────── */
-export function ServiceCard({ s, fromLabel }: { s: { slug: string; title: string; shortDescription: string | null; price: unknown; offerPrice: unknown; priceLabel?: string | null; category?: { name: string } | null; variants?: { price: unknown; offerPrice: unknown }[] }; fromLabel?: boolean }) {
+export async function ServiceCard({ s, fromLabel }: { s: { slug: string; title: string; shortDescription: string | null; price: unknown; offerPrice: unknown; priceLabel?: string | null; image?: string | null; imageAlt?: string | null; categoryId?: string; category?: { name: string; slug?: string } | null; variants?: { price: unknown; offerPrice: unknown }[] }; fromLabel?: boolean }) {
+  const keys = await getMediaKeys();
+  const src = realImage(keys, s.image);
   const nums = [s.offerPrice ?? s.price, ...(s.variants ?? []).map((v) => v.offerPrice ?? v.price)].map((n) => (n == null ? NaN : Number(n))).filter((n) => Number.isFinite(n) && n > 0);
   const low = nums.length ? Math.min(...nums) : null;
   const showFrom = fromLabel || (s.variants?.length ?? 0) > 1 || s.priceLabel === "Starting at";
   return (
     <Link href={`/services/${s.slug}`} className="group block h-full">
-      <Card className="flex h-full flex-col p-6 transition-transform duration-300 group-hover:-translate-y-1">
-        {s.category && <Badge className="self-start">{s.category.name}</Badge>}
-        <h3 className="mt-3 group-hover:text-rose-700">{s.title}</h3>
-        {s.shortDescription && <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-ink-soft">{s.shortDescription}</p>}
-        <div className="mt-auto pt-4">
-          {low != null && <Price offerPrice={low} label={showFrom ? "From" : undefined} />}
+      <Card className="flex h-full flex-col overflow-hidden transition-transform duration-300 group-hover:-translate-y-1">
+        <div className="relative aspect-[4/3] w-full"><Photo src={src} alt={s.imageAlt || s.title} kind={s.category?.slug ?? s.categoryId} seedKey={s.slug} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" /></div>
+        <div className="flex flex-1 flex-col p-5">
+          {s.category && <Badge className="self-start">{s.category.name}</Badge>}
+          <h3 className="mt-3 group-hover:text-rose-700">{s.title}</h3>
+          {s.shortDescription && <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-ink-soft">{s.shortDescription}</p>}
+          <div className="mt-auto pt-4">{low != null && <Price offerPrice={low} label={showFrom ? "From" : undefined} />}</div>
         </div>
       </Card>
     </Link>
