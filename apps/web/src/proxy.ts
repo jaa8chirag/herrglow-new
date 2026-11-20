@@ -12,8 +12,8 @@ import { CANONICAL_HOST, SITE_URL } from "@/lib/site";
 const TTL_MS = 60_000;
 let cache: { at: number; ctx: LegacyContext } | null = null;
 
-async function context(): Promise<LegacyContext> {
-  if (cache && Date.now() - cache.at < TTL_MS) return cache.ctx;
+async function context(force = false): Promise<LegacyContext> {
+  if (!force && cache && Date.now() - cache.at < TTL_MS) return cache.ctx;
   const [rows, pages, pros] = await Promise.all([
     prisma.redirect.findMany(),
     prisma.page.findMany({ select: { url: true } }),
@@ -43,7 +43,10 @@ export async function proxy(req: NextRequest) {
 
   if (!pathname.startsWith("/admin")) {
     try {
-      const d = decideLegacy(pathname, await context());
+      let d = decideLegacy(pathname, await context());
+      // Never serve a (sticky) 410 from stale data: a page may have just been published. Re-check the DB once
+      // (at most every 5 s) before answering gone.
+      if (d.kind === "gone" && cache && Date.now() - cache.at > 5_000) d = decideLegacy(pathname, await context(true));
       if (d.kind === "redirect") return NextResponse.redirect(new URL(d.to + search, req.nextUrl.origin), d.code);
       if (d.kind === "gone") return noindex(new NextResponse("Gone", { status: 410 }));
     } catch {
