@@ -54,7 +54,6 @@ enum RedirectCode {
 enum AdminRole {
   OWNER
   MANAGER
-  SUPPORT
   CONTENT
 }
 enum MediaType {
@@ -412,6 +411,8 @@ model Page {
   seoTitle      String?
   seoDescription String?
   lastmod       DateTime @default(now())
+  /// admin override: keep out of the index regardless of quality gates
+  manualNoindex Boolean  @default(false)
   inLinks       Int      @default(0)
   outLinks      Int      @default(0)
 }
@@ -429,6 +430,34 @@ model AdminUser {
   email        String    @unique
   name         String?
   passwordHash String
-  role         AdminRole @default(SUPPORT)
+  role         AdminRole @default(CONTENT)
+  active       Boolean   @default(true)
+  lastLoginAt  DateTime?
   createdAt    DateTime  @default(now())
+}
+
+model AuditLog {
+  id       String   @id @default(cuid())
+  adminId  String?
+  adminEmail String?
+  action   String
+  entity   String
+  entityId String?
+  meta     Json?
+  at       DateTime @default(now())
+  @@index([entity, entityId])
+  @@index([at])
+}
+
+/// Uploaded files (R2 in production, local disk in dev). Alt text is required.
+model Media {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  alt       String
+  mime      String
+  size      Int
+  width     Int?
+  height    Int?
+  uploadedBy String?
+  createdAt DateTime @default(now())
 }

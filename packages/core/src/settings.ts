@@ -12,6 +12,7 @@ export interface SiteSettings {
 }
 
 let cache: { at: number; value: SiteSettings } | null = null;
+export const resetSettingsCache = () => { cache = null; };
 
 export async function getSettings(): Promise<SiteSettings> {
   if (cache && Date.now() - cache.at < 60_000) return cache.value;

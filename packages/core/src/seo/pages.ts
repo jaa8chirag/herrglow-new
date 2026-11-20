@@ -53,7 +53,9 @@ export async function desiredPages(): Promise<Desired[]> {
 export async function syncPages() {
   const desired = await desiredPages();
   const urlsSet = new Set(desired.map((d) => d.url));
-  for (const d of desired) {
+  const manual = new Set((await prisma.page.findMany({ where: { manualNoindex: true }, select: { url: true } })).map((p) => p.url));
+  for (const d0 of desired) {
+    const d = manual.has(d0.url) ? { ...d0, isIndexable: false, inSitemap: false } : d0; // admin override wins
     await prisma.page.upsert({
       where: { url: d.url },
       update: { type: d.type, entityId: d.entityId, isIndexable: d.isIndexable, inSitemap: d.inSitemap, qualityScore: d.qualityScore, lastmod: d.lastmod },
