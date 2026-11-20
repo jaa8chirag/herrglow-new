@@ -14,9 +14,11 @@ export const metadata: Metadata = {
   robots: robotsMeta(true),
 };
 
+// The inline script in <head> adds class "js" before hydration on purpose (reveals are only hidden when JS runs),
+// so <html>'s className differs from the server output: suppressHydrationWarning is intended here.
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-IN" className={`${fraunces.variable} ${inter.variable}`}>
+    <html lang="en-IN" className={`${fraunces.variable} ${inter.variable}`} suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} /></head>
       <body className="min-h-dvh">{children}</body>
     </html>
