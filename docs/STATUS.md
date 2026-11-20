@@ -8,6 +8,13 @@
 - Service×city drafts generated from real data (status DRAFT until reviewed)
 - 6b design system (packages/ui), 6c SEO foundation, 6d public pages + booking form (lead → DB, out_of_area tag)
 
+## Admin (/admin, Auth.js credentials, roles owner/manager/content)
+- Leads inbox + pipeline board, review queue (drafts, thin services/blogs), artists (profile, services, coverage per city, photo upload, needs-coverage), services (variants, add-ons, slug change → 301), cities (owner launch switch + preview) and areas, SEO manager (index state + reason, manual noindex), redirects (guards against chains/loops/shadowing), blogs (sanitised HTML, link suggestions), media library (alt required), settings (owner only)
+- Create a user: pnpm --filter @herrglow/core create-admin <email> <OWNER|MANAGER|CONTENT> [password]
+- Every server action re-checks the role; every change is written to AuditLog
+- Offer strip is opt-in (legacy Karva Chauth text is stored but hidden)
+- Uploads: R2 when R2_* env vars are set; otherwise local disk (apps/web/public/media, NEXT_PUBLIC_MEDIA_BASE=/media in dev)
+
 ## Commands
 - `pnpm infra:up`, `pnpm dev:web`
 - `pnpm --filter @herrglow/core page-preview | sync-pages | generate-drafts`
@@ -22,6 +29,10 @@
 - Legal pages are starter text: counsel review
 - Redirect map for legacy URLs: needs audit-pack url-inventory
 - Rotate the Gmail app password (in the old dump)
+
+## Admin gaps
+- No user-management screen yet (use create-admin). No orphan/internal-link report yet. Uploads go through the server (≤ 8 MB); switch to presigned direct-to-R2 if the host limits request size
+- CLI scripts (sync-pages etc.) do not load apps/web/.env.local: pass NEXT_PUBLIC_MEDIA_BASE inline or run syncs from the admin (SEO manager → Re-sync)
 
 ## Known gaps / findings
 - Saree Draping at Home (50 leads, #1 service) has 0 pros mapped to it: map pros or it gets no city pages
