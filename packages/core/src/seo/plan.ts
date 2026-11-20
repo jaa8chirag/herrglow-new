@@ -19,6 +19,11 @@ export interface CityPlan {
   /** areas listed as text under "Areas we serve" only */
   areaTextOnly: number;
   artistPages: number;
+  // concrete lists (used by Page sync / sitemaps)
+  areaSlugs: string[];
+  /** published service×city pages */
+  publishedServiceCities: { serviceSlug: string; updatedAt: Date }[];
+  proSlugs: string[];
 }
 
 export interface SitePlan {
@@ -41,15 +46,17 @@ export async function planPages(): Promise<SitePlan> {
     },
     orderBy: { name: "asc" },
   });
-  const activeServices = new Set((await prisma.service.findMany({ where: { status: "ACTIVE", mergedIntoId: null }, select: { id: true } })).map((s) => s.id));
+  const activeServiceRows = await prisma.service.findMany({ where: { status: "ACTIVE", mergedIntoId: null }, select: { id: true, slug: true } });
+  const activeServices = new Set(activeServiceRows.map((s) => s.id));
+  const serviceSlug = new Map(activeServiceRows.map((s) => [s.id, s.slug]));
   const proServices = await prisma.proService.findMany({ where: { pro: { status: "ACTIVE" } }, select: { proId: true, serviceId: true } });
   const servicesByPro = new Map<string, Set<string>>();
   for (const ps of proServices) {
     if (!activeServices.has(ps.serviceId)) continue;
     (servicesByPro.get(ps.proId) ?? servicesByPro.set(ps.proId, new Set()).get(ps.proId)!).add(ps.serviceId);
   }
-  const pros = await prisma.pro.findMany({ where: { status: "ACTIVE" }, select: { id: true, photo: true, bio: true } });
-  const proOk = new Map(pros.map((p) => [p.id, !!p.photo && (p.bio?.length ?? 0) >= MIN_PRO_BIO_CHARS]));
+  const pros = await prisma.pro.findMany({ where: { status: "ACTIVE" }, select: { id: true, slug: true, photo: true, bio: true } });
+  const proInfo = new Map(pros.map((p) => [p.id, { slug: p.slug, ok: !!p.photo && (p.bio?.length ?? 0) >= MIN_PRO_BIO_CHARS }]));
 
   const cities: CityPlan[] = [];
   for (const c of allCities.filter((x) => x.isActive)) {
@@ -61,21 +68,26 @@ export async function planPages(): Promise<SitePlan> {
     const counts = new Map<string, number>();
     for (const p of cityPros) for (const sid of servicesByPro.get(p) ?? []) counts.set(sid, (counts.get(sid) ?? 0) + 1);
     const eligible = new Set([...counts].filter(([, n]) => n >= MIN_PROS_FOR_SERVICE_CITY).map(([sid]) => sid));
-    const rows = c.services.filter((r) => eligible.has(r.serviceId));
-    const drafts = rows.filter((r) => r.contentStatus === "DRAFT" && !!r.localContent).length;
-    const published = rows.filter((r) => r.contentStatus === "PUBLISHED" && !!r.localContent).length;
+    const rows = c.services.filter((r) => eligible.has(r.serviceId) && !!r.localContent);
+    const drafts = rows.filter((r) => r.contentStatus === "DRAFT").length;
+    const publishedRows = rows.filter((r) => r.contentStatus === "PUBLISHED");
 
-    const areaPages = c.areas.filter((a) => {
+    const areas = c.areas.filter((a) => {
       const activePros = a.coverage.filter((cv) => cv.pro.status === "ACTIVE").length;
-      return (activePros >= MIN_PROS_FOR_AREA || a.leadCount >= 1) && a.landmarks.length >= 1 && a._count.nearby >= 1;
-    }).length;
+      // an area whose slug equals the city slug is the city hub itself, never a separate page
+      return a.slug !== c.slug && (activePros >= MIN_PROS_FOR_AREA || a.leadCount >= 1) && a.landmarks.length >= 1 && a._count.nearby >= 1;
+    });
+    const proSlugs = [...cityPros].filter((p) => proInfo.get(p)?.ok).map((p) => proInfo.get(p)!.slug);
 
     cities.push({
       city: c.name, slug: c.slug, activePros: cityPros.size, cityHub,
       serviceCityEligible: cityHub ? eligible.size : 0,
-      serviceCityDrafts: cityHub ? drafts : 0, serviceCityPublished: cityHub ? published : 0,
-      areasTotal: c.areas.length, areaPages: cityHub ? areaPages : 0, areaTextOnly: cityHub ? c.areas.length - areaPages : c.areas.length,
-      artistPages: [...cityPros].filter((p) => proOk.get(p)).length,
+      serviceCityDrafts: cityHub ? drafts : 0, serviceCityPublished: cityHub ? publishedRows.length : 0,
+      areasTotal: c.areas.length, areaPages: cityHub ? areas.length : 0, areaTextOnly: cityHub ? c.areas.length - areas.length : c.areas.length,
+      artistPages: proSlugs.length,
+      areaSlugs: cityHub ? areas.map((a) => a.slug) : [],
+      publishedServiceCities: cityHub ? publishedRows.map((r) => ({ serviceSlug: serviceSlug.get(r.serviceId)!, updatedAt: r.generatedAt ?? new Date() })) : [],
+      proSlugs,
     });
   }
   const [blogs, categories] = await Promise.all([
