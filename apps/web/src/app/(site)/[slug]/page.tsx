@@ -2,13 +2,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { asFaqs, findPage, getCategoryExtras, urls, type Faq } from "@herrglow/core";
-import { Badge, ButtonLink, Card, Container, Section, SectionHeading } from "@herrglow/ui";
+import { Carousel, Container, Section, SectionHeading } from "@herrglow/ui";
 import { BookingForm } from "@/components/BookingForm";
 import { Breadcrumbs, FaqList, Html, ProCard, ServiceCard, stripTags } from "@/components/parts";
 import { CATEGORY_COPY } from "@/lib/copy";
 import { getAreaPage, getCategoryPage, getCityHub, getLiveCities, getMediaKeys, getServiceCity } from "@/lib/data";
 import { realImage } from "@/lib/media";
 import { CategoryView } from "@/components/services/CategoryView";
+import { AreaView, CityHubView } from "@/components/location/views";
+import { PageHero } from "@/components/page/PageHero";
+import { ArtistCard } from "@/components/page/ArtistCard";
 import { JsonLd, faqLd, serviceLd } from "@/lib/seo/jsonld";
 import { buildMetadata } from "@/lib/seo/metadata";
 
@@ -82,7 +85,7 @@ export default async function RootSlugPage(props: PageProps<"/[slug]">) {
 
   /* ───────── City hub ───────── */
   if (page.type === "CITY") {
-    const hub = await getCityHub(page.entityId!);
+    const [hub, keys] = await Promise.all([getCityHub(page.entityId!), getMediaKeys()]);
     if (!hub) notFound();
     const { city, pros, services, areaPageSlugs, proPageSlugs, serviceCityPageSlugs } = hub;
     const withPage = city.areas.filter((a) => areaPageSlugs.has(a.slug));
@@ -92,64 +95,15 @@ export default async function RootSlugPage(props: PageProps<"/[slug]">) {
       { question: `Which areas of ${city.name} do you serve?`, answer: `We serve ${city.areas.slice(0, 12).map((a) => a.name).join(", ")}${city.areas.length > 12 ? ` and ${city.areas.length - 12} more areas` : ""}. Enter your area while booking to confirm coverage.` },
       { question: `How do I book in ${city.name}?`, answer: "Choose a service, share your area and preferred date, and we confirm an available artist near you." },
     ];
-    const path = urls.cityHub(city.slug);
-    return (
-      <>
-        <JsonLd data={faqLd(faqs)!} />
-        <Section className="pb-6">
-          <Container>
-            <Breadcrumbs items={[{ name: city.name, path }]} />
-            <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
-              <div>
-                <Badge tone="gold">{pros.length} verified artists · {city.areas.length} areas</Badge>
-                <h1 className="mt-4">Makeup Artist at Home in {city.name}</h1>
-                <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ink-soft">Bridal, party and salon services at your doorstep in {city.name}. Pick a service, see clear prices and book an artist who covers your area.</p>
-                <ButtonLink href="#book" className="mt-6" size="lg">Book in {city.name}</ButtonLink>
-              </div>
-              <BookingForm cities={cities} defaultCity={city.slug} sourcePath={path} enquiry heading={`Book in ${city.name}`} />
-            </div>
-          </Container>
-        </Section>
-
-        <Section>
-          <Container>
-            <SectionHeading title={`Services available in ${city.name}`} />
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {services.slice(0, 12).map((s) => (
-                <div key={s.id}>
-                  <ServiceCard s={s} />
-                  {serviceCityPageSlugs.has(s.slug) && <Link className="mt-2 inline-block text-sm text-rose-700 underline underline-offset-4" href={urls.serviceCity(s.slug, city.slug)}>{s.title} in {city.name}</Link>}
-                </div>
-              ))}
-            </div>
-          </Container>
-        </Section>
-
-        {pros.length > 0 && (
-          <Section tone="blush">
-            <Container>
-              <SectionHeading title={`Artists covering ${city.name}`} />
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{pros.slice(0, 12).map((p) => <ProCard key={p.id} p={p} href={proPageSlugs.has(p.slug) ? urls.pro(p.slug) : undefined} />)}</div>
-            </Container>
-          </Section>
-        )}
-
-        <Section>
-          <Container>
-            <SectionHeading title={`Areas we serve in ${city.name}`} />
-            {withPage.length > 0 && <div className="mb-6 flex flex-wrap gap-2">{withPage.map((a) => <Link key={a.slug} href={urls.area(a.slug)} className="rounded-full border border-plum-700/20 bg-white px-4 py-2 text-sm text-plum-800 hover:bg-blush-100">{a.name}</Link>)}</div>}
-            {textOnly.length > 0 && <p className="leading-relaxed text-ink-soft"><span className="font-medium text-plum-900">Also covering: </span>{textOnly.map((a) => a.name).join(", ")}.</p>}
-          </Container>
-        </Section>
-        <Section tone="blush"><Container className="max-w-3xl"><SectionHeading title={`${city.name} FAQs`} /><FaqList faqs={faqs} /></Container></Section>
-      </>
-    );
+    return <CityHubView city={{ slug: city.slug, name: city.name }} path={urls.cityHub(city.slug)} cities={cities} faqs={faqs} areaCount={city.areas.length}
+      services={services.map((x) => ({ ...x, category: x.category }))} withPage={withPage} textOnly={textOnly} serviceCityPages={serviceCityPageSlugs}
+      artists={pros.map((p) => ({ slug: p.slug, name: p.name, photo: realImage(keys, p.photo), specialization: p.specialization, years: p.experienceYears, city: city.name, linked: proPageSlugs.has(p.slug), kind: p.providerType === "MAKEOVER_ARTIST" ? "Makeup artist" : "Beautician" }))} />;
   }
 
   /* ───────── Service × city ───────── */
   if (page.type === "SERVICE_CITY") {
     const [svcSlug, citySlug] = page.entityId!.split("|");
-    const d = await getServiceCity(svcSlug!, citySlug!);
+    const [d, keys] = await Promise.all([getServiceCity(svcSlug!, citySlug!), getMediaKeys()]);
     if (!d) notFound();
     const { row, pros, proPageSlugs } = d;
     const faqs = asFaqs(row.faqs);
@@ -159,53 +113,31 @@ export default async function RootSlugPage(props: PageProps<"/[slug]">) {
       <>
         <JsonLd data={serviceLd({ name: `${svc.title} in ${row.city.name}`, description: stripTags(row.localContent).slice(0, 300), path, category: svc.category.name, price: prices.length ? Math.min(...prices) : null, areaServed: [row.city.name] })} />
         {faqLd(faqs) && <JsonLd data={faqLd(faqs)!} />}
-        <Section className="pb-6">
-          <Container>
-            <Breadcrumbs items={[{ name: row.city.name, path: urls.cityHub(row.city.slug) }, { name: `${svc.title} in ${row.city.name}`, path }]} />
-            <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
-              <div>
-                <h1>{svc.title} in {row.city.name}</h1>
-                <Html html={row.localContent ?? ""} className="mt-6" />
-                <p className="mt-6"><Link className="text-rose-700 underline underline-offset-4" href={urls.service(svc.slug)}>Full details and options for {svc.title}</Link> · <Link className="text-rose-700 underline underline-offset-4" href={urls.cityHub(row.city.slug)}>All services in {row.city.name}</Link></p>
-              </div>
-              <BookingForm cities={cities} defaultCity={row.city.slug} sourcePath={path} service={{ slug: svc.slug, title: svc.title, variants: svc.variants.map((v) => ({ name: v.name, price: Number(v.offerPrice ?? v.price ?? 0) || null })) }} />
+        <PageHero crumbs={[{ name: row.city.name, path: urls.cityHub(row.city.slug) }, { name: `${svc.title} in ${row.city.name}`, path }]} eyebrow={row.city.name} title={<>{svc.title} in {row.city.name}</>} image={{ src: realImage(keys, svc.image), alt: svc.title, kind: svc.category.slug, seedKey: svc.slug }} />
+        <Section className="py-10">
+          <Container className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+            <div>
+              <Html html={row.localContent ?? ""} />
+              <p className="mt-6 flex flex-wrap gap-x-5 gap-y-2"><Link className="text-rose-700 underline underline-offset-4" href={urls.service(svc.slug)}>Full details and options for {svc.title}</Link><Link className="text-rose-700 underline underline-offset-4" href={urls.cityHub(row.city.slug)}>All services in {row.city.name}</Link></p>
             </div>
+            <div className="lg:sticky lg:top-28 lg:self-start"><BookingForm cities={cities} defaultCity={row.city.slug} sourcePath={path} service={{ slug: svc.slug, title: svc.title, variants: svc.variants.map((v) => ({ name: v.name, price: Number(v.offerPrice ?? v.price ?? 0) || null })) }} /></div>
           </Container>
         </Section>
-        {pros.length > 0 && <Section tone="blush"><Container><SectionHeading title={`Artists offering ${svc.title} in ${row.city.name}`} /><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{pros.map((p) => <ProCard key={p.id} p={p} href={proPageSlugs.has(p.slug) ? urls.pro(p.slug) : undefined} />)}</div></Container></Section>}
-        {faqs.length > 0 && <Section><Container className="max-w-3xl"><SectionHeading title="Frequently asked questions" /><FaqList faqs={faqs} /></Container></Section>}
+        {pros.length > 0 && <Section tone="blush"><Container><SectionHeading eyebrow="Artists" title={`Artists offering ${svc.title} in ${row.city.name}`} /><Carousel dots label="Artists" itemClassName="basis-[72%] sm:basis-1/3 lg:basis-1/4">{pros.map((p) => <ArtistCard key={p.id} a={{ slug: p.slug, name: p.name, photo: realImage(keys, p.photo), specialization: p.specialization, years: p.experienceYears, city: row.city.name, linked: proPageSlugs.has(p.slug), kind: p.providerType === "MAKEOVER_ARTIST" ? "Makeup artist" : "Beautician" }} />)}</Carousel></Container></Section>}
+        {faqs.length > 0 && <Section><Container className="max-w-3xl"><SectionHeading eyebrow="FAQ" title="Frequently asked questions" /><FaqList faqs={faqs} /></Container></Section>}
       </>
     );
   }
 
   /* ───────── Area ───────── */
   if (page.type === "AREA") {
-    const a = await getAreaPage(page.entityId!);
+    const [a, keys] = await Promise.all([getAreaPage(page.entityId!), getMediaKeys()]);
     if (!a) notFound();
     const { area, pros, services, nearby, areaPageSlugs, proPageSlugs } = a;
-    const faqs = asFaqs(area.faqs);
-    return (
-      <>
-        {faqLd(faqs) && <JsonLd data={faqLd(faqs)!} />}
-        <Section className="pb-6">
-          <Container>
-            <Breadcrumbs items={[{ name: area.city.name, path: urls.cityHub(area.city.slug) }, { name: area.name, path }]} />
-            <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
-              <div>
-                <h1>Makeup Artist in {area.name}, {area.city.name}</h1>
-                {area.content ? <Html html={area.content} className="mt-6" /> : <p className="mt-4 text-lg text-ink-soft">Makeup artists and beauticians who come to you in {area.name}.</p>}
-                {area.landmarks.length > 0 && <div className="mt-6"><h2 className="text-2xl">Near {area.name}</h2><p className="mt-2 text-ink-soft">We serve homes around {area.landmarks.join(", ")}.</p></div>}
-              </div>
-              <BookingForm cities={cities} defaultCity={area.city.slug} sourcePath={path} enquiry heading={`Book in ${area.name}`} />
-            </div>
-          </Container>
-        </Section>
-        {services.length > 0 && <Section><Container><SectionHeading title={`Popular services in ${area.name}`} /><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{services.slice(0, 4).map((s) => <ServiceCard key={s.id} s={{ ...s, category: null }} />)}</div></Container></Section>}
-        {pros.length > 0 && <Section tone="blush"><Container><SectionHeading title={`Artists covering ${area.name}`} /><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{pros.map((p) => <ProCard key={p.id} p={p} href={proPageSlugs.has(p.slug) ? urls.pro(p.slug) : undefined} />)}</div></Container></Section>}
-        {nearby.length > 0 && <Section><Container><SectionHeading title="Nearby areas" /><div className="flex flex-wrap gap-2">{nearby.map((n) => areaPageSlugs.has(n.slug) ? <Link key={n.slug} href={urls.area(n.slug)} className="rounded-full border border-plum-700/20 bg-white px-4 py-2 text-sm text-plum-800 hover:bg-blush-100">{n.name}</Link> : <span key={n.slug} className="rounded-full bg-blush-50 px-4 py-2 text-sm text-ink-soft">{n.name}</span>)}</div></Container></Section>}
-        {faqs.length > 0 && <Section tone="blush"><Container className="max-w-3xl"><SectionHeading title="Frequently asked questions" /><FaqList faqs={faqs} /></Container></Section>}
-      </>
-    );
+    return <AreaView area={{ name: area.name, slug: area.slug }} city={{ slug: area.city.slug, name: area.city.name }} path={path} cities={cities} content={area.content} landmarks={area.landmarks}
+      services={services.map((x) => ({ ...x, category: null }))} nearby={nearby} areaPageSlugs={areaPageSlugs} faqs={asFaqs(area.faqs)}
+      geo={area.latitude != null && area.longitude != null ? { lat: Number(area.latitude), lng: Number(area.longitude) } : null}
+      artists={pros.map((p) => ({ slug: p.slug, name: p.name, photo: realImage(keys, p.photo), specialization: p.specialization, years: p.experienceYears, city: area.city.name, linked: proPageSlugs.has(p.slug), kind: p.providerType === "MAKEOVER_ARTIST" ? "Makeup artist" : "Beautician" }))} />;
   }
 
   notFound();

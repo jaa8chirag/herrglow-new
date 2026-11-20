@@ -130,7 +130,7 @@ export async function getAreaPage(slug: string) {
 }
 
 export async function getProPage(slug: string) {
-  const pro = await prisma.pro.findFirst({ where: { slug, status: "ACTIVE" }, select: { ...publicProSelect, services: { select: { service: { select: { slug: true, title: true, status: true, mergedIntoId: true } } } }, coverage: { select: { area: { select: { name: true, slug: true, city: { select: { slug: true, name: true, isActive: true } } } } } } } });
+  const pro = await prisma.pro.findFirst({ where: { slug, status: "ACTIVE" }, select: { ...publicProSelect, services: { select: { service: { select: { slug: true, title: true, status: true, mergedIntoId: true, price: true, offerPrice: true } } } }, coverage: { select: { area: { select: { name: true, slug: true, city: { select: { slug: true, name: true, isActive: true } } } } } } } });
   if (!pro) return null;
   const services = pro.services.map((s) => s.service).filter((s) => s.status === "ACTIVE" && !s.mergedIntoId);
   const cities = new Map<string, { slug: string; name: string; areas: string[] }>();
