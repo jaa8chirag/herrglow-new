@@ -27,6 +27,8 @@ const cut = (s: string, max: number) => {
 
 /** "Title | HerrGlow" when it fits in 60 chars, otherwise the bare title. */
 export const fitTitle = (title: string) => {
+  // legacy/admin titles may already carry the brand: never append it twice
+  if (title.toLowerCase().includes(SITE_NAME.toLowerCase())) return cut(title, TITLE_MAX);
   const full = `${title.trim()} | ${SITE_NAME}`;
   return full.length <= TITLE_MAX ? full : cut(title, TITLE_MAX);
 };
