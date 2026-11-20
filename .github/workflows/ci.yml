@@ -1,0 +1,48 @@
+name: CI Quality Gate
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Lint, Typecheck & SEO Guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 12.6.0
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm db:generate
+
+      - name: Monorepo Typecheck
+        run: pnpm -r run typecheck
+
+      - name: Run SEO Guard Tests
+        run: pnpm --filter @herrglow/web test:seo
+
+      - name: Build Web Application
+        run: pnpm --filter @herrglow/web build
+        env:
+          ALLOW_INDEXING: 'false'
+          NEXT_PUBLIC_SITE_URL: 'https://staging.herrglow.com'

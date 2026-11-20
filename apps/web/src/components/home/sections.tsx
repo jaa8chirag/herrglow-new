@@ -45,7 +45,7 @@ export function TrustBadges() {
                 <it.icon className="size-5" strokeWidth={1.75} />
               </span>
               <div>
-                <h4 className="text-sm font-semibold text-plum-900 sm:text-[0.95rem]">{it.title}</h4>
+                <p className="text-sm font-semibold text-plum-900 sm:text-[0.95rem]">{it.title}</p>
                 <p className="mt-0.5 text-xs text-ink-soft leading-relaxed">{it.desc}</p>
               </div>
             </div>

@@ -15,6 +15,8 @@
     "db:seed": "pnpm --filter @herrglow/db seed:dev",
     "import:legacy": "pnpm --filter @herrglow/db import:legacy",
     "typecheck": "pnpm -r run typecheck",
+    "build": "pnpm --filter @herrglow/web build",
+    "test:seo": "pnpm --filter @herrglow/web test:seo",
     "import:media": "tsx scripts/import-legacy-media.ts",
     "shots": "tsx scripts/screenshots.ts"
   },
