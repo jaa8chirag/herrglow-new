@@ -1,33 +1,33 @@
 /*
  * HerrGlow design tokens (Tailwind v4 @theme).
- * Feel: luxury salon, warm and premium. Ivory/blush base, deep plum/rose accent, gold ONLY as a highlight
- * (decorative / large type; never body text on ivory: it fails contrast).
+ * Feel: premium beauty brand. Ivory + blush base, deep plum as the primary, rose as the warm accent, gold ONLY as a
+ * highlight (rules, stars, small details; never body text). Dark plum sections with gold details for contrast.
  */
 @theme {
   /* base */
-  --color-ivory: #fbf7f2;
-  --color-ivory-deep: #f4ece3;
-  --color-blush-50: #fcf1ef;
-  --color-blush-100: #f8e3df;
-  --color-blush-200: #f1cdc7;
-  --color-blush-300: #e7aea6;
+  --color-ivory: #fbf7f4;
+  --color-ivory-deep: #f4ece6;
+  --color-blush-50: #fcf3f1;
+  --color-blush-100: #f6e3e1;
+  --color-blush-200: #efcfcb;
+  --color-blush-300: #e4afad;
 
-  /* accent: deep rose → plum */
-  --color-rose-600: #a63d5f;
-  --color-rose-700: #8c2f4f;
-  --color-plum-700: #6e2748;
-  --color-plum-800: #571f3a;
-  --color-plum-900: #3f1629;
+  /* accent: rose → deep plum (primary) */
+  --color-rose-600: #c9727e;
+  --color-rose-700: #ae5663; /* AA on ivory for text */
+  --color-plum-700: #4a1f3d; /* primary */
+  --color-plum-800: #3b1731;
+  --color-plum-900: #2b0f24;
 
   /* highlight */
-  --color-gold-300: #e6cf9a;
-  --color-gold-400: #d3b46b;
-  --color-gold-500: #b8934a;
+  --color-gold-300: #e3cb98;
+  --color-gold-400: #c8a15a;
+  --color-gold-500: #a9833c;
 
   /* text & lines */
-  --color-ink: #2a1f24;
-  --color-ink-soft: #5e4f55;
-  --color-line: #e9ddd5;
+  --color-ink: #2a2226;
+  --color-ink-soft: #5c4f55;
+  --color-line: #eadfd8;
 
   /* semantic aliases */
   --color-background: var(--color-ivory);
@@ -40,48 +40,92 @@
   --font-serif: var(--font-fraunces), "Playfair Display", Georgia, serif;
   --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  /* shape & depth */
-  --radius-card: 1.25rem;
+  /* shape & depth: radius 20–28px, soft layered shadows */
+  --radius-card: 1.5rem;
+  --radius-xl: 1.75rem;
   --radius-pill: 999px;
-  --shadow-soft: 0 1px 2px rgb(63 22 41 / 0.04), 0 8px 24px -12px rgb(63 22 41 / 0.14);
-  --shadow-lift: 0 2px 4px rgb(63 22 41 / 0.05), 0 18px 40px -16px rgb(63 22 41 / 0.28);
+  --shadow-soft: 0 1px 2px rgb(43 15 36 / 0.04), 0 4px 12px -4px rgb(43 15 36 / 0.06), 0 16px 32px -16px rgb(43 15 36 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(43 15 36 / 0.05), 0 12px 24px -8px rgb(43 15 36 / 0.14), 0 32px 56px -24px rgb(43 15 36 / 0.3);
 
-  /* motion */
+  /* motion: 200–600 ms, ease-out */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
-  html { background: var(--color-ivory); color-scheme: light; }
+  html { background: var(--color-ivory); color-scheme: light; scroll-behavior: auto; }
   body {
     background: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
-  h1, h2, h3, h4 { font-family: var(--font-serif); letter-spacing: -0.01em; color: var(--color-plum-900); }
-  h1 { font-size: clamp(2.25rem, 5vw, 3.75rem); line-height: 1.08; font-weight: 500; }
-  h2 { font-size: clamp(1.75rem, 3.4vw, 2.5rem); line-height: 1.15; font-weight: 500; }
-  h3 { font-size: 1.25rem; line-height: 1.3; font-weight: 600; }
-  :focus-visible { outline: 2px solid var(--color-rose-600); outline-offset: 3px; border-radius: 6px; }
+  @media (min-width: 1024px) { body { font-size: 1.0625rem; } }
+  h1, h2, h3, h4 { font-family: var(--font-serif); color: var(--color-plum-800); text-wrap: balance; }
+  h1 { font-size: clamp(2.6rem, 7vw, 5.5rem); line-height: 1.02; font-weight: 500; letter-spacing: -0.03em; }
+  h2 { font-size: clamp(2rem, 4.4vw, 3.5rem); line-height: 1.08; font-weight: 500; letter-spacing: -0.025em; }
+  h3 { font-size: 1.3rem; line-height: 1.25; font-weight: 600; letter-spacing: -0.01em; }
+  :focus-visible { outline: 2px solid var(--color-rose-600); outline-offset: 3px; border-radius: 8px; }
   ::selection { background: var(--color-blush-200); }
+}
+
+/* dark plum sections: gold details */
+@utility section-dark {
+  background: radial-gradient(120% 90% at 15% 0%, #5a2a4c 0%, var(--color-plum-800) 45%, var(--color-plum-900) 100%);
+  color: var(--color-ivory);
+  & h1, & h2, & h3 { color: var(--color-ivory); }
+  & p { color: var(--color-blush-100); }
+}
+
+/* thin gold divider */
+@utility gold-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold-400), transparent);
 }
 
 /* long-form content (blogs, service descriptions, city drafts) */
 @utility prose-herr {
-  & p { margin-block: 0.9em; line-height: 1.75; color: var(--color-ink-soft); }
-  & h2 { margin-top: 1.8em; margin-bottom: 0.5em; }
+  & p { margin-block: 0.9em; line-height: 1.8; color: var(--color-ink-soft); }
+  & h2 { margin-top: 1.8em; margin-bottom: 0.5em; font-size: clamp(1.5rem, 3vw, 2rem); }
   & h3 { margin-top: 1.4em; margin-bottom: 0.4em; }
   & ul { list-style: disc; padding-left: 1.25rem; color: var(--color-ink-soft); }
+  & ol { list-style: decimal; padding-left: 1.25rem; color: var(--color-ink-soft); }
   & li { margin-block: 0.35em; }
   & a { color: var(--color-rose-700); text-decoration: underline; text-underline-offset: 3px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  & img { border-radius: var(--radius-card); margin-block: 1.2em; }
 }
 
 /* subtle film grain (inline SVG noise: no image request) */
 @utility grain {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 width=%27160%27 height=%27160%27><filter id=%27n%27><feTurbulence type=%27fractalNoise%27 baseFrequency=%270.9%27 numOctaves=%272%27 stitchTiles=%27stitch%27/></filter><rect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23n)%27 opacity=%270.5%27/></svg>");
+}
+
+/* ───────── motion primitives ───────── */
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(calc(-50% - var(--gap, 1rem) / 2)); } }
+@keyframes shimmer { 0% { transform: translateX(-120%); } 55%, 100% { transform: translateX(120%); } }
+@keyframes gradient-x { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes border-beam { to { offset-distance: 100%; } }
+@keyframes float-y { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+@utility animate-marquee { animation: marquee var(--duration, 40s) linear infinite; }
+@utility animate-gradient-x { animation: gradient-x 6s ease infinite; background-size: 200% 200%; }
+@utility animate-float { animation: float-y 6s ease-in-out infinite; }
+@utility btn-shimmer {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.38) 50%, transparent 70%);
+    transform: translateX(-120%);
+    animation: shimmer 3.6s ease-in-out infinite;
+    pointer-events: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }

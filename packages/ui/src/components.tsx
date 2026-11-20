@@ -9,6 +9,10 @@ export const buttonStyles = cva(
     variants: {
       variant: {
         primary: "bg-plum-700 text-ivory shadow-soft hover:bg-plum-800 hover:shadow-lift",
+        /* the main CTA: shimmer sweep */
+        shimmer: "btn-shimmer bg-plum-700 text-ivory shadow-lift hover:bg-plum-800",
+        gold: "bg-gold-400 text-plum-900 shadow-soft hover:bg-gold-300",
+        light: "bg-ivory text-plum-800 shadow-soft hover:bg-white",
         accent: "bg-rose-600 text-white shadow-soft hover:bg-rose-700",
         outline: "border border-plum-700/30 bg-transparent text-plum-800 hover:bg-blush-100",
         ghost: "bg-transparent text-plum-800 hover:bg-blush-100",
@@ -64,7 +68,7 @@ export function SectionHeading({ eyebrow, title, intro, align = "left", as: Tag 
 
 /* ───────── Card / Badge ───────── */
 export function Card({ className, ...p }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("rounded-[var(--radius-card)] border border-line bg-white/80 shadow-soft transition-shadow duration-300 hover:shadow-lift", className)} {...p} />;
+  return <div className={cn("rounded-[var(--radius-card)] border border-line bg-white/90 text-ink shadow-soft transition-shadow duration-300 hover:shadow-lift [&_h1]:!text-plum-800 [&_h2]:!text-plum-800 [&_h3]:!text-plum-800 [&_p]:!text-ink-soft", className)} {...p} />;
 }
 
 export function Badge({ className, tone = "blush", ...p }: HTMLAttributes<HTMLSpanElement> & { tone?: "blush" | "gold" | "plum" }) {
