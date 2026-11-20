@@ -114,12 +114,14 @@ const bio = (n: number) => Array.from({ length: n }, () => "glow").join(" ");
 test("artist indexable only with a real photo AND ≥ 50 words of bio", () => {
   const prev = process.env.NEXT_PUBLIC_MEDIA_BASE;
   delete process.env.NEXT_PUBLIC_MEDIA_BASE;
-  assert.equal(proIsIndexable({ photo: "beauticians/x.jpg", bio: bio(80) }), false, "stored path but media not configured = placeholder");
+  const keys = new Set(["beauticians/x.jpg"]);
+  assert.equal(proIsIndexable({ photo: "beauticians/x.jpg", bio: bio(80) }, keys), false, "stored path but media not configured = placeholder");
   assert.equal(proIsIndexable({ photo: "https://media.herrglow.com/x.jpg", bio: bio(80) }), true);
   process.env.NEXT_PUBLIC_MEDIA_BASE = "https://media.herrglow.com";
-  assert.equal(proIsIndexable({ photo: "beauticians/x.jpg", bio: bio(50) }), true);
-  assert.equal(proIsIndexable({ photo: "beauticians/x.jpg", bio: bio(49) }), false);
+  assert.equal(proIsIndexable({ photo: "beauticians/x.jpg", bio: bio(50) }, keys), true, "real photo (in media library) + 50 words");
+  assert.equal(proIsIndexable({ photo: "beauticians/x.jpg", bio: bio(49) }, keys), false);
+  assert.equal(proIsIndexable({ photo: "beauticians/legacy-missing.jpg", bio: bio(80) }, keys), false, "legacy path that was never uploaded is not a real photo");
   assert.equal(proIsIndexable({ photo: null, bio: bio(80) }), false);
-  assert.match(proNoindexReason({ photo: null, bio: bio(10) })!, /no photo; bio 10\/50 words/);
+  assert.match(proNoindexReason({ photo: null, bio: bio(10) }, keys)!, /no photo; bio 10\/50 words/);
   if (prev === undefined) delete process.env.NEXT_PUBLIC_MEDIA_BASE; else process.env.NEXT_PUBLIC_MEDIA_BASE = prev;
 });

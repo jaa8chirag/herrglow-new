@@ -60,7 +60,8 @@ export async function planPages(): Promise<SitePlan> {
     (servicesByPro.get(ps.proId) ?? servicesByPro.set(ps.proId, new Set()).get(ps.proId)!).add(ps.serviceId);
   }
   const pros = await prisma.pro.findMany({ where: { status: "ACTIVE" }, select: { id: true, slug: true, photo: true, bio: true } });
-  const proInfo = new Map(pros.map((p) => [p.id, { slug: p.slug, ok: proIsIndexable(p) }]));
+  const mediaKeys = new Set((await prisma.media.findMany({ select: { key: true } })).map((m) => m.key));
+  const proInfo = new Map(pros.map((p) => [p.id, { slug: p.slug, ok: proIsIndexable(p, mediaKeys) }]));
 
   const cities: CityPlan[] = [];
   for (const c of allCities.filter((x) => x.isActive)) {

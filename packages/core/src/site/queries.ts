@@ -140,7 +140,10 @@ export async function getProPage(slug: string) {
     e.areas.push(c.area.name);
     cities.set(c.area.city.slug, e);
   }
-  return { pro, services, cities: [...cities.values()] };
+  // only media that really exists in the library (and is deliverable) is shown; otherwise the UI renders a placeholder
+  const wanted = [pro.photo, ...((Array.isArray(pro.portfolio) ? pro.portfolio : []) as { path?: string }[]).map((p) => p.path)].filter((x): x is string => !!x && !/^https?:\/\//.test(x));
+  const have = (process.env.NEXT_PUBLIC_MEDIA_BASE ?? "").trim() && wanted.length ? new Set((await prisma.media.findMany({ where: { key: { in: wanted } }, select: { key: true } })).map((m) => m.key)) : new Set<string>();
+  return { pro, services, cities: [...cities.values()], realMedia: have };
 }
 
 export async function getBlogs() {

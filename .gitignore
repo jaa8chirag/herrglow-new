@@ -27,3 +27,6 @@ audit-pack.zip
 # local
 .DS_Store
 *.log
+
+# local dev uploads (production uses Cloudflare R2)
+apps/web/public/media/

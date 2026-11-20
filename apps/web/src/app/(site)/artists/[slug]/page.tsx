@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { findPage, proIsIndexable, urls } from "@herrglow/core";
+import { findPage, urls } from "@herrglow/core";
 import { Badge, Container, Section, SectionHeading } from "@herrglow/ui";
 import { BookingForm } from "@/components/BookingForm";
 import { Breadcrumbs, Html } from "@/components/parts";
@@ -22,7 +22,7 @@ export async function generateMetadata(props: PageProps<"/artists/[slug]">): Pro
   return buildMetadata({
     title: pro.seoTitle || `${pro.name}: ${pro.providerType === "MAKEOVER_ARTIST" ? "Makeup Artist" : "Beautician"}${where ? ` in ${where}` : ""}`,
     description: pro.seoDescription || `${pro.name}${pro.specialization ? `, specialising in ${pro.specialization}` : ""}${pro.experienceYears ? ` with ${pro.experienceYears}+ years of experience` : ""}. Book at home${where ? ` in ${where}` : ""}.`,
-    path: urls.pro(slug), image: mediaUrl(pro.photo), type: "profile", indexable: (page?.isIndexable ?? false) && proIsIndexable(pro),
+    path: urls.pro(slug), image: /^https?:/.test(pro.photo ?? "") ? pro.photo : null, type: "profile", indexable: page?.isIndexable ?? false,
   });
 }
 
@@ -30,8 +30,9 @@ export default async function ProPage(props: PageProps<"/artists/[slug]">) {
   const { slug } = await props.params;
   const [data, cities] = await Promise.all([getProPage(slug), getLiveCities()]);
   if (!data) notFound();
-  const { pro, services, cities: covered } = data;
-  const photo = mediaUrl(pro.photo);
+  const { pro, services, cities: covered, realMedia } = data;
+  const real = (p: string | null | undefined) => (p && (/^https?:\/\//.test(p) || realMedia.has(p)) ? mediaUrl(p) : null);
+  const photo = real(pro.photo);
   const portfolio = (Array.isArray(pro.portfolio) ? pro.portfolio : []) as { path: string; alt: string }[];
   const path = urls.pro(slug);
   const role = pro.providerType === "MAKEOVER_ARTIST" ? "Makeup Artist" : "Beautician";
@@ -65,8 +66,8 @@ export default async function ProPage(props: PageProps<"/artists/[slug]">) {
         </Container>
       </Section>
       {services.length > 0 && <Section tone="blush"><Container><SectionHeading title="Services offered" /><ul className="flex flex-wrap gap-2">{services.map((s) => <li key={s.slug}><Link href={urls.service(s.slug)} className="inline-block rounded-full border border-plum-700/20 bg-white px-4 py-2 text-sm text-plum-800 hover:bg-blush-100">{s.title}</Link></li>)}</ul></Container></Section>}
-      {portfolio.length > 0 && mediaUrl(portfolio[0]!.path) && (
-        <Section><Container><SectionHeading title="Portfolio" /><div className="grid grid-cols-2 gap-3 md:grid-cols-4">{portfolio.slice(0, 8).map((p) => <Image key={p.path} src={mediaUrl(p.path)!} alt={p.alt || `${pro.name} portfolio`} width={400} height={500} className="aspect-[4/5] w-full rounded-2xl object-cover" loading="lazy" />)}</div></Container></Section>
+      {portfolio.some((p) => real(p.path)) && (
+        <Section><Container><SectionHeading title="Portfolio" /><div className="grid grid-cols-2 gap-3 md:grid-cols-4">{portfolio.filter((p) => real(p.path)).slice(0, 8).map((p) => <Image key={p.path} src={real(p.path)!} alt={p.alt || `${pro.name} portfolio`} width={400} height={500} className="aspect-[4/5] w-full rounded-2xl object-cover" loading="lazy" />)}</div></Container></Section>
       )}
     </>
   );
