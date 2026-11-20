@@ -53,6 +53,7 @@ const warn: string[] = [];
 const d = parseDump(dumpPath, new Set([
   "services", "locations", "location_service", "blogs", "testimonials", "galleries",
   "packages", "package_service", "site_settings",
+  "beauticians", "beautician_service", "beautician_location_prices",
 ]));
 const T = (n: string): Row[] => d.get(n) ?? [];
 
@@ -60,12 +61,17 @@ const T = (n: string): Row[] => d.get(n) ?? [];
 const CATEGORY: Record<string, { slug: string; name: string; sort: number }> = {
   makeup: { slug: "makeup", name: "Makeup", sort: 1 },
   salon: { slug: "salon-at-home", name: "Salon at Home", sort: 2 },
-  facial: { slug: "salon-at-home", name: "Salon at Home", sort: 2 }, // merged: only 2 facial services
-  hair: { slug: "hair", name: "Hair", sort: 3 },
-  "nail-care-extension": { slug: "nails", name: "Nails", sort: 4 },
-  mehndi: { slug: "mehndi", name: "Mehndi", sort: 5 },
-  "pre-bridal": { slug: "pre-bridal", name: "Pre-Bridal", sort: 6 },
+  facial: { slug: "facial-skincare", name: "Facial & Skincare", sort: 3 },
+  hair: { slug: "hair", name: "Hair", sort: 4 },
+  "nail-care-extension": { slug: "nails", name: "Nails", sort: 5 },
+  mehndi: { slug: "mehndi", name: "Mehndi", sort: 6 },
+  "pre-bridal": { slug: "pre-bridal", name: "Pre-Bridal", sort: 7 },
 };
+/** Owner-approved: these legacy services move into "Facial & Skincare" (Classic Cleanup, Pigmentation Treatment Facial,
+ *  Professional Facial, Premium Glow Facial, Professional Face Cleanup). */
+const FACIAL_LEGACY_IDS = new Set([58, 59, 9, 37, 36]);
+const categoryFor = (legacyId: number, cat: unknown) =>
+  FACIAL_LEGACY_IDS.has(legacyId) ? "facial-skincare" : CATEGORY[String(cat)]?.slug ?? "makeup";
 const categories = [...new Map(Object.values(CATEGORY).map((c) => [c.slug, c])).values()];
 
 // ───────── services (+ clean slugs for city-baked ones) ─────────
@@ -88,7 +94,7 @@ const services = T("services").map((s) => {
     legacyId: Number(s.id),
     slug,
     title: rebrand(String(s.title)),
-    categoryId: CATEGORY[String(s.category)]?.slug ?? "makeup",
+    categoryId: categoryFor(Number(s.id), s.category),
     providerType: (/artist|makeover/.test(pt) ? "MAKEOVER_ARTIST" : pt === "beautician" ? "BEAUTICIAN" : "BOTH") as "BOTH",
     shortDescription: str(s.short_description),
     description: fixHtml(s.description),
@@ -134,12 +140,13 @@ const areas = T("locations").flatMap((l) => {
     citySlug,
     slug: String(l.slug),
     name: rebrand(String(l.name)),
+    sector: str(l.sector),
     zone: c.zone,
     latitude: num(l.latitude),
     longitude: num(l.longitude),
     radiusKm: num(l.service_radius_km),
     landmarks: (str(l.nearby_landmarks) ?? "").split(",").map((x) => x.trim()).filter(Boolean),
-    nearbyAreaIds: ((json(l.nearby_location_ids) as number[] | undefined) ?? []).map((i) => `area_${i}`),
+    nearbyAreaIds: ((json(l.nearby_location_ids) as number[] | undefined) ?? []).map((i) => `area_${i}`), // → AreaNearby rows
     content: fixHtml(l.content),
     faqs: json(l.faqs),
     seoTitle: str(l.seo_title),
@@ -151,6 +158,20 @@ const areas = T("locations").flatMap((l) => {
 const knownAreaIds = new Set(areas.map((a) => a.id));
 for (const a of areas) a.nearbyAreaIds = a.nearbyAreaIds.filter((i) => knownAreaIds.has(i));
 
+const nearbyRows = areas.flatMap((a) => a.nearbyAreaIds.filter((n) => n !== a.id).map((nearbyId) => ({ areaId: a.id, nearbyId })));
+const areaDataCoverage = {
+  total: areas.length,
+  withLatLng: areas.filter((a) => a.latitude != null && a.longitude != null).length,
+  withRadius: areas.filter((a) => a.radiusKm != null).length,
+  withSector: areas.filter((a) => a.sector).length,
+  withZone: areas.filter((a) => a.zone).length,
+  withLandmarks: areas.filter((a) => a.landmarks.length).length,
+  withNearby: areas.filter((a) => a.nearbyAreaIds.length).length,
+  withFaqs: areas.filter((a) => a.faqs).length,
+  withContent: areas.filter((a) => a.content).length,
+  nearbyLinks: nearbyRows.length,
+};
+
 // location_service (24k) → distinct service × city
 const svcCity = new Set<string>();
 for (const r of T("location_service")) {
@@ -158,6 +179,66 @@ for (const r of T("location_service")) {
   if (city) svcCity.add(`svc_${r.service_id}|${city}`);
 }
 const serviceCities = [...svcCity].map((k) => { const [serviceId, cityId] = k.split("|"); return { serviceId: serviceId!, cityId: cityId! }; });
+
+// ───────── pros (profiles public; contact data → ProPrivate; NO passwords/login columns are read) ─────────
+const proSlugs = new Set<string>();
+const norm = (x: string) => x.toLowerCase().replace(/[^a-z0-9]/g, "");
+const areasByName = new Map<string, string[]>();
+for (const a of areas) areasByName.set(norm(a.name), [...(areasByName.get(norm(a.name)) ?? []), a.id]);
+const serviceIds = new Set(services.map((s) => s.id));
+const pros = T("beauticians").map((b) => {
+  const base = slugify(String(b.name)) || slugify(String(b.slug));
+  let slug = base, n = 2;
+  while (proSlugs.has(slug)) slug = `${base}-${n++}`;
+  proSlugs.add(slug);
+  const pf = (json(b.portfolio_images) as unknown[] | undefined) ?? [];
+  const portfolio = pf.map((p) => (typeof p === "string" ? { path: p, alt: "" } : { path: String((p as { path?: string }).path ?? ""), alt: String((p as { alt?: string }).alt ?? "") })).filter((p) => p.path);
+  const pt = String(b.provider_type ?? "");
+  return {
+    id: `pro_${b.id}`, legacyId: Number(b.id), legacySlug: String(b.slug), slug,
+    name: rebrand(String(b.name)),
+    providerType: (pt === "makeover_artist" ? "MAKEOVER_ARTIST" : pt === "beautician" ? "BEAUTICIAN" : "BOTH") as "BOTH",
+    photo: str(b.photo), portfolio: portfolio.length ? portfolio : undefined,
+    youtubeUrls: ((json(b.youtube_urls) as string[] | undefined) ?? []).filter((u) => typeof u === "string"),
+    experienceYears: num(b.experience_years), specialization: str(b.specialization), bio: fixHtml(b.bio), basePrice: num(b.base_price),
+    dailyLeadViewLimit: Number(b.daily_lead_view_limit ?? 10), weeklyLeadViewLimit: Number(b.weekly_lead_view_limit ?? 50), monthlyLeadViewLimit: Number(b.monthly_lead_view_limit ?? 200),
+    status: (b.status === "active" ? "ACTIVE" : b.status === "pending" ? "PENDING" : "INACTIVE") as "ACTIVE",
+    seoTitle: str(b.seo_title), seoDescription: str(b.seo_description),
+  };
+});
+const proIds = new Set(pros.map((p) => p.id));
+const proPrivate = T("beauticians").map((b) => ({
+  proId: `pro_${b.id}`, phone: b.phone == null ? null : String(b.phone), email: b.email == null ? null : String(b.email),
+  addressLine: b.address_line == null ? null : String(b.address_line), landmark: b.landmark == null ? null : String(b.landmark),
+  pincode: b.pincode == null ? null : String(b.pincode), serviceAreasText: b.service_areas == null ? null : String(b.service_areas),
+  referralCode: b.referral_code == null ? null : String(b.referral_code),
+  referredById: b.referred_by_beautician_id != null && proIds.has(`pro_${b.referred_by_beautician_id}`) ? `pro_${b.referred_by_beautician_id}` : null,
+}));
+const proServices = T("beautician_service").filter((r) => proIds.has(`pro_${r.beautician_id}`) && serviceIds.has(`svc_${r.service_id}`))
+  .map((r) => ({ proId: `pro_${r.beautician_id}`, serviceId: `svc_${r.service_id}`, price: num(r.price) }));
+const coverageMap = new Map<string, { proId: string; areaId: string; price: number | null; priceLabel: string | null }>();
+for (const r of T("beautician_location_prices")) {
+  const proId = `pro_${r.beautician_id}`, areaId = `area_${r.location_id}`;
+  if (proIds.has(proId) && knownAreaIds.has(areaId)) coverageMap.set(proId + "|" + areaId, { proId, areaId, price: num(r.price), priceLabel: str(r.price_label) });
+}
+let textMatched = 0, textAmbiguous = 0, textUnmatched = 0;
+for (const b of T("beauticians")) {
+  for (const part of String(b.service_areas ?? "").split(/[,;\n]/).map((x) => x.trim()).filter(Boolean)) {
+    const hit = areasByName.get(norm(part));
+    if (!hit) { textUnmatched++; continue; }
+    if (hit.length > 1) { textAmbiguous++; continue; }
+    const k = `pro_${b.id}|${hit[0]}`;
+    if (!coverageMap.has(k)) { coverageMap.set(k, { proId: `pro_${b.id}`, areaId: hit[0]!, price: null, priceLabel: null }); textMatched++; }
+  }
+}
+const coverage = [...coverageMap.values()];
+const activeNoCoverage = pros.filter((p) => p.status === "ACTIVE" && !coverage.some((c) => c.proId === p.id)).map((p) => p.name);
+const proReport = {
+  total: pros.length, active: pros.filter((p) => p.status === "ACTIVE").length,
+  services: proServices.length, coverageRows: coverage.length, coverageFromServiceAreasText: textMatched,
+  serviceAreasTextAmbiguous: textAmbiguous, serviceAreasTextUnmatched: textUnmatched,
+  activeWithoutCoverage: activeNoCoverage,
+};
 
 // ───────── content ─────────
 const blogs = T("blogs").map((b) => {
@@ -212,9 +293,10 @@ Object.assign(report, {
     categories: categories.length, services: services.length, cities: cities.size, areas: areas.length,
     serviceCities: `${serviceCities.length} (from ${T("location_service").length} location_service rows)`,
     blogs: blogs.length, testimonials: testimonials.length, gallery: gallery.length,
-    packages: packages.length, settings: settings.length, redirects: redirects.length,
+    pros: pros.length, packages: packages.length, settings: settings.length, redirects: redirects.length,
   },
   citiesByAreaCount: Object.fromEntries([...cities.keys()].map((c) => [c, areas.filter((a) => a.citySlug === c).length])),
+  areaDataCoverage, pros: proReport,
   unmappedLocations: unmapped,
   redirects, skippedSettings, warnings: warn,
 });
@@ -233,7 +315,12 @@ await prisma.$transaction(async (tx) => {
     const { categoryId, ...rest } = s;
     await tx.service.upsert({ where: { id: s.id }, update: { ...rest, category: { connect: { slug: categoryId } } } as never, create: { ...rest, categoryId } as never });
   }
-  for (const a of areas) await tx.area.upsert({ where: { id: a.id }, update: a as never, create: a as never });
+  for (const { nearbyAreaIds: _n, ...a } of areas) await tx.area.upsert({ where: { id: a.id }, update: a as never, create: a as never });
+  for (const part of chunk(nearbyRows)) await tx.areaNearby.createMany({ data: part, skipDuplicates: true });
+  for (const p of pros) await tx.pro.upsert({ where: { id: p.id }, update: p as never, create: p as never });
+  for (const p of proPrivate) await tx.proPrivate.upsert({ where: { proId: p.proId }, update: p, create: p });
+  await tx.proService.createMany({ data: proServices, skipDuplicates: true });
+  await tx.proCoverage.createMany({ data: coverage, skipDuplicates: true });
   for (const part of chunk(serviceCities)) await tx.serviceCity.createMany({ data: part, skipDuplicates: true });
   for (const b of blogs) await tx.blog.upsert({ where: { slug: b.slug }, update: b, create: b });
   for (const p of packages) await tx.package.upsert({ where: { id: p.id }, update: p as never, create: p as never });

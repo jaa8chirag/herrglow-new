@@ -150,10 +150,10 @@ model Area {
   latitude      Decimal? @db.Decimal(10, 7)
   longitude     Decimal? @db.Decimal(10, 7)
   radiusKm      Decimal? @db.Decimal(5, 2)
+  sector        String?
   zone          String?
   pincodes      String[]
   landmarks     String[]
-  nearbyAreaIds String[]
   content       String?
   faqs          Json?
   seoTitle      String?
@@ -161,6 +161,17 @@ model Area {
   showOnHome    Boolean @default(false)
   status        Status  @default(ACTIVE)
   coverage      ProCoverage[]
+  nearby        AreaNearby[] @relation("from")
+  nearbyOf      AreaNearby[] @relation("to")
+}
+
+/// Directional "nearby areas" (legacy nearby_location_ids)
+model AreaNearby {
+  areaId   String
+  nearbyId String
+  area     Area @relation("from", fields: [areaId], references: [id], onDelete: Cascade)
+  nearby   Area @relation("to", fields: [nearbyId], references: [id], onDelete: Cascade)
+  @@id([areaId, nearbyId])
 }
 
 /// Replaces legacy location_service (24k rows): availability + price per service per CITY.
@@ -179,34 +190,45 @@ model ServiceCity {
 model Pro {
   id            String  @id @default(cuid())
   legacyId      Int?    @unique
+  legacySlug    String?
   slug          String  @unique
   name          String
   providerType  ProviderType @default(BOTH)
-  phone         String?
-  email         String?
-  referralCode  String? @unique
-  referredById  String?
   photo         String?
-  portfolio     String[]
+  /// [{ path, alt }]
+  portfolio     Json?
   youtubeUrls   String[]
   experienceYears Int?
   specialization  String?
   bio           String?
   basePrice     Decimal? @db.Decimal(10, 2)
-  addressLine   String?
-  pincode       String?
   dailyLeadViewLimit   Int @default(10)
   weeklyLeadViewLimit  Int @default(50)
   monthlyLeadViewLimit Int @default(200)
-  loginEnabled  Boolean @default(false)
   status        ProStatus @default(PENDING)
   seoTitle      String?
   seoDescription String?
   createdAt     DateTime @default(now())
 
+  /// PRIVATE: never include in public pages or the public API. Only admin/core-internal code may touch this relation.
+  private   ProPrivate?
   services  ProService[]
   coverage  ProCoverage[]
   leads     Lead[]
+}
+
+/// Contact + internal data, deliberately a separate table so a public query can never return it by accident.
+model ProPrivate {
+  proId        String  @id
+  pro          Pro     @relation(fields: [proId], references: [id], onDelete: Cascade)
+  phone        String?
+  email        String?
+  addressLine  String?
+  landmark     String?
+  pincode      String?
+  serviceAreasText String?
+  referralCode String? @unique
+  referredById String?
 }
 
 model ProService {
