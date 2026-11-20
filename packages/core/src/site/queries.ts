@@ -171,3 +171,13 @@ export async function getRelatedBlogs(text: string, excludeSlug: string | null, 
 export async function getTestimonials(n = 5) {
   return prisma.testimonial.findMany({ where: { status: "ACTIVE" }, orderBy: { sort: "asc" }, take: n });
 }
+
+/** Mega-menu data: per category its top services (by enquiries), plus a virtual "Bridal" group. */
+export async function getMegaMenu() {
+  const pick = { slug: true, title: true, image: true, imageAlt: true, price: true, offerPrice: true } as const;
+  const [cats, bridal] = await Promise.all([
+    prisma.category.findMany({ orderBy: { sort: "asc" }, include: { services: { where: liveService, orderBy: [{ leadCount: "desc" }, { sort: "asc" }], take: 5, select: pick } } }),
+    prisma.service.findMany({ where: { ...liveService, title: { contains: "bridal", mode: "insensitive" } }, orderBy: [{ leadCount: "desc" }, { sort: "asc" }], take: 5, select: pick }),
+  ]);
+  return { categories: cats.filter((c) => c.services.length).map((c) => ({ slug: c.slug, name: c.name, services: c.services })), bridal };
+}

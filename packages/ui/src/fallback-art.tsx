@@ -35,3 +35,6 @@ export function FallbackArt({ kind = "makeup", seed = 0, className }: { kind?: s
 
 /** Stable small integer from a string, so each card keeps the same gradient across renders. */
 export const seedOf = (s: string) => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) | 0, 7);
+
+/** Line icon for a category slug (mega menu, footer). */
+export const categoryIcon = (kind: string): LucideIcon => ICONS[kind] ?? Sparkles;

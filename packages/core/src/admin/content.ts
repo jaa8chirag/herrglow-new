@@ -67,7 +67,7 @@ export async function suggestBlogLinks(html: string) {
 }
 
 /* ───────────── Settings ───────────── */
-export interface SettingField { key: string; label: string; hint?: string; type?: "text" | "textarea" | "bool" | "phone" | "email" | "percent" }
+export interface SettingField { key: string; label: string; hint?: string; type?: "text" | "textarea" | "bool" | "phone" | "email" | "percent" | "url" }
 export const SETTING_GROUPS: { title: string; fields: SettingField[] }[] = [
   {
     title: "Business & contact",
@@ -77,6 +77,14 @@ export const SETTING_GROUPS: { title: string; fields: SettingField[] }[] = [
       { key: "whatsapp_number", label: "WhatsApp number", type: "phone", hint: "10-digit Indian number or with country code. Empty hides ALL WhatsApp buttons" },
       { key: "contact_phone", label: "Call number", type: "phone", hint: "empty hides call buttons. When set it is also published as the business telephone in structured data" },
       { key: "whatsapp_prefill_text", label: "WhatsApp pre-filled message", type: "textarea" },
+    ],
+  },
+  {
+    title: "Social links",
+    fields: [
+      { key: "social_instagram", label: "Instagram URL", type: "url", hint: "shown in the footer and in structured data (sameAs). Empty hides" },
+      { key: "social_facebook", label: "Facebook URL", type: "url" },
+      { key: "social_youtube", label: "YouTube URL", type: "url" },
     ],
   },
   {
@@ -105,6 +113,7 @@ export async function saveSettings(values: Record<string, string>): Promise<Sett
     let v = (values[f.key] ?? "").trim();
     if (f.type === "bool") v = values[f.key] === "1" ? "1" : "0";
     if (f.type === "phone" && v) { const d = v.replace(/[^\d+]/g, ""); if (!/^\+?\d{10,13}$/.test(d)) errors[f.key] = "Enter a valid phone number (10 to 13 digits)"; else v = d; }
+    if (f.type === "url" && v && !/^https:\/\/\S+\.\S+$/.test(v)) errors[f.key] = "Enter a full link starting with https://";
     if (f.type === "email" && v && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) errors[f.key] = "Enter a valid email address";
     if (f.key === "site_name" && !v) errors[f.key] = "Business name is required";
     clean[f.key] = v || null;

@@ -504,3 +504,10 @@ model NotificationLog {
   createdAt DateTime @default(now())
   @@unique([kind, refId, channel])
 }
+
+/// Footer "beauty tips" email signups
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
