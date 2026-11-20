@@ -1,15 +1,11 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import { getBlogs, getPopularServices, getTestimonials } from "@herrglow/core";
-import { Badge, ButtonLink, Card, Container, Reveal, RevealItem, RevealList, Section, SectionHeading } from "@herrglow/ui";
-import { BookingForm } from "@/components/BookingForm";
-import { ServiceCard } from "@/components/parts";
-import { getCategories, getLiveCities, getSettings } from "@/lib/data";
-import { JsonLd, organizationLd, websiteLd } from "@/lib/seo/jsonld";
+import { getBlogs, getHomeExtras, getPopularServices, getTestimonials } from "@herrglow/core";
+import { ArtistsCarousel, BlogCards, BrandMarquee, CategoryBento, CityCards, FaqSection, FinalCta, HowItWorks, LooksSection, PackagesBand, PopularSlider, ReviewsMarquee, StatsBand } from "@/components/home/sections";
+import { HeroSection } from "@/components/home/HeroSection";
+import { getCategories, getLiveCities, getMediaKeys, getMegaMenu, getSettings } from "@/lib/data";
+import { JsonLd, faqLd, organizationLd, websiteLd } from "@/lib/seo/jsonld";
 import { buildMetadata } from "@/lib/seo/metadata";
-import { whatsappLink } from "@/lib/whatsapp";
-
-export const revalidate = 600;
+import { realImage } from "@/lib/media";
 
 export const metadata: Metadata = buildMetadata({
   title: "Makeup Artist & Salon at Home in Delhi NCR",
@@ -17,133 +13,72 @@ export const metadata: Metadata = buildMetadata({
   path: "/",
 });
 
-const STEPS = [
-  ["Choose a service", "Pick from bridal, party, facial, nails and more, with transparent prices."],
-  ["Tell us where and when", "Share your area and date. We confirm that an artist covers your location."],
-  ["Relax at home", "A verified artist arrives with a clean, complete kit and does the rest."],
-];
+const num = (v: unknown) => (v == null ? null : Number(v));
+const lowest = (...vals: unknown[]) => { const n = vals.map((v) => (v == null ? NaN : Number(v))).filter((x) => x > 0); return n.length ? Math.min(...n) : null; };
 
 export default async function HomePage() {
-  const [s, categories, cities, popular, testimonials, blogs] = await Promise.all([
-    getSettings(), getCategories(), getLiveCities(), getPopularServices(6), getTestimonials(5), getBlogs(),
+  const [s, categories, cities, popular, testimonials, blogs, extras, mega, keys] = await Promise.all([
+    getSettings(), getCategories(), getLiveCities(), getPopularServices(10), getTestimonials(10), getBlogs(), getHomeExtras(), getMegaMenu(), getMediaKeys(),
   ]);
-  const wa = whatsappLink(s.whatsappNumber, s.raw.whatsapp_prefill_text ?? undefined);
+  const img = (p: string | null | undefined) => realImage(keys, p);
+
+  // category tiles: photo of the category's top service (real only)
+  const catTiles = categories.map((c) => ({ slug: c.slug, name: c.name, count: c._count.services, image: img(mega.categories.find((m) => m.slug === c.slug)?.services[0]?.image) }));
+
+  // popular slider
+  const slides = popular.map((p) => ({
+    slug: p.slug, title: p.title, image: img(p.image), alt: p.imageAlt || p.title, price: num(p.price), offerPrice: num(p.offerPrice), duration: p.duration,
+    category: p.category.name, categorySlug: p.category.slug, popular: p.leadCount >= 5, from: p.priceLabel === "Starting at",
+  }));
+
+  // packages (bundle services). The flagship bridal bundle leads and carries the "most popular" badge.
+  const FLAGSHIP = "complete-bridal-package";
+  const pkgs = [...extras.packages].sort((a, b) => (b.slug === FLAGSHIP ? 1 : 0) - (a.slug === FLAGSHIP ? 1 : 0) || b.leadCount - a.leadCount).slice(0, 4).map((p) => ({
+    slug: p.slug, title: p.title, image: img(p.image), price: num(p.price), offerPrice: lowest(p.offerPrice, ...p.variants.map((v) => v.offerPrice)) ?? num(p.offerPrice),
+    included: (p.features ?? "").split(/\r?\n|;|•/).map((x) => x.trim()).filter(Boolean), popular: p.slug === FLAGSHIP, href: `/services/${p.slug}`,
+  }));
+
+  // looks / before-after: only REAL images. A before/after slider needs images an admin has explicitly paired ("Before: X" + "After: X").
+  const gallery = extras.gallery.map((g) => ({ title: g.title, src: img(g.mediaPath), alt: g.alt || g.title })).filter((g): g is { title: string; src: string; alt: string } => !!g.src);
+  const before = gallery.find((g) => /^before\s*:/i.test(g.title));
+  const after = before ? gallery.find((g) => /^after\s*:/i.test(g.title) && g.title.replace(/^after\s*:\s*/i, "") === before.title.replace(/^before\s*:\s*/i, "")) : undefined;
+  const pair = before && after ? { before: before.src, after: after.src, alt: before.title.replace(/^before\s*:\s*/i, "") } : null;
+  const looks = gallery.filter((g) => !/^(before|after)\s*:/i.test(g.title));
+
+  // hero stack: real photos only (gallery first, then service photos)
+  const heroImages = [...looks.map((g) => ({ src: g.src, alt: g.alt })), ...slides.filter((x) => x.image).map((x) => ({ src: x.image!, alt: x.alt }))].slice(0, 3);
+
+  // artists: real photos first, then most experienced
+  const artists = extras.pros
+    .map((p) => ({ slug: p.slug, name: p.name, photo: img(p.photo), specialization: p.specialization, years: p.experienceYears, city: p.city, linked: extras.proPageSlugs.has(p.slug), kind: p.providerType === "MAKEOVER_ARTIST" ? "Makeup artist" : "Beautician" }))
+    .sort((a, b) => Number(!!b.photo) - Number(!!a.photo) || (b.years ?? 0) - (a.years ?? 0)).slice(0, 10);
+
+  const cityNames = cities.map((c) => c.name);
+  const faqs = [
+    { question: "How does booking work?", answer: "Choose a service, tell us your area and preferred date, and we confirm that an artist covers your location. We then contact you to finalise the details." },
+    { question: "Which areas do you serve?", answer: cityNames.length ? `We currently serve ${cityNames.join(", ")}. Enter your area while booking to confirm coverage.` : "We are expanding across Delhi NCR. Send us your area and we will confirm." },
+    { question: "Can I choose a specific artist?", answer: "Yes. You can request an artist from their profile page and we will confirm their availability for your date." },
+    { question: "Are the prices final?", answer: "Prices shown are starting prices for each option. The final price is confirmed with you before your booking is finalised." },
+    { question: "What if my area is not covered yet?", answer: "Send your request anyway. We save it, and we will let you know as soon as artists are available near you." },
+  ];
+
   return (
     <>
-      <JsonLd data={[organizationLd({ email: s.contactEmail, telephone: s.contactPhone ?? s.whatsappNumber, areaServed: cities.map((c) => c.name) }), websiteLd()]} />
-
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-linear-to-b from-blush-100 via-blush-50 to-ivory">
-        <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 size-96 rounded-full bg-gold-300/25 blur-3xl" />
-        <Container className="grid items-center gap-10 py-14 sm:py-20 lg:grid-cols-[1.15fr_0.85fr]">
-          <Reveal>
-            <Badge tone="gold">Makeup and salon, at your home</Badge>
-            <h1 className="mt-5">Look and feel your best, without leaving home.</h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-soft">Verified makeup artists and beauticians for bridal, party and everyday glam across {cities.length ? cities.map((c) => c.name).join(", ") : "Delhi NCR"}. Clear prices, your schedule.</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="#book" size="lg">Book now</ButtonLink>
-              <ButtonLink href={categories[0] ? `/${categories[0].slug}` : "#services"} variant="outline" size="lg">Explore services</ButtonLink>
-              {wa && <ButtonLink href={wa} variant="whatsapp" size="lg">WhatsApp us</ButtonLink>}
-            </div>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <BookingForm cities={cities} sourcePath="/" heading="Book your appointment" enquiry />
-          </Reveal>
-        </Container>
-      </section>
-
-      {/* Categories */}
-      <Section id="services">
-        <Container>
-          <SectionHeading eyebrow="What we do" title="Beauty services, delivered to your door" />
-          <RevealList className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {categories.map((c) => (
-              <RevealItem key={c.slug}>
-                <Link href={`/${c.slug}`} className="group block h-full">
-                  <Card className="flex h-full flex-col justify-between p-6 transition-transform duration-300 group-hover:-translate-y-1">
-                    <h3 className="group-hover:text-rose-700">{c.name}</h3>
-                    <p className="mt-6 text-sm text-ink-soft">{c._count.services} services <span aria-hidden className="text-rose-600">→</span></p>
-                  </Card>
-                </Link>
-              </RevealItem>
-            ))}
-          </RevealList>
-        </Container>
-      </Section>
-
-      {/* Popular */}
-      <Section tone="blush">
-        <Container>
-          <SectionHeading eyebrow="Most requested" title="Popular services" intro="What customers book most." />
-          <RevealList className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {popular.map((p) => <RevealItem key={p.id}><ServiceCard s={{ ...p, category: p.category }} /></RevealItem>)}
-          </RevealList>
-        </Container>
-      </Section>
-
-      {/* How it works */}
-      <Section>
-        <Container>
-          <SectionHeading eyebrow="How it works" title="Three simple steps" align="center" />
-          <RevealList className="grid gap-6 md:grid-cols-3">
-            {STEPS.map(([t, d], i) => (
-              <RevealItem key={t}>
-                <div className="text-center">
-                  <span className="mx-auto grid size-12 place-items-center rounded-full bg-plum-700 font-serif text-xl text-ivory">{i + 1}</span>
-                  <h3 className="mt-4">{t}</h3>
-                  <p className="mt-2 text-ink-soft">{d}</p>
-                </div>
-              </RevealItem>
-            ))}
-          </RevealList>
-        </Container>
-      </Section>
-
-      {/* Cities */}
-      {cities.length > 0 && (
-        <Section tone="deep">
-          <Container>
-            <SectionHeading eyebrow="Where we are" title="Serving Delhi NCR" intro="Choose your city to see local artists and areas." />
-            <div className="flex flex-wrap gap-3">
-              {cities.map((c) => <ButtonLink key={c.slug} href={`/makeup-artist-in-${c.slug}`} variant="outline" className="border-gold-300/50 text-ivory hover:bg-white/10">Makeup artist in {c.name}</ButtonLink>)}
-            </div>
-          </Container>
-        </Section>
-      )}
-
-      {/* Real reviews (shown as reviews; no aggregateRating markup) */}
-      {testimonials.length > 0 && (
-        <Section>
-          <Container>
-            <SectionHeading eyebrow="Reviews" title="What customers say" />
-            <RevealList className="grid gap-5 md:grid-cols-3">
-              {testimonials.slice(0, 3).map((t) => (
-                <RevealItem key={t.id}>
-                  <Card className="h-full p-6">
-                    <p aria-label={`${t.rating} out of 5`} className="text-gold-500">{"★".repeat(t.rating)}</p>
-                    <p className="mt-3 leading-relaxed text-ink-soft">{t.review}</p>
-                    <p className="mt-4 text-sm font-medium text-plum-800">{t.name}{t.location ? `, ${t.location}` : ""}</p>
-                  </Card>
-                </RevealItem>
-              ))}
-            </RevealList>
-          </Container>
-        </Section>
-      )}
-
-      {/* Blog */}
-      {blogs.length > 0 && (
-        <Section tone="blush">
-          <Container>
-            <SectionHeading eyebrow="Journal" title="Beauty guides" />
-            <div className="grid gap-5 md:grid-cols-3">
-              {blogs.slice(0, 3).map((b) => (
-                <Link key={b.slug} href={`/blog/${b.slug}`} className="group block"><Card className="h-full p-6"><h3 className="group-hover:text-rose-700">{b.title}</h3>{b.excerpt && <p className="mt-2 line-clamp-3 text-sm text-ink-soft">{b.excerpt}</p>}</Card></Link>
-              ))}
-            </div>
-          </Container>
-        </Section>
-      )}
+      <JsonLd data={[organizationLd({ email: s.contactEmail, telephone: s.contactPhone ?? s.whatsappNumber, areaServed: cityNames, logo: img(s.raw.site_logo), sameAs: [s.raw.social_instagram, s.raw.social_facebook, s.raw.social_youtube].filter((x): x is string => !!x) }), websiteLd(), faqLd(faqs)!]} />
+      <HeroSection cityNames={cityNames} stats={{ artists: extras.stats.artists, cities: extras.stats.cities }} reviews={extras.reviews} images={heroImages} />
+      <BrandMarquee />
+      <CategoryBento cats={catTiles} />
+      <PopularSlider items={slides} />
+      <PackagesBand items={pkgs} />
+      <HowItWorks />
+      <LooksSection pair={pair} looks={looks} />
+      <ArtistsCarousel artists={artists} />
+      <StatsBand stats={extras.stats} />
+      <ReviewsMarquee reviews={testimonials} />
+      <CityCards cities={extras.perCity} />
+      <BlogCards posts={blogs.slice(0, 3).map((b) => ({ slug: b.slug, title: b.title, excerpt: b.excerpt, image: img(b.image), date: b.publishedAt }))} />
+      <FaqSection faqs={faqs} />
+      <FinalCta cities={cities} />
     </>
   );
 }

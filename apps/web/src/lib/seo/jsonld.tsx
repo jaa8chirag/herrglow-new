@@ -11,6 +11,8 @@ const compact = (o: Json): Json => Object.fromEntries(Object.entries(o).filter((
 
 export interface OrgInput {
   email?: string | null;
+  /** absolute or site-relative URL of a REAL uploaded logo; omitted when none exists */
+  logo?: string | null;
   /** omitted from output when empty (no number configured) */
   telephone?: string | null;
   areaServed?: string[];
@@ -25,7 +27,7 @@ export const organizationLd = (o: OrgInput = {}): Json =>
     "@id": `${SITE_URL}/#business`,
     name: SITE_NAME,
     url: SITE_URL,
-    logo: abs("/logo.png"),
+    logo: o.logo ? (o.logo.startsWith("http") ? o.logo : abs(o.logo)) : undefined,
     email: o.email,
     telephone: o.telephone,
     priceRange: "₹₹",

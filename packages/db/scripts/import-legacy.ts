@@ -111,6 +111,7 @@ const servicesBase = T("services").map((s) => {
     seoDescription: str(s.seo_description),
     faqs: json(s.faqs),
     featured: s.featured === 1,
+    isPackage: ["complete-bridal-package", "multi-function-wedding-makeup-package", "group-makeup-package-for-3", "essential-glow-pre-bridal", "luxury-ultra-radiance-pre-bridal", "pre-bridal-haldi-mehndi-glow"].includes(slug),
     sort: Number(s.display_order ?? 0),
     status: status(s.status),
     leadCount: 0,

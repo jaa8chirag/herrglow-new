@@ -34,7 +34,7 @@ for (const [label, vp] of [["mobile", { width: 390, height: 844 }], ["desktop", 
   const page = await ctx.newPage();
   for (const p of list) {
     await page.goto(BASE + p, { waitUntil: "networkidle", timeout: 120_000 }).catch(() => page.goto(BASE + p, { waitUntil: "load", timeout: 120_000 }));
-    await settle(page);
+    for (let i = 0; i < 3; i++) { try { await page.waitForLoadState("load"); await settle(page); break; } catch { await page.waitForTimeout(1500); } } // dev HMR can reload the page mid-scroll
     await page.screenshot({ path: `${dir}/${nameOf(p)}-${label}.png`, fullPage: true });
     console.log(`✓ ${label.padEnd(7)} ${p}`);
   }

@@ -14,3 +14,4 @@ export const getProPage = cache(core.getProPage);
 export const getBlog = cache(core.getBlog);
 export const findPage = cache(core.findPage);
 export const getMediaKeys = cache(core.mediaKeySet);
+export const getMegaMenu = cache(core.getMegaMenu);

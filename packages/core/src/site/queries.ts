@@ -181,3 +181,35 @@ export async function getMegaMenu() {
   ]);
   return { categories: cats.filter((c) => c.services.length).map((c) => ({ slug: c.slug, name: c.name, services: c.services })), bridal };
 }
+
+/** Extra data for the home page: honest stats (counts of real things), artists, packages, gallery, city cards. */
+export async function getHomeExtras() {
+  const liveCityRows = await getLiveCities();
+  const citySlugs = liveCityRows.map((c) => c.slug);
+  const [cov, services, packages, gallery, areaCoverage, tAgg] = await Promise.all([
+    prisma.proCoverage.findMany({ where: { pro: { status: "ACTIVE" }, area: { citySlug: { in: citySlugs }, status: "ACTIVE" } }, select: { proId: true, areaId: true, area: { select: { citySlug: true } } } }),
+    prisma.service.count({ where: liveService }),
+    prisma.service.findMany({ where: { ...liveService, isPackage: true }, orderBy: [{ leadCount: "desc" }, { sort: "asc" }], select: { id: true, slug: true, title: true, shortDescription: true, price: true, offerPrice: true, duration: true, image: true, imageAlt: true, features: true, leadCount: true, variants: { select: { price: true, offerPrice: true } } } }),
+    prisma.galleryItem.findMany({ where: { status: "ACTIVE", mediaType: "IMAGE", mediaPath: { not: null } }, orderBy: { sort: "asc" }, select: { id: true, title: true, mediaPath: true, alt: true, category: true } }),
+    prisma.area.count({ where: { citySlug: { in: citySlugs }, status: "ACTIVE", coverage: { some: { pro: { status: "ACTIVE" } } } } }),
+    prisma.testimonial.aggregate({ where: { status: "ACTIVE" }, _avg: { rating: true }, _count: true }),
+  ]);
+  const proIds = [...new Set(cov.map((c) => c.proId))];
+  const cityOfPro = new Map<string, string>();
+  for (const c of cov) if (!cityOfPro.has(c.proId)) cityOfPro.set(c.proId, c.area.citySlug);
+  const pros = await prisma.pro.findMany({ where: { id: { in: proIds } }, select: { ...publicProSelect }, orderBy: [{ experienceYears: "desc" }] });
+  const proPages = await prisma.page.findMany({ where: { type: "PRO" }, select: { entityId: true } });
+  const cityName = new Map(liveCityRows.map((c) => [c.slug, c.name]));
+  const perCity = citySlugs.map((slug) => ({
+    slug, name: cityName.get(slug)!,
+    artists: new Set(cov.filter((c) => c.area.citySlug === slug).map((c) => c.proId)).size,
+    areas: new Set(cov.filter((c) => c.area.citySlug === slug).map((c) => c.areaId)).size,
+  }));
+  return {
+    stats: { artists: proIds.length, services, areas: areaCoverage, cities: citySlugs.length },
+    pros: pros.map((p) => ({ ...p, city: cityName.get(cityOfPro.get(p.id) ?? "") ?? null })),
+    proPageSlugs: new Set(proPages.map((p) => p.entityId!)),
+    packages, gallery, perCity,
+    reviews: { avg: tAgg._avg.rating ? Math.round(tAgg._avg.rating * 10) / 10 : null, count: tAgg._count },
+  };
+}

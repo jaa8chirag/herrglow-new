@@ -1,10 +1,10 @@
-import { getMegaMenu, getPopularServices } from "@herrglow/core";
+import { getPopularServices } from "@herrglow/core";
 import { SmoothScroll, Toaster } from "@herrglow/ui";
 import { AnnouncementBar } from "@/components/chrome/AnnouncementBar";
 import { SiteFooter } from "@/components/chrome/SiteFooter";
 import { SiteHeader, type MenuCat } from "@/components/chrome/SiteHeader";
 import { StickyDock } from "@/components/chrome/StickyDock";
-import { getCategories, getLiveCities, getMediaKeys, getSettings } from "@/lib/data";
+import { getCategories, getLiveCities, getMediaKeys, getMegaMenu, getSettings } from "@/lib/data";
 import { realImage } from "@/lib/media";
 
 // Rendered per request (Cloudflare caches the HTML at the edge). This keeps `next build` independent of the database,
