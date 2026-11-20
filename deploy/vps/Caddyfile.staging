@@ -1,0 +1,16 @@
+# Staging: password-protected AND noindex at the proxy, on top of ALLOW_INDEXING=false in the app.
+# Create the password hash with:  docker run --rm caddy:2 caddy hash-password --plaintext 'your-password'
+{$DOMAIN} {
+	encode zstd gzip
+
+	basic_auth {
+		{$STAGING_USER} {$STAGING_PASSWORD_HASH}
+	}
+
+	header {
+		X-Robots-Tag "noindex, nofollow, noarchive"
+		-Server
+	}
+
+	reverse_proxy web:3000
+}

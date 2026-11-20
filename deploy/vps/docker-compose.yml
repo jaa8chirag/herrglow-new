@@ -1,0 +1,93 @@
+# HerrGlow on a single Ubuntu VPS.   cd /opt/herrglow && docker compose up -d --build
+# Staging and production are two copies of this folder (different .env, DOMAIN and project name):
+#   /opt/herrglow-staging   (COMPOSE_PROJECT_NAME=herrglow-staging, CADDYFILE=./Caddyfile.staging)
+#   /opt/herrglow           (COMPOSE_PROJECT_NAME=herrglow,         CADDYFILE=./Caddyfile)
+name: ${COMPOSE_PROJECT_NAME:-herrglow}
+
+x-app-env: &app-env
+  env_file: .env
+  environment:
+    DATABASE_URL: postgresql://herrglow:${POSTGRES_PASSWORD}@postgres:5432/herrglow
+    REDIS_URL: redis://redis:6379
+    AUTH_TRUST_HOST: "true"
+
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: herrglow
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: herrglow
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U herrglow -d herrglow"]
+      interval: 10s
+      retries: 10
+    # no published ports: only reachable from this compose network
+
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: ["redisdata:/data"]
+    healthcheck: { test: ["CMD", "redis-cli", "ping"], interval: 10s, retries: 10 }
+
+  # one-shot: applies pending Prisma migrations before web/worker start
+  migrate:
+    build: { context: ../.., dockerfile: deploy/docker/Dockerfile, target: worker }
+    <<: *app-env
+    command: ["pnpm", "--filter", "@herrglow/db", "exec", "prisma", "migrate", "deploy"]
+    depends_on: { postgres: { condition: service_healthy } }
+    restart: "no"
+
+  web:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile
+      target: web
+      args:
+        NEXT_PUBLIC_CF_RESIZING: "${NEXT_PUBLIC_CF_RESIZING:-false}"
+        DEPLOY_ENV: "${DEPLOY_ENV:-}"
+        ALLOW_INDEXING: "${ALLOW_INDEXING:-}"
+    <<: *app-env
+    restart: unless-stopped
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+
+  worker:
+    build: { context: ../.., dockerfile: deploy/docker/Dockerfile, target: worker }
+    <<: *app-env
+    restart: unless-stopped
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN}
+      STAGING_USER: ${STAGING_USER:-}
+      STAGING_PASSWORD_HASH: ${STAGING_PASSWORD_HASH:-}
+    volumes:
+      - ${CADDYFILE:-./Caddyfile}:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [web]
+
+  # on demand / cron:  docker compose --profile tools run --rm backup
+  backup:
+    profiles: ["tools"]
+    build: { context: ., dockerfile: Dockerfile.backup }
+    env_file: .env
+    environment: { PGHOST: postgres, PGUSER: herrglow, PGPASSWORD: "${POSTGRES_PASSWORD}", PGDATABASE: herrglow }
+    depends_on: { postgres: { condition: service_healthy } }
+
+volumes:
+  pgdata:
+  redisdata:
+  caddy_data:
+  caddy_config:

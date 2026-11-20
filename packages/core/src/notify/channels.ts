@@ -7,7 +7,7 @@ import nodemailer from "nodemailer";
 export type ChannelResult = { status: "SENT" | "SKIPPED"; detail?: string };
 
 const env = (k: string) => (process.env[k] ?? "").trim();
-export const siteUrl = () => (env("NEXT_PUBLIC_SITE_URL") || "https://herrglow.com").replace(/\/$/, "");
+export const siteUrl = () => (env("SITE_URL") || env("NEXT_PUBLIC_SITE_URL") || "https://herrglow.com").replace(/\/$/, "");
 export const adminLeadUrl = (id: string) => `${siteUrl()}/admin/leads/${id}`;
 
 /* ───────── Email (SMTP). EMAIL_TRANSPORT=console logs instead of sending (dev). ───────── */

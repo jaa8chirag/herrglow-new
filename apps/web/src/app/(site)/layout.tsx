@@ -1,6 +1,10 @@
 import { SiteFooter, SiteHeader, StickyBar } from "@/components/chrome";
 import { getCategories, getLiveCities, getSettings } from "@/lib/data";
 
+// Rendered per request (Cloudflare caches the HTML at the edge). This keeps `next build` independent of the database,
+// so the same build works in Docker, Vercel and CI.
+export const dynamic = "force-dynamic";
+
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const [categories, cities, s] = await Promise.all([getCategories(), getLiveCities(), getSettings()]);
   const common = { categories, cities, siteName: s.siteName, whatsapp: s.whatsappNumber, phone: s.contactPhone, waText: s.raw.whatsapp_prefill_text };

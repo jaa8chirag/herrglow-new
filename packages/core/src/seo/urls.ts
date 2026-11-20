@@ -20,5 +20,5 @@ export const urls = {
   terms: () => "/terms",
 } as const;
 
-export const absoluteUrl = (path: string, base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://herrglow.com") =>
+export const absoluteUrl = (path: string, base = process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "https://herrglow.com") =>
   base.replace(/\/$/, "") + path;

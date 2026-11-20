@@ -8,7 +8,7 @@ export const MIN_PRO_BIO_WORDS = 50;
 const wordCount = (html: string | null | undefined) => (html ? html.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length : 0);
 
 /** Media delivery is "configured" once the public base URL (R2 domain, or /media in dev) is set. */
-export const mediaConfigured = () => !!(process.env.NEXT_PUBLIC_MEDIA_BASE ?? "").trim();
+export const mediaConfigured = () => !!(process.env.MEDIA_BASE ?? process.env.NEXT_PUBLIC_MEDIA_BASE ?? "").trim();
 
 export const hasRealPhoto = (photo: string | null | undefined, mediaKeys?: ReadonlySet<string>) =>
   !!photo && (/^https?:\/\//.test(photo) || (mediaConfigured() && !!mediaKeys?.has(photo)));

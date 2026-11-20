@@ -1,0 +1,15 @@
+.git
+**/node_modules
+**/.next
+**/dist
+apps/web/public/media
+infra/import
+audit-pack
+*.sql
+*.sql.gz
+.env
+.env.*
+!.env.example
+docs
+deploy
+*.log

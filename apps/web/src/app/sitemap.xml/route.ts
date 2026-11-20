@@ -2,7 +2,7 @@ import { prisma } from "@herrglow/db";
 import { SITE_URL } from "@/lib/site";
 import { SITEMAPS, XML_HEADERS } from "@/lib/seo/sitemaps";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 /** Sitemap INDEX, served directly at /sitemap.xml (no redirect). Lists only child sitemaps that contain URLs. */
 export async function GET() {

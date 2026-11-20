@@ -2,7 +2,7 @@ import { prisma } from "@herrglow/db";
 import { SITE_URL } from "@/lib/site";
 import { SITEMAPS, XML_HEADERS, xmlEscape } from "@/lib/seo/sitemaps";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 /** /sitemaps/{pages|services|areas|artists|blogs}.xml, generated from the Page model (indexable + inSitemap, real lastmod). */
 export async function GET(_req: Request, ctx: { params: Promise<{ file: string }> }) {
