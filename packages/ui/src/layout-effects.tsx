@@ -1,6 +1,5 @@
 "use client";
 
-import Lenis from "lenis";
 import { Drawer as VaulDrawer } from "vaul";
 import { Toaster as Sonner } from "sonner";
 import { useEffect, type ReactNode } from "react";
@@ -16,11 +15,16 @@ export function SmoothScroll() {
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (window.matchMedia("(pointer: coarse)").matches) return; // native momentum scrolling on touch is better
-    const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
     let raf = 0;
-    const loop = (t: number) => { lenis.raf(t); raf = requestAnimationFrame(loop); };
-    raf = requestAnimationFrame(loop);
-    return () => { cancelAnimationFrame(raf); lenis.destroy(); };
+    let stop = () => {};
+    // fetched only when it will run, and after the page is interactive
+    const t = setTimeout(() => import("lenis").then(({ default: Lenis }) => {
+      const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+      const loop = (time: number) => { lenis.raf(time); raf = requestAnimationFrame(loop); };
+      raf = requestAnimationFrame(loop);
+      stop = () => { cancelAnimationFrame(raf); lenis.destroy(); };
+    }), 1200);
+    return () => { clearTimeout(t); stop(); };
   }, []);
   return null;
 }

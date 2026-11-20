@@ -17,6 +17,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en-IN" className={`${fraunces.variable} ${inter.variable}`}>
+      <head><script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} /></head>
       <body className="min-h-dvh">{children}</body>
     </html>
   );

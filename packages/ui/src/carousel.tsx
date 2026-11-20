@@ -46,9 +46,9 @@ export function Carousel({ children, className, itemClassName = "basis-[85%] sm:
         </div>
       )}
       {dots && state.count > 1 && (
-        <div className="mt-5 flex justify-center gap-2" role="tablist" aria-label="Slides">
+        <div className="mt-3 flex justify-center" role="tablist" aria-label="Slides">
           {Array.from({ length: state.count }, (_, i) => (
-            <button key={i} type="button" role="tab" aria-selected={i === state.index} aria-label={`Slide ${i + 1}`} onClick={() => api?.scrollTo(i)} className={cn("h-2 rounded-full transition-all", i === state.index ? "w-6 bg-plum-700" : "w-2 bg-plum-700/25")} />
+            <button key={i} type="button" role="tab" aria-selected={i === state.index} aria-label={`Slide ${i + 1}`} onClick={() => api?.scrollTo(i)} className="grid h-6 min-w-6 place-items-center"><span className={cn("block h-2 rounded-full transition-all", i === state.index ? "w-6 bg-plum-700" : "w-2 bg-plum-700/30")} /></button>
           ))}
         </div>
       )}

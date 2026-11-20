@@ -28,9 +28,11 @@ export function ProcessSteps() {
         <SectionHeading eyebrow="The process" title="How it works" />
         <ol className="grid gap-5 md:grid-cols-4">
           {STEPS.map((s, i) => (
-            <BlurFade key={s.t} delay={i * 0.08}>
-              <li className="rounded-[1.5rem] border border-line bg-white/80 p-6"><span className="grid size-12 place-items-center rounded-full bg-plum-700 text-ivory"><s.icon className="size-5" strokeWidth={1.5} /></span><h3 className="mt-4">{i + 1}. {s.t}</h3><p className="mt-1.5 text-sm text-ink-soft">{s.d}</p></li>
-            </BlurFade>
+            <li key={s.t}>
+              <BlurFade delay={i * 0.08} className="h-full">
+                <div className="h-full rounded-[1.5rem] border border-line bg-white/80 p-6"><span className="grid size-12 place-items-center rounded-full bg-plum-700 text-ivory"><s.icon className="size-5" strokeWidth={1.5} /></span><h3 className="mt-4">{i + 1}. {s.t}</h3><p className="mt-1.5 text-sm text-ink-soft">{s.d}</p></div>
+              </BlurFade>
+            </li>
           ))}
         </ol>
       </Container>

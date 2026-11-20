@@ -95,7 +95,15 @@ export function Price({ price, offerPrice, label, className }: { price?: number 
     <span className={cn("inline-flex items-baseline gap-2", className)}>
       {label && <span className="text-xs text-ink-soft">{label}</span>}
       <span className="text-lg font-semibold text-plum-800">{fmt(now)}</span>
-      {offerPrice != null && price != null && price > offerPrice && <s className="text-sm text-ink-soft/70">{fmt(price)}</s>}
+      {offerPrice != null && price != null && price > offerPrice && <s className="text-sm text-ink-soft">{fmt(price)}</s>}
     </span>
   );
+}
+
+/**
+ * Above-the-fold reveal done in CSS only: the content is visible in the server HTML and animates without waiting for
+ * JavaScript, so it never delays LCP. Use BlurFade for below-the-fold sections. soft = no opacity change (for the LCP headline).
+ */
+export function Rise({ children, delay = 0, className, soft = false }: { children: ReactNode; delay?: number; className?: string; soft?: boolean }) {
+  return <div className={cn(soft ? "animate-rise-soft" : "animate-rise", className)} style={{ animationDelay: `${delay}s` }}>{children}</div>;
 }

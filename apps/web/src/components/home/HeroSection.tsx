@@ -1,6 +1,6 @@
 import { ArrowRight, MapPin, Sparkles, Star, Users } from "lucide-react";
 import Link from "next/link";
-import { BlurFade, FallbackArt, GradientText, buttonStyles, cn } from "@herrglow/ui";
+import { Rise, FallbackArt, GradientText, buttonStyles, cn } from "@herrglow/ui";
 import { BookLink } from "@/components/chrome/BookLink";
 import { Photo } from "@/components/Photo";
 import { HeroGlowLazy } from "@/components/hero/HeroGlowLazy";
@@ -28,32 +28,32 @@ export function HeroSection({ cityNames, stats, reviews, images }: HeroProps) {
 
       <div className="relative mx-auto grid w-full max-w-7xl items-center gap-12 px-5 pb-16 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:pb-24">
         <div>
-          <BlurFade>
+          <Rise>
             <span className="inline-flex items-center gap-2 rounded-full border border-gold-400/50 bg-white/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-plum-800 backdrop-blur">
               <Sparkles className="size-3.5 text-gold-500" /> Makeup &amp; salon, at your home
             </span>
-          </BlurFade>
-          <BlurFade delay={0.08}>
+          </Rise>
+          <Rise delay={0.05} soft>
             <h1 className="mt-6">Look and feel your best, <GradientText>without leaving home.</GradientText></h1>
-          </BlurFade>
-          <BlurFade delay={0.16}>
+          </Rise>
+          <Rise delay={0.12}>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft sm:text-xl">
               Verified makeup artists and beauticians for bridal, party and everyday glam across {cityNames.length ? cityNames.join(", ") : "Delhi NCR"}. Clear prices. Your schedule.
             </p>
-          </BlurFade>
-          <BlurFade delay={0.24} className="mt-9 flex flex-wrap gap-3">
+          </Rise>
+          <Rise delay={0.18} className="mt-9 flex flex-wrap gap-3">
             <BookLink className="min-h-13 px-9 text-base" label="Book Now" />
             <Link href="/services" className={cn(buttonStyles({ variant: "outline", size: "lg" }), "bg-white/60 backdrop-blur")}>View Services <ArrowRight className="size-4" /></Link>
-          </BlurFade>
-          <BlurFade delay={0.32} className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-sm text-ink-soft">
+          </Rise>
+          <Rise delay={0.24} className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-sm text-ink-soft">
             {reviews.avg != null && reviews.count > 0 && <span className="flex items-center gap-2"><Star className="size-4 fill-gold-400 text-gold-400" /><strong className="text-plum-800">{reviews.avg.toFixed(1)}</strong> from {reviews.count} customer reviews</span>}
             <span className="flex items-center gap-2"><Users className="size-4 text-rose-600" /><strong className="text-plum-800">{stats.artists}</strong> verified artists</span>
             <span className="flex items-center gap-2"><MapPin className="size-4 text-rose-600" /><strong className="text-plum-800">{stats.cities}</strong> cities</span>
-          </BlurFade>
+          </Rise>
         </div>
 
         {/* overlapping image stack (real photos when they exist, designed fallbacks otherwise) + lazy 3D glow (desktop only) */}
-        <BlurFade delay={0.2} className="relative mx-auto aspect-[5/6] w-full max-w-[34rem]">
+        <Rise delay={0.1} className="relative mx-auto aspect-[5/6] w-full max-w-[34rem]">
           <HeroGlowLazy className="pointer-events-none absolute -inset-10 z-20" />
           {TILES.map((t, i) => {
             const img = images[i];
@@ -64,7 +64,7 @@ export function HeroSection({ cityNames, stats, reviews, images }: HeroProps) {
               </div>
             );
           })}
-        </BlurFade>
+        </Rise>
       </div>
     </section>
   );

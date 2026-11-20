@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, motion, useInView, useMotionValue, useReducedMotion, useSpring, useTransform } from "motion/react";
+import { animate, m, useInView, useMotionValue, useReducedMotion, useSpring, useTransform } from "motion/react";
 import { useEffect, useRef, type ReactNode } from "react";
 import { cn } from "./utils";
 
@@ -58,7 +58,7 @@ export function TiltCard({ children, className, max = 7 }: { children: ReactNode
   if (reduce) return <div className={className}>{children}</div>;
   return (
     <div className={cn("[perspective:900px]", className)}>
-      <motion.div
+      <m.div
         ref={ref}
         style={{ rotateX: rx, rotateY: ry, transformStyle: "preserve-3d" }}
         onPointerMove={(e) => {
@@ -70,7 +70,7 @@ export function TiltCard({ children, className, max = 7 }: { children: ReactNode
         className="size-full"
       >
         {children}
-      </motion.div>
+      </m.div>
     </div>
   );
 }

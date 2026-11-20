@@ -14,7 +14,7 @@
 
   /* accent: rose → deep plum (primary) */
   --color-rose-600: #c9727e;
-  --color-rose-700: #ae5663; /* AA on ivory for text */
+  --color-rose-700: #9e4b58; /* at least 5:1 on ivory and blush for small text */
   --color-plum-700: #4a1f3d; /* primary */
   --color-plum-800: #3b1731;
   --color-plum-900: #2b0f24;
@@ -99,7 +99,8 @@
 
 /* subtle film grain (inline SVG noise: no image request) */
 @utility grain {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 width=%27160%27 height=%27160%27><filter id=%27n%27><feTurbulence type=%27fractalNoise%27 baseFrequency=%270.9%27 numOctaves=%272%27 stitchTiles=%27stitch%27/></filter><rect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23n)%27 opacity=%270.5%27/></svg>");
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAD1BMVEVMaXHIyMhGRkbIyMhGRkYcTjgoAAAABXRSTlMAMDAYGIdcG48AAAAJcEhZcwAAA+gAAAPoAbV7UmsAAAK+SURBVDjLHVSHkYQwDFzJKkCcXYAIBYhQgAn91/TrZ2DuAKUNAmgo6FgVsxm+6FfnHYC08hbABVZsLxDR7+ADFLtwOo8bvR+9wDL28IWxiRuwySzSrQt2ef2amOM7KrsgeKF7iRcXHkg1yHzbzjfHcRuH2LWJo8jyY2TjFL3bJPWJFEHAPKQlMrtuvCk7Vpb4Npw4vMwnk1CL4v5+0e2r7JfwQGrqlFjzkLXvk8I5TvbiBtsQNvI+UfwqcBp+ieW1gBrPUi0q1sL2PKarw+TRQISI4coN0HJ8KNFLuZ9z6aWuKAc7M3Iuym69CunlNOUhbmARWYWkTqSLtIVDbjUmrE1qEdfuzvodSjngZSV1ZFrIdZE73OVyQM4D+DUsA2VBNkVGtm11eIM2nNmXIl1WtELtzN+IG3ff4UcrTOE5O3OuvrKPaLiOGU7EeSu+s57QgYOqU9tcs2OqeVK5bGITZizMWDD1dyiLZeZY/VX0hyos+kMwXBNXyF1eukRYLdQG1t90RzljltR5cNDTTmOG1a95+3yo9BEH8a5tcIT7SFrIGqYWNJvPQx+Ju8KW14dsjntHXEHfXLSRh6m8B2WmVWifh96iHTxnOsZLl5xwU9esrF+yT6ViYqB2qkYyaZwY826itiURmU/tG77growBScgLQn0obJoIo+lIFkcj+N8PZRuez0dYhpgvmhdiPbddtzQr5Ffp+BB78RuufN20r5yctiKeduD5hmfObMeDawgEzDV+vibmS6k7U78cKnHufIPdjU2VWMkxhLtHwTr65NdSZQZeWVM1BlbiIyNf4FjjKdwEQ5OxbHZ3O3f0SC4NzTs1KefThmXoJGCL8//POsrjxwm3xpVJ0ZlIk3IYFVNwqw1v51pSvUPlhr8Vr54HI0w2hZTBWMbNn+BGdB9+7qRVn8LvyHHwGwQa2PEHPvlgNV8MIcsAAAAASUVORK5CYII=");
+  background-size: 48px 48px;
 }
 
 /* ───────── motion primitives ───────── */
@@ -107,10 +108,14 @@
 @keyframes shimmer { 0% { transform: translateX(-120%); } 55%, 100% { transform: translateX(120%); } }
 @keyframes gradient-x { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 @keyframes border-beam { to { offset-distance: 100%; } }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes rise-soft { from { transform: translateY(12px); } to { transform: none; } }
 @keyframes float-y { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
 @utility animate-marquee { animation: marquee var(--duration, 40s) linear infinite; }
 @utility animate-gradient-x { animation: gradient-x 6s ease infinite; background-size: 200% 200%; }
+@utility animate-rise { animation: rise 0.6s var(--ease-out-soft) both; }
+@utility animate-rise-soft { animation: rise-soft 0.6s var(--ease-out-soft) both; }
 @utility animate-float { animation: float-y 6s ease-in-out infinite; }
 @utility btn-shimmer {
   position: relative;
@@ -129,3 +134,7 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
+
+/* scroll reveal (see BlurFade): hidden only when JS is on, so no-JS visitors and crawlers see all content */
+html.js .bf { opacity: 0; transform: translateY(var(--bf-y, 14px)); filter: blur(8px); transition: opacity 0.6s var(--ease-out-soft) var(--bf-delay, 0s), transform 0.6s var(--ease-out-soft) var(--bf-delay, 0s), filter 0.6s var(--ease-out-soft) var(--bf-delay, 0s); will-change: opacity, transform; }
+html.js .bf.bf-in { opacity: 1; transform: none; filter: none; will-change: auto; }

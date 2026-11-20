@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import { ArrowLeft, ArrowRight, CalendarDays, Check, MapPin, Sparkles, User } from "lucide-react";
 import { useActionState, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
@@ -33,7 +33,7 @@ function Confetti() {
   if (reduce) return null;
   return (
     <div aria-hidden className="pointer-events-none absolute inset-x-0 top-24 flex justify-center">
-      {bits.map((b) => <motion.span key={b.id} className="absolute size-2.5 rounded-[2px]" style={{ background: b.c }} initial={{ opacity: 1, x: 0, y: 0, rotate: 0 }} animate={{ opacity: 0, x: b.x, y: [0, b.y, b.y + 220], rotate: b.r }} transition={{ duration: b.d, ease: "easeOut" }} />)}
+      {bits.map((b) => <m.span key={b.id} className="absolute size-2.5 rounded-[2px]" style={{ background: b.c }} initial={{ opacity: 1, x: 0, y: 0, rotate: 0 }} animate={{ opacity: 0, x: b.x, y: [0, b.y, b.y + 220], rotate: b.r }} transition={{ duration: b.d, ease: "easeOut" }} />)}
     </div>
   );
 }
@@ -100,7 +100,7 @@ export function BookingForm({ cities, defaultCity, service, proSlug, proName, so
   );
 
   const panel = (children: ReactNode) => (
-    <motion.div key={step} initial={reduce ? false : { opacity: 0, x: dir * 28 }} animate={{ opacity: 1, x: 0 }} exit={reduce ? undefined : { opacity: 0, x: dir * -28 }} transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }} className="grid gap-4">{children}</motion.div>
+    <m.div key={step} initial={reduce ? false : { opacity: 0, x: dir * 28 }} animate={{ opacity: 1, x: 0 }} exit={reduce ? undefined : { opacity: 0, x: dir * -28 }} transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }} className="grid gap-4">{children}</m.div>
   );
 
   return (
@@ -119,7 +119,7 @@ export function BookingForm({ cities, defaultCity, service, proSlug, proName, so
             </li>
           ))}
         </ol>
-        <div className="mt-3 h-1 overflow-hidden rounded-full bg-blush-100"><motion.div className="h-full rounded-full bg-gradient-to-r from-rose-600 to-gold-400" animate={{ width: `${((step + 1) / STEPS.length) * 100}%` }} transition={{ duration: 0.4 }} /></div>
+        <div className="mt-3 h-1 overflow-hidden rounded-full bg-blush-100"><m.div className="h-full rounded-full bg-gradient-to-r from-rose-600 to-gold-400" animate={{ width: `${((step + 1) / STEPS.length) * 100}%` }} transition={{ duration: 0.4 }} /></div>
       </div>
 
       <form action={action} className="mt-6" noValidate onKeyDown={(e) => { if (e.key === "Enter" && step < 3 && (e.target as HTMLElement).tagName !== "TEXTAREA") { e.preventDefault(); next(); } }}>

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { BlurFade, Container, cn } from "@herrglow/ui";
+import { Rise, Container, cn } from "@herrglow/ui";
 import { Breadcrumbs } from "@/components/parts";
 import { Photo } from "@/components/Photo";
 
@@ -17,15 +17,15 @@ export function PageHero({ crumbs, eyebrow, title, intro, image, children, class
         <Breadcrumbs items={crumbs} />
         <div className={cn("grid items-center gap-8", image && "lg:grid-cols-[1.2fr_0.8fr]")}>
           <div>
-            {eyebrow && <BlurFade><p className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-rose-700"><span aria-hidden className="h-px w-8 bg-gold-400" />{eyebrow}</p></BlurFade>}
-            <BlurFade delay={0.06}><h1 className="!text-[clamp(2.25rem,5.5vw,4.25rem)]">{title}</h1></BlurFade>
-            {intro && <BlurFade delay={0.12}><p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">{intro}</p></BlurFade>}
-            {children && <BlurFade delay={0.18} className="mt-6">{children}</BlurFade>}
+            {eyebrow && <Rise><p className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-rose-700"><span aria-hidden className="h-px w-8 bg-gold-400" />{eyebrow}</p></Rise>}
+            <Rise delay={0.04} soft><h1 className="!text-[clamp(2.25rem,5.5vw,4.25rem)]">{title}</h1></Rise>
+            {intro && <Rise delay={0.1}><p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">{intro}</p></Rise>}
+            {children && <Rise delay={0.16} className="mt-6">{children}</Rise>}
           </div>
           {image && (
-            <BlurFade delay={0.1} className="hidden lg:block">
+            <Rise delay={0.08} className="hidden lg:block">
               <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] border-4 border-ivory shadow-lift"><Photo src={image.src} alt={image.alt} kind={image.kind} seedKey={image.seedKey} priority sizes="40vw" /></div>
-            </BlurFade>
+            </Rise>
           )}
         </div>
       </Container>

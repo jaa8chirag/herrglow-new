@@ -1,5 +1,5 @@
 import { getPopularServices } from "@herrglow/core";
-import { SmoothScroll, Toaster } from "@herrglow/ui";
+import { MotionProvider, SmoothScroll, Toaster } from "@herrglow/ui";
 import { BackToTop } from "@/components/chrome/BackToTop";
 import { AnnouncementBar } from "@/components/chrome/AnnouncementBar";
 import { SiteFooter } from "@/components/chrome/SiteFooter";
@@ -30,7 +30,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   const logo = realImage(keys, s.raw.site_logo);
 
   return (
-    <>
+    <MotionProvider>
       <SmoothScroll />
       <Toaster />
       {strip && <AnnouncementBar text={strip} />}
@@ -39,6 +39,6 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <SiteFooter siteName={s.siteName} categories={categories.map((c) => ({ slug: c.slug, name: c.name }))} cities={cities} popular={popular.map((p) => ({ slug: p.slug, title: p.title }))} whatsapp={s.whatsappNumber} phone={s.contactPhone} email={s.contactEmail} waText={s.raw.whatsapp_prefill_text} socials={socials} />
       <BackToTop />
       <StickyDock whatsapp={s.whatsappNumber} phone={s.contactPhone} waText={s.raw.whatsapp_prefill_text} />
-    </>
+    </MotionProvider>
   );
 }
