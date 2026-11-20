@@ -8,6 +8,13 @@
 - Service×city drafts generated from real data (status DRAFT until reviewed)
 - 6b design system (packages/ui), 6c SEO foundation, 6d public pages + booking form (lead → DB, out_of_area tag)
 
+## Since the last update
+- Legacy URLs: `/blogs/*` → 301 `/blog/*`; `/services` and `/join-as-beautician` are real pages at the same URL; `/packages`→`/services`, `/testimonials`→`/about#reviews`, `/gallery`→`/` (301)
+- Pro signup (`/join-as-beautician`) → admin Applications → approve → inactive Pro
+- Admin users screen (owner), forced password change, live access checks
+- Lead notifications via the worker (BullMQ): owner email + Telegram, customer email, 9:00 IST summary, 5-min safety sweep; WhatsApp adapter behind WHATSAPP_ENABLED
+- Deployment: deploy/ (VPS and Vercel options); runbook and checklist: docs/PRE-LAUNCH.md
+
 ## Admin (/admin, Auth.js credentials, roles owner/manager/content)
 - Leads inbox + pipeline board, review queue (drafts, thin services/blogs), artists (profile, services, coverage per city, photo upload, needs-coverage), services (variants, add-ons, slug change → 301), cities (owner launch switch + preview) and areas, SEO manager (index state + reason, manual noindex), redirects (guards against chains/loops/shadowing), blogs (sanitised HTML, link suggestions), media library (alt required), settings (owner only)
 - Create a user: pnpm --filter @herrglow/core create-admin <email> <OWNER|MANAGER|CONTENT> [password]
@@ -19,7 +26,8 @@
 - `pnpm infra:up`, `pnpm dev:web`
 - `pnpm --filter @herrglow/core page-preview | sync-pages | generate-drafts`
 - `pnpm import:legacy --dump <file> [--apply]`
-- `pnpm --filter @herrglow/web test:seo` (also runs before `build`)
+- `pnpm --filter @herrglow/web test:seo` (also runs before `build`); `pnpm --filter @herrglow/core test:notify` (needs infra up)
+- Worker: `pnpm dev:worker` (set OWNER_EMAIL, SMTP_* or EMAIL_TRANSPORT=console, TELEGRAM_* in apps/worker/.env)
 
 ## Before launch
 - Set ALLOW_INDEXING=true, NEXT_PUBLIC_SITE_URL, NEXT_PUBLIC_MEDIA_BASE, NEXT_PUBLIC_CF_RESIZING=true, DEPLOY_ENV=production
