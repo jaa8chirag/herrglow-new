@@ -6,3 +6,4 @@ export * from "./review";
 export * from "./media";
 export * from "./pros";
 export { r2Configured } from "../media/storage";
+export * from "./catalog";

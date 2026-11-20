@@ -39,7 +39,7 @@ export interface SitePlan {
 }
 
 /** Decides which pages deserve to exist. Only ACTIVE cities generate anything. Shared by preview, sitemap and Page sync. */
-export async function planPages(): Promise<SitePlan> {
+export async function planPages(opts: { treatAsActive?: string[] } = {}): Promise<SitePlan> {
   const allCities = await prisma.city.findMany({
     include: {
       areas: {
@@ -64,7 +64,7 @@ export async function planPages(): Promise<SitePlan> {
   const proInfo = new Map(pros.map((p) => [p.id, { slug: p.slug, ok: proIsIndexable(p, mediaKeys) }]));
 
   const cities: CityPlan[] = [];
-  for (const c of allCities.filter((x) => x.isActive)) {
+  for (const c of allCities.filter((x) => x.isActive || opts.treatAsActive?.includes(x.slug))) {
     const cityPros = new Set<string>();
     for (const a of c.areas) for (const cov of a.coverage) if (cov.pro.status === "ACTIVE") cityPros.add(cov.proId);
     const cityHub = cityPros.size >= MIN_PROS_FOR_CITY_HUB;
