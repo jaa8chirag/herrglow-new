@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getBlogs, getHomeExtras, getPopularServices, getTestimonials } from "@herrglow/core";
-import { ArtistsCarousel, BlogCards, BrandMarquee, CategoryBento, CityCards, FaqSection, FinalCta, HowItWorks, LooksSection, PackagesBand, PopularSlider, ReviewsMarquee, StatsBand } from "@/components/home/sections";
+import { ArtistsCarousel, BlogCards, BrandMarquee, CategoryBento, CityCards, FaqSection, FinalCta, HowItWorks, LooksSection, PackagesBand, PopularSlider, ReviewsMarquee, StatsBand, TrustBadges } from "@/components/home/sections";
 import { HeroSection } from "@/components/home/HeroSection";
 import { getCategories, getLiveCities, getMediaKeys, getMegaMenu, getSettings } from "@/lib/data";
 import { JsonLd, faqLd, organizationLd, websiteLd } from "@/lib/seo/jsonld";
@@ -66,6 +66,7 @@ export default async function HomePage() {
     <>
       <JsonLd data={[organizationLd({ email: s.contactEmail, telephone: s.contactPhone ?? s.whatsappNumber, areaServed: cityNames, logo: img(s.raw.site_logo), sameAs: [s.raw.social_instagram, s.raw.social_facebook, s.raw.social_youtube].filter((x): x is string => !!x) }), websiteLd(), faqLd(faqs)!]} />
       <HeroSection cityNames={cityNames} stats={{ artists: extras.stats.artists, cities: extras.stats.cities }} reviews={extras.reviews} images={heroImages} />
+      <TrustBadges />
       <BrandMarquee />
       <CategoryBento cats={catTiles} />
       <PopularSlider items={slides} />

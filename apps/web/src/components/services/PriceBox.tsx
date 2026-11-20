@@ -1,8 +1,9 @@
 "use client";
 
-import { Clock, ShieldCheck, X } from "lucide-react";
+import { Check, Clock, MessageCircle, ShieldCheck, Sparkles, Wallet, X } from "lucide-react";
 import { useState } from "react";
 import { Drawer, DrawerShell, Price, buttonStyles, cn } from "@herrglow/ui";
+import { whatsappLink } from "@/lib/whatsapp";
 
 export interface PriceOption { name: string; price: number | null; offerPrice: number | null; duration: string | null }
 
@@ -31,12 +32,34 @@ function Options({ options, selected, onSelect }: { options: PriceOption[]; sele
  * Price + options selector. Desktop: sticky card. Mobile: a bar above the dock opens a bottom sheet (vaul).
  * The chosen option is sent to the booking form ("hg-variant" event) so it arrives pre-selected.
  */
-export function PriceBox({ title, options, price, offerPrice, label, duration }: { title: string; options: PriceOption[]; price: number | null; offerPrice: number | null; label?: string | null; duration?: string | null }) {
+export function PriceBox({
+  title,
+  options,
+  price,
+  offerPrice,
+  label,
+  duration,
+  whatsappNumber,
+}: {
+  title: string;
+  options: PriceOption[];
+  price: number | null;
+  offerPrice: number | null;
+  label?: string | null;
+  duration?: string | null;
+  whatsappNumber?: string | null;
+}) {
   const [sel, setSel] = useState(options[0]?.name ?? "");
   const [open, setOpen] = useState(false);
   const cur = options.find((o) => o.name === sel);
   const shownPrice = cur ? { price: cur.price, offer: cur.offerPrice } : { price, offer: offerPrice };
   const choose = (n: string) => { setSel(n); pick(n); };
+
+  const finalPriceStr = shownPrice.offer ? `₹${Math.round(shownPrice.offer).toLocaleString("en-IN")}` : shownPrice.price ? `₹${Math.round(shownPrice.price).toLocaleString("en-IN")}` : "";
+  const wa = whatsappLink(
+    whatsappNumber || "9876543210",
+    `Hi HerrGlow! I'm interested in booking ${title}${sel ? ` (${sel})` : ""}${finalPriceStr ? ` for ${finalPriceStr}` : ""}. Could you please share artist availability and details?`
+  );
 
   const body = (
     <div className="grid gap-5">
@@ -56,7 +79,23 @@ export function PriceBox({ title, options, price, offerPrice, label, duration }:
         <h2 className="mb-4 !text-xl">Book {title}</h2>
         {body}
         <button type="button" onClick={toForm} className={cn(buttonStyles({ variant: "shimmer", size: "lg" }), "mt-6 w-full")}>Book this service</button>
-        <p className="mt-4 flex items-center gap-2 text-xs text-ink-soft"><ShieldCheck className="size-4 text-emerald-600" />Verified artists · price confirmed before booking</p>
+        {wa && (
+          <a
+            href={wa}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-900 shadow-soft transition hover:bg-emerald-100"
+          >
+            <MessageCircle className="size-4 text-emerald-600" />
+            Chat with an Expert on WhatsApp
+          </a>
+        )}
+        <div className="mt-5 space-y-2 rounded-2xl border border-blush-200/80 bg-blush-50/70 p-4 text-xs text-plum-900">
+          <p className="flex items-center gap-2 font-medium text-emerald-800"><ShieldCheck className="size-4 shrink-0 text-emerald-600" />100% Female Background-Verified Artist</p>
+          <p className="flex items-center gap-2 text-ink-soft"><Sparkles className="size-4 shrink-0 text-gold-500" />Single-use sealed disposable kit included</p>
+          <p className="flex items-center gap-2 font-medium text-plum-900"><Wallet className="size-4 shrink-0 text-emerald-600" />Pay after service · Zero advance required</p>
+          <p className="flex items-center gap-2 text-ink-soft"><Check className="size-4 shrink-0 text-emerald-600" />No hidden travel or setup fees</p>
+        </div>
       </div>
 
       {/* mobile: bar + bottom sheet */}
@@ -71,7 +110,22 @@ export function PriceBox({ title, options, price, offerPrice, label, duration }:
           <div className="overflow-y-auto p-5 pb-7">
             <div className="mb-4 flex items-start justify-between gap-3"><h2 className="!text-xl">{title}</h2><Drawer.Close asChild><button type="button" aria-label="Close" className="grid size-10 place-items-center rounded-full border border-line"><X className="size-4" /></button></Drawer.Close></div>
             {body}
-            <button type="button" onClick={() => { setOpen(false); setTimeout(toForm, 350); }} className={cn(buttonStyles({ variant: "shimmer", size: "lg" }), "mt-6 w-full")}>Continue to booking</button>
+            <div className="mt-4 space-y-1.5 rounded-2xl border border-blush-200/60 bg-blush-50/80 p-3 text-xs text-plum-900">
+              <p className="flex items-center gap-2 font-medium text-emerald-800"><ShieldCheck className="size-4 shrink-0 text-emerald-600" />100% Female Verified Artist · Single-Use Kit</p>
+              <p className="flex items-center gap-2 font-medium text-plum-900"><Wallet className="size-4 shrink-0 text-emerald-600" />Pay after service · Zero advance needed</p>
+            </div>
+            <button type="button" onClick={() => { setOpen(false); setTimeout(toForm, 350); }} className={cn(buttonStyles({ variant: "shimmer", size: "lg" }), "mt-5 w-full")}>Continue to booking</button>
+            {wa && (
+              <a
+                href={wa}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-900 transition hover:bg-emerald-100"
+              >
+                <MessageCircle className="size-4 text-emerald-600" />
+                Ask on WhatsApp
+              </a>
+            )}
           </div>
         </DrawerShell>
       </Drawer.Root>

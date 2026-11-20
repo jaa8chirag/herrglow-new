@@ -12,6 +12,7 @@
     "dev:worker": "pnpm --filter @herrglow/worker dev",
     "db:migrate": "pnpm --filter @herrglow/db migrate",
     "db:generate": "pnpm --filter @herrglow/db generate",
+    "db:seed": "pnpm --filter @herrglow/db seed:dev",
     "import:legacy": "pnpm --filter @herrglow/db import:legacy",
     "typecheck": "pnpm -r run typecheck",
     "import:media": "tsx scripts/import-legacy-media.ts",

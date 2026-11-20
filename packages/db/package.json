@@ -9,6 +9,7 @@
     "generate": "prisma generate",
     "migrate": "prisma migrate dev",
     "studio": "prisma studio",
+    "seed:dev": "tsx scripts/seed-dev.ts",
     "import:legacy": "tsx scripts/import-legacy.ts",
     "typecheck": "tsc --noEmit"
   },

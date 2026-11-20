@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarCheck, Check, Clock, DoorOpen, Search, Sparkles, Star } from "lucide-react";
+import { ArrowRight, BadgeCheck, CalendarCheck, Check, Clock, DoorOpen, Search, ShieldCheck, Sparkles, Star, Wallet } from "lucide-react";
 import Link from "next/link";
 import { Badge, BentoGrid, BlurFade, BorderBeam, Card, Carousel, Container, InfiniteMovingCards, Marquee, NumberTicker, Price, Section, SectionHeading, Spotlight, TiltCard, buttonStyles, categoryIcon, cn } from "@herrglow/ui";
 import { BookingForm } from "@/components/BookingForm";
@@ -9,6 +9,52 @@ import { BeforeAfter } from "./BeforeAfter";
 import { BRANDS } from "./brands";
 
 const fmt = (d: Date) => d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+
+/* ───────── 1.5 trust badges ───────── */
+export function TrustBadges() {
+  const items = [
+    {
+      icon: ShieldCheck,
+      title: "100% Female Verified Staff",
+      desc: "Background & police-checked female beauticians for your complete safety at home.",
+    },
+    {
+      icon: Sparkles,
+      title: "Single-Use Sealed Kits",
+      desc: "Fresh disposable gowns, bedsheets, wooden spatulas & sealed strips for every visit.",
+    },
+    {
+      icon: BadgeCheck,
+      title: "100% Authentic Brands",
+      desc: "MAC, Huda, Kryolan, Rica & O3+ opened in front of you. Zero fake or diluted salon dupes.",
+    },
+    {
+      icon: Wallet,
+      title: "Pay After Service",
+      desc: "Zero advance required for salon visits. Pay via UPI, Cash or Card once fully satisfied.",
+    },
+  ];
+
+  return (
+    <section aria-label="Our safety and quality guarantees" className="border-b border-line bg-white/70 py-6 sm:py-8 backdrop-blur-sm">
+      <Container>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {items.map((it) => (
+            <div key={it.title} className="flex items-start gap-3.5 rounded-2xl bg-blush-50/60 p-4 sm:bg-transparent sm:p-0">
+              <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-blush-100 text-rose-700">
+                <it.icon className="size-5" strokeWidth={1.75} />
+              </span>
+              <div>
+                <h4 className="text-sm font-semibold text-plum-900 sm:text-[0.95rem]">{it.title}</h4>
+                <p className="mt-0.5 text-xs text-ink-soft leading-relaxed">{it.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </section>
+  );
+}
 
 /* ───────── 2. brand marquee ───────── */
 export function BrandMarquee() {

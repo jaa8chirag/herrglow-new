@@ -1,4 +1,4 @@
-import { ArrowRight, MapPin, Sparkles, Star, Users } from "lucide-react";
+import { ArrowRight, MapPin, ShieldCheck, Sparkles, Star, Users, Wallet } from "lucide-react";
 import Link from "next/link";
 import { Rise, FallbackArt, GradientText, buttonStyles, cn } from "@herrglow/ui";
 import { BookLink } from "@/components/chrome/BookLink";
@@ -45,9 +45,14 @@ export function HeroSection({ cityNames, stats, reviews, images }: HeroProps) {
             <BookLink className="min-h-13 px-9 text-base" label="Book Now" />
             <Link href="/services" className={cn(buttonStyles({ variant: "outline", size: "lg" }), "bg-white/60 backdrop-blur")}>View Services <ArrowRight className="size-4" /></Link>
           </Rise>
-          <Rise delay={0.24} className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-sm text-ink-soft">
+          <Rise delay={0.22} className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs font-medium text-emerald-800">
+            <span className="flex items-center gap-1.5"><ShieldCheck className="size-4 text-emerald-600" /> 100% Female Verified Artists</span>
+            <span className="flex items-center gap-1.5"><Wallet className="size-4 text-emerald-600" /> Pay After Service</span>
+            <span className="flex items-center gap-1.5"><Sparkles className="size-4 text-emerald-600" /> Zero Hidden Travel Fees</span>
+          </Rise>
+          <Rise delay={0.26} className="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-sm text-ink-soft">
             {reviews.avg != null && reviews.count > 0 && <span className="flex items-center gap-2"><Star className="size-4 fill-gold-400 text-gold-400" /><strong className="text-plum-800">{reviews.avg.toFixed(1)}</strong> from {reviews.count} customer reviews</span>}
-            <span className="flex items-center gap-2"><Users className="size-4 text-rose-600" /><strong className="text-plum-800">{stats.artists}</strong> verified artists</span>
+            <span className="flex items-center gap-2"><Users className="size-4 text-rose-600" /><strong className="text-plum-800">{stats.artists}</strong> verified female artists</span>
             <span className="flex items-center gap-2"><MapPin className="size-4 text-rose-600" /><strong className="text-plum-800">{stats.cities}</strong> cities</span>
           </Rise>
         </div>
