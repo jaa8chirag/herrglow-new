@@ -15,7 +15,7 @@ export async function desiredPages(): Promise<Desired[]> {
   const add = (d: Omit<Desired, "lastmod"> & { lastmod?: Date }) => out.push({ lastmod: now, ...d });
 
   add({ url: urls.home(), type: "HOME", isIndexable: true, inSitemap: true, qualityScore: 100 });
-  for (const [url, inSitemap] of [[urls.about(), true], [urls.contact(), true], [urls.blogIndex(), true], [urls.privacy(), false], [urls.terms(), false]] as const)
+  for (const [url, inSitemap] of [[urls.about(), true], [urls.contact(), true], [urls.blogIndex(), true], [urls.services(), true], [urls.join(), true], [urls.privacy(), false], [urls.terms(), false]] as const)
     add({ url, type: "STATIC", isIndexable: true, inSitemap, qualityScore: 100 });
 
   const services = await prisma.service.findMany({ where: { status: "ACTIVE", mergedIntoId: null }, include: { category: true } });

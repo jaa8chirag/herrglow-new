@@ -335,6 +335,8 @@ model Lead {
   meta        Json?
   /// e.g. ["out_of_area"]
   tags        String[]   @default([])
+  /// set once the owner notification went out (the worker sweep re-sends anything still null)
+  notifiedAt  DateTime?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
@@ -432,6 +434,8 @@ model AdminUser {
   passwordHash String
   role         AdminRole @default(CONTENT)
   active       Boolean   @default(true)
+  /// forced change on next login (new users, resets, the dev bootstrap account)
+  mustChangePassword Boolean @default(false)
   lastLoginAt  DateTime?
   createdAt    DateTime  @default(now())
 }
@@ -460,4 +464,43 @@ model Media {
   height    Int?
   uploadedBy String?
   createdAt DateTime @default(now())
+}
+
+enum ApplicationStatus {
+  NEW
+  APPROVED
+  REJECTED
+}
+
+/// Public "join as beautician / makeup artist" submissions. Approving one creates an INACTIVE Pro.
+model ProApplication {
+  id             String            @id @default(cuid())
+  name           String
+  phone          String
+  email          String?
+  city           String
+  categories     String[]
+  servicesText   String?
+  experienceYears Int?
+  portfolioUrl   String?
+  photoKey       String?
+  message        String?
+  status         ApplicationStatus @default(NEW)
+  proId          String?
+  rejectReason   String?
+  handledBy      String?
+  createdAt      DateTime          @default(now())
+  @@index([status, createdAt])
+}
+
+/// One row per (kind, ref, channel): makes notification jobs idempotent, so a retry never double-sends.
+model NotificationLog {
+  id        String   @id @default(cuid())
+  kind      String
+  refId     String
+  channel   String
+  status    String
+  error     String?
+  createdAt DateTime @default(now())
+  @@unique([kind, refId, channel])
 }

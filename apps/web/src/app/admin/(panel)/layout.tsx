@@ -7,6 +7,7 @@ const NAV: { href: string; label: string; perm?: Perm }[] = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/leads", label: "Leads", perm: "leads" },
   { href: "/admin/review", label: "Review queue", perm: "drafts" },
+  { href: "/admin/applications", label: "Applications", perm: "pros" },
   { href: "/admin/pros", label: "Artists", perm: "pros" },
   { href: "/admin/services", label: "Services", perm: "catalog" },
   { href: "/admin/cities", label: "Cities & areas", perm: "cities" },
@@ -15,6 +16,7 @@ const NAV: { href: string; label: string; perm?: Perm }[] = [
   { href: "/admin/blogs", label: "Blogs", perm: "blogs" },
   { href: "/admin/media", label: "Media", perm: "media" },
   { href: "/admin/settings", label: "Settings", perm: "settings" },
+  { href: "/admin/users", label: "Users", perm: "users" },
 ];
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
@@ -29,7 +31,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           ))}
         </nav>
         <form className="mt-6" action={async () => { "use server"; await signOut({ redirectTo: "/admin/login" }); }}>
-          <p className="mb-2 truncate text-xs text-blush-300">{me.email} · {me.role.toLowerCase()}</p>
+          <p className="mb-2 truncate text-xs text-blush-300">{me.email} · {me.role.toLowerCase()} · <Link className="underline" href="/admin/account">password</Link></p>
           <button className="rounded-lg border border-white/20 px-3 py-1.5 text-xs hover:bg-white/10">Sign out</button>
         </form>
       </aside>

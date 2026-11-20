@@ -1,8 +1,9 @@
 /**
  * Legacy (old Laravel site) URL handling. PURE: no DB, so the proxy, the audit script and the tests all share it.
  *
- * Owner rule: area pages that exist on the new site keep the SAME URL; old artist URLs 301 to the new artist slug;
- * everything else from the old site → 410.
+ * Rules: a URL that exists on the new site keeps the SAME URL (area pages, /services, /join-as-beautician, /contact, …);
+ * old artist and blog URLs 301 to their new URLs; retired sections 301 to the closest page; everything else from the old
+ * site → 410.
  *
  * Old patterns (from seo_url_settings):
  *   /makeup-artist-in-{area}  /bridal-makeup-in-{area}  /salon-at-home-in-{area}   (local_page)
@@ -22,14 +23,19 @@ export interface LegacyContext {
   redirects: Map<string, { to: string | null; code: "MOVED_301" | "GONE_410" }>;
   /** legacy beautician slug → new artist URL (only artists whose page exists) */
   proByLegacySlug: Map<string, string>;
-  /** owner rule says 410; flip to true to 301 /blogs/{slug} → /blog/{slug} instead */
-  blogsRedirect?: boolean;
 }
 
 export const normalizePath = (p: string) => p.toLowerCase().replace(/\/+$/, "") || "/";
 
-const GONE_PREFIXES = ["/beauty-pro-card/", "/packages/"];
-const GONE_EXACT = new Set(["/services", "/packages", "/beauticians", "/makeover-artists", "/gallery", "/testimonials", "/join-as-beautician"]);
+/** Retired old-site sections and where their equity goes. */
+export const LEGACY_STATIC_REDIRECTS: Record<string, string> = {
+  "/packages": "/services", // the single legacy package was a party combo; the services listing is its closest page
+  "/testimonials": "/about#reviews",
+  "/gallery": "/",
+  "/blogs": "/blog",
+};
+const GONE_PREFIXES = ["/beauty-pro-card/"];
+const GONE_EXACT = new Set(["/beauticians", "/makeover-artists"]);
 
 export function decideLegacy(rawPath: string, ctx: LegacyContext): LegacyDecision {
   const path = normalizePath(rawPath);
@@ -37,7 +43,7 @@ export function decideLegacy(rawPath: string, ctx: LegacyContext): LegacyDecisio
   const rule = ctx.redirects.get(path);
   if (rule) return rule.code === "GONE_410" || !rule.to ? { kind: "gone", reason: "redirect rule: gone" } : { kind: "redirect", to: rule.to, code: 301 };
 
-  // the URL exists on the new site (area pages, city hubs, service×city, services, …): serve it at the SAME URL
+  // the URL exists on the new site (area pages, city hubs, /services, /join-as-beautician, service×city, …): same URL
   if (ctx.pageUrls.has(path)) return { kind: "pass" };
 
   // old artist pages → new artist slug
@@ -47,12 +53,15 @@ export function decideLegacy(rawPath: string, ctx: LegacyContext): LegacyDecisio
     return to ? { kind: "redirect", to, code: 301 } : { kind: "gone", reason: "artist has no page on the new site" };
   }
 
-  if (GONE_EXACT.has(path)) return { kind: "gone", reason: "legacy static page" };
-  if (GONE_PREFIXES.some((p) => path.startsWith(p))) return { kind: "gone", reason: "legacy section removed" };
+  const stat = LEGACY_STATIC_REDIRECTS[path];
+  if (stat) return { kind: "redirect", to: stat, code: 301 };
+  if (path.startsWith("/packages/")) return { kind: "redirect", to: "/services", code: 301 };
 
   const blog = /^\/blogs\/([^/]+)$/.exec(path);
-  if (blog) return ctx.blogsRedirect ? { kind: "redirect", to: `/blog/${blog[1]}`, code: 301 } : { kind: "gone", reason: "legacy blog URL (owner rule: 410)" };
-  if (path === "/blogs") return ctx.blogsRedirect ? { kind: "redirect", to: "/blog", code: 301 } : { kind: "gone", reason: "legacy blog index" };
+  if (blog) return { kind: "redirect", to: `/blog/${blog[1]}`, code: 301 };
+
+  if (GONE_EXACT.has(path)) return { kind: "gone", reason: "legacy listing page" };
+  if (GONE_PREFIXES.some((p) => path.startsWith(p))) return { kind: "gone", reason: "legacy section removed" };
 
   // any other single-segment "…-in-…" URL is an old area / service-local page that did not make it to the new site
   if (!path.slice(1).includes("/") && /-in-[a-z0-9]/.test(path)) return { kind: "gone", reason: "old area/service-local page not on the new site" };

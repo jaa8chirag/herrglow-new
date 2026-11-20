@@ -25,7 +25,6 @@ async function context(force = false): Promise<LegacyContext> {
     pageUrls: new Set(pages.map((p) => p.url)),
     // only artists that have a page on the new site get a 301; others are 410
     proByLegacySlug: new Map(pros.filter((p) => proPages.has(`/artists/${p.slug}`)).map((p) => [p.legacySlug!.toLowerCase(), `/artists/${p.slug}`])),
-    blogsRedirect: process.env.LEGACY_BLOGS_REDIRECT === "true",
   };
   cache = { at: Date.now(), ctx };
   return ctx;

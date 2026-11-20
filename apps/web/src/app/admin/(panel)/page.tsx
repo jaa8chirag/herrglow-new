@@ -7,11 +7,12 @@ import { requireAdmin } from "@/lib/admin";
 export default async function Dashboard(props: PageProps<"/admin">) {
   const me = await requireAdmin();
   const sp = await props.searchParams;
-  const [leads, drafts, needsCoverage, pages] = await Promise.all([
+  const [leads, drafts, needsCoverage, pages, newApps] = await Promise.all([
     can(me.role, "leads") ? leadCounts() : null,
     prisma.serviceCity.count({ where: { contentStatus: "DRAFT", localContent: { not: null } } }),
     prisma.pro.count({ where: { status: "ACTIVE", coverage: { none: {} } } }),
     prisma.page.count({ where: { isIndexable: true, inSitemap: true } }),
+    prisma.proApplication.count({ where: { status: "NEW" } }),
   ]);
   const card = (label: string, value: number | string, href: string, note?: string) => (
     <Link href={href} className="rounded-2xl border border-line bg-white p-5 shadow-soft hover:shadow-lift">
@@ -27,6 +28,7 @@ export default async function Dashboard(props: PageProps<"/admin">) {
         {leads && card("Out of area", leads.outOfArea, "/admin/leads?outOfArea=1", "demand outside the 3 cities")}
         {card("Drafts to review", drafts, "/admin/review", "service×city pages")}
         {card("Artists needing coverage", needsCoverage, "/admin/pros?filter=needs-coverage")}
+        {can(me.role, "pros") && card("New artist applications", newApps, "/admin/applications?status=NEW")}
         {card("URLs in sitemap", pages, "/admin/seo")}
       </div>
       <Panel title="Quick links" className="mt-6"><p className="text-sm text-ink-soft">Use the sidebar to manage leads, review drafts, edit artists, services, cities, SEO, blogs and settings.</p></Panel>

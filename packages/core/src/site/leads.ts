@@ -1,5 +1,6 @@
 import { prisma } from "@herrglow/db";
 import { z } from "zod";
+import { enqueueNewLead } from "../notify/queue";
 
 export const OUT_OF_AREA = "out_of_area";
 
@@ -45,7 +46,7 @@ export async function createLead(raw: LeadInput): Promise<LeadResult> {
 
   const customer = await prisma.customer.upsert({ where: { phone: d.phone }, update: { name: d.name, email: d.email }, create: { phone: d.phone, name: d.name, email: d.email } });
   const ref = "HG" + Date.now().toString(36).toUpperCase().slice(-6);
-  await prisma.lead.create({
+  const lead = await prisma.lead.create({
     data: {
       bookingRef: ref, customerId: customer.id, name: d.name, phone: d.phone, email: d.email,
       locationText: [d.area, city?.name ?? "Outside service area"].filter(Boolean).join(", "),
@@ -55,5 +56,7 @@ export async function createLead(raw: LeadInput): Promise<LeadResult> {
       ...(service ? { services: { create: [{ serviceId: service.id }] } } : {}),
     },
   });
+  // owner alert + customer confirmation go through the worker queue (retries). Never fails the request.
+  await enqueueNewLead(lead.id);
   return { ok: true, outOfArea, ref };
 }

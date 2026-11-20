@@ -91,9 +91,9 @@ test("legacy /services/{slug}: live = same URL; merged/renamed = 301", () => {
   eq("/services/hd-bridal-makeup", { kind: "pass" });
   eq("/services/hd-engagement-makeup", { kind: "redirect", to: "/services/engagement-makeup-artist", code: 301 });
 });
-test("legacy /blogs/{slug} → 410 (owner rule); switchable to 301 /blog/{slug}", () => {
-  gone("/blogs/gaur-city-bridal-makeup-artist-booking-guide");
-  eq("/blogs/gaur-city-bridal-makeup-artist-booking-guide", { kind: "redirect", to: "/blog/gaur-city-bridal-makeup-artist-booking-guide", code: 301 }, ctx({ blogsRedirect: true }));
+test("legacy /blogs/{slug} → 301 /blog/{slug}; /blogs → 301 /blog", () => {
+  eq("/blogs/gaur-city-bridal-makeup-artist-booking-guide", { kind: "redirect", to: "/blog/gaur-city-bridal-makeup-artist-booking-guide", code: 301 });
+  eq("/blogs", { kind: "redirect", to: "/blog", code: 301 });
 });
 test("legacy /beauticians/{slug} and /makeover-artists/{slug} → 301 to the new artist slug; unknown artist → 410", () => {
   const to = { kind: "redirect", to: "/artists/pritibha-singh", code: 301 };
@@ -102,10 +102,17 @@ test("legacy /beauticians/{slug} and /makeover-artists/{slug} → 301 to the new
   gone("/beauticians/someone-without-a-page");
 });
 test("legacy /beauty-pro-card/{slug} → 410", () => gone("/beauty-pro-card/best-makeover-artist-in-gaur-city-pritibha-singh"));
-test("legacy static pages (/services, /packages, /gallery, /testimonials, /blogs) → 410; /contact and / stay 200", () => {
-  for (const p of ["/services", "/packages", "/packages/luxe-party-glam-package", "/beauticians", "/makeover-artists", "/gallery", "/testimonials", "/blogs", "/join-as-beautician"]) gone(p);
-  eq("/contact", { kind: "pass" });
-  eq("/", { kind: "pass" });
+test("legacy static pages: built pages keep the URL, retired sections 301, listings 410", () => {
+  const c = ctx({ pageUrls: new Set(["/", "/contact", "/services", "/join-as-beautician"]) });
+  eq("/join-as-beautician", { kind: "pass" }, c);
+  eq("/services", { kind: "pass" }, c);
+  eq("/packages", { kind: "redirect", to: "/services", code: 301 }, c);
+  eq("/packages/luxe-party-glam-package", { kind: "redirect", to: "/services", code: 301 }, c);
+  eq("/testimonials", { kind: "redirect", to: "/about#reviews", code: 301 }, c);
+  eq("/gallery", { kind: "redirect", to: "/", code: 301 }, c);
+  for (const p of ["/beauticians", "/makeover-artists"]) gone(p, c);
+  eq("/contact", { kind: "pass" }, c);
+  eq("/", { kind: "pass" }, c);
 });
 test("unrelated unknown URLs are not marked gone (normal 404)", () => eq("/some-random-page", { kind: "pass" }));
 
