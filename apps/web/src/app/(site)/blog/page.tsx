@@ -1,11 +1,13 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { getBlogs } from "@herrglow/core";
-import { Card, Container, Section, SectionHeading } from "@herrglow/ui";
-import { Breadcrumbs } from "@/components/parts";
+import { Container, Section } from "@herrglow/ui";
+import { BlogExplorer } from "@/components/blog/BlogExplorer";
+import { PageHero } from "@/components/page/PageHero";
+import { getMediaKeys } from "@/lib/data";
+import { realImage } from "@/lib/media";
 import { buildMetadata } from "@/lib/seo/metadata";
-
-export const revalidate = 600;
+import { readingMinutes, topicOf } from "@/lib/toc";
+import { prisma } from "@herrglow/db";
 
 export const metadata: Metadata = buildMetadata({
   title: "Beauty Blog: Bridal, Skincare & Makeup Guides",
@@ -14,24 +16,15 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default async function BlogIndex() {
-  const blogs = await getBlogs();
+  const [blogs, keys] = await Promise.all([getBlogs(), getMediaKeys()]);
+  // reading time needs the body length: one light query
+  const bodies = await prisma.blog.findMany({ where: { status: "ACTIVE" }, select: { slug: true, content: true } });
+  const mins = new Map(bodies.map((b) => [b.slug, readingMinutes(b.content ?? "")]));
+  const posts = blogs.map((b) => ({ slug: b.slug, title: b.title, excerpt: b.excerpt, image: realImage(keys, b.image), date: b.publishedAt.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }), topic: topicOf(b.title), minutes: mins.get(b.slug) ?? 3 }));
   return (
-    <Section>
-      <Container>
-        <Breadcrumbs items={[{ name: "Blog", path: "/blog" }]} />
-        <SectionHeading as="h1" eyebrow="Journal" title="Beauty guides and tips" intro="Practical guides for brides and beauty lovers." />
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {blogs.map((b) => (
-            <Link key={b.slug} href={`/blog/${b.slug}`} className="group block">
-              <Card className="h-full p-6">
-                <p className="text-xs text-rose-700">{b.publishedAt.toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" })}</p>
-                <h2 className="mt-2 text-xl group-hover:text-rose-700">{b.title}</h2>
-                {b.excerpt && <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-ink-soft">{b.excerpt}</p>}
-              </Card>
-            </Link>
-          ))}
-        </div>
-      </Container>
-    </Section>
+    <>
+      <PageHero crumbs={[{ name: "Blog", path: "/blog" }]} eyebrow="Journal" title="Beauty guides and tips" intro="Practical guides for brides and beauty lovers: timelines, skincare, hair, nails and festive looks." />
+      <Section className="pt-8"><Container><BlogExplorer posts={posts} /></Container></Section>
+    </>
   );
 }

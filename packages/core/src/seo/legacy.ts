@@ -29,12 +29,11 @@ export const normalizePath = (p: string) => p.toLowerCase().replace(/\/+$/, "") 
 
 /** Retired old-site sections and where their equity goes. */
 export const LEGACY_STATIC_REDIRECTS: Record<string, string> = {
-  "/packages": "/services", // the single legacy package was a party combo; the services listing is its closest page
   "/testimonials": "/about#reviews",
   "/gallery": "/",
   "/blogs": "/blog",
 };
-const GONE_PREFIXES = ["/beauty-pro-card/"];
+const GONE_PREFIXES = ["/beauty-pro-card/", "/packages/"]; // a /packages/{slug} that does not exist on the new site
 const GONE_EXACT = new Set(["/beauticians", "/makeover-artists"]);
 
 export function decideLegacy(rawPath: string, ctx: LegacyContext): LegacyDecision {
@@ -55,7 +54,6 @@ export function decideLegacy(rawPath: string, ctx: LegacyContext): LegacyDecisio
 
   const stat = LEGACY_STATIC_REDIRECTS[path];
   if (stat) return { kind: "redirect", to: stat, code: 301 };
-  if (path.startsWith("/packages/")) return { kind: "redirect", to: "/services", code: 301 };
 
   const blog = /^\/blogs\/([^/]+)$/.exec(path);
   if (blog) return { kind: "redirect", to: `/blog/${blog[1]}`, code: 301 };

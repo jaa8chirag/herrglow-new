@@ -213,3 +213,53 @@ export async function getHomeExtras() {
     reviews: { avg: tAgg._avg.rating ? Math.round(tAgg._avg.rating * 10) / 10 : null, count: tAgg._count },
   };
 }
+
+/* ───────── UI-5: services explorer, packages, service extras ───────── */
+
+/** Every live service, lightweight, for the /services explorer (client-side filter). */
+export async function getAllServicesForExplorer() {
+  return prisma.service.findMany({
+    where: liveService, orderBy: [{ leadCount: "desc" }, { sort: "asc" }],
+    select: { id: true, slug: true, title: true, shortDescription: true, price: true, offerPrice: true, priceLabel: true, duration: true, image: true, imageAlt: true, leadCount: true, isPackage: true, category: { select: { slug: true, name: true } }, variants: { select: { price: true, offerPrice: true } } },
+  });
+}
+
+export async function getPackagesData() {
+  const [rows, services] = await Promise.all([
+    prisma.package.findMany({ where: { status: "ACTIVE" }, include: { services: { include: { service: { select: { slug: true, title: true } } } } } }),
+    prisma.service.findMany({ where: { ...liveService, isPackage: true }, orderBy: [{ leadCount: "desc" }, { sort: "asc" }], include: { category: { select: { name: true, slug: true } }, variants: { orderBy: { sortOrder: "asc" } } } }),
+  ]);
+  return { packages: rows, services };
+}
+
+export async function getPackagePage(slug: string) {
+  return prisma.package.findFirst({ where: { slug, status: "ACTIVE" }, include: { services: { include: { service: { select: { slug: true, title: true, shortDescription: true, price: true, offerPrice: true, image: true, imageAlt: true } } } } } });
+}
+
+/** Artists offering a service in the live cities (public fields only). */
+export async function getServiceArtists(serviceId: string, n = 8) {
+  const live = await prisma.city.findMany({ where: { isActive: true }, select: { slug: true, name: true } });
+  const slugs = live.map((c) => c.slug);
+  const offering = await prisma.proService.findMany({ where: { serviceId, pro: { status: "ACTIVE" } }, select: { proId: true } });
+  const ids = offering.map((o) => o.proId);
+  const cov = await prisma.proCoverage.findMany({ where: { proId: { in: ids }, area: { citySlug: { in: slugs }, status: "ACTIVE" } }, select: { proId: true, area: { select: { citySlug: true } } } });
+  const city = new Map<string, string>();
+  for (const c of cov) if (!city.has(c.proId)) city.set(c.proId, live.find((l) => l.slug === c.area.citySlug)?.name ?? "");
+  const pros = await prisma.pro.findMany({ where: { id: { in: [...city.keys()] } }, select: publicProSelect, orderBy: { experienceYears: "desc" }, take: n });
+  const pages = await prisma.page.findMany({ where: { type: "PRO" }, select: { entityId: true } });
+  const linked = new Set(pages.map((p) => p.entityId!));
+  return pros.map((p) => ({ ...p, city: city.get(p.id) ?? null, linked: linked.has(p.slug) }));
+}
+
+/** Reviews for a service (matched by the service name on the review), falling back to the latest ones. */
+export async function getReviewsFor(title: string, n = 6) {
+  const words = title.toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 4 && w !== "makeup");
+  const all = await prisma.testimonial.findMany({ where: { status: "ACTIVE" }, orderBy: { sort: "asc" } });
+  const matched = all.filter((t) => words.some((w) => (t.serviceName ?? "").toLowerCase().includes(w)));
+  return { items: (matched.length ? matched : all).slice(0, n), matched: matched.length > 0 };
+}
+
+export async function getCategoryExtras(categoryId: string) {
+  const pk = await prisma.service.findMany({ where: { ...liveService, isPackage: true, categoryId }, take: 3, select: { slug: true, title: true, price: true, offerPrice: true, image: true, imageAlt: true, shortDescription: true, categoryId: true } });
+  return { packages: pk };
+}

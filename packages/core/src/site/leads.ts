@@ -15,6 +15,7 @@ export const leadInput = z.object({
   variant: z.string().trim().max(80).optional().transform((v) => v || undefined),
   addons: z.array(z.string().max(80)).max(10).optional(),
   proSlug: z.string().trim().max(120).optional().transform((v) => v || undefined),
+  slot: z.string().trim().max(40).optional().transform((v) => v || undefined),
   eventDate: z.string().trim().optional().transform((v) => (v ? new Date(v) : undefined)).refine((d) => !d || !Number.isNaN(d.getTime()), "Invalid date"),
   message: z.string().trim().max(1000).optional().transform((v) => v || undefined),
   sourceUrl: z.string().trim().max(300).optional(),
@@ -50,7 +51,7 @@ export async function createLead(raw: LeadInput): Promise<LeadResult> {
     data: {
       bookingRef: ref, customerId: customer.id, name: d.name, phone: d.phone, email: d.email,
       locationText: [d.area, city?.name ?? "Outside service area"].filter(Boolean).join(", "),
-      areaId: area?.id, eventDate: d.eventDate, message: d.message, source: "website", sourceUrl: d.sourceUrl, proId: pro?.id,
+      areaId: area?.id, eventDate: d.eventDate, timeSlot: d.slot, message: d.message, source: "website", sourceUrl: d.sourceUrl, proId: pro?.id,
       tags: outOfArea ? [OUT_OF_AREA] : [],
       meta: { variant: d.variant, addons: d.addons, citySlug: d.city },
       ...(service ? { services: { create: [{ serviceId: service.id }] } } : {}),

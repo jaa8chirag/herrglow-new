@@ -24,7 +24,7 @@ export async function submitLead(_prev: FormState, fd: FormData): Promise<FormSt
   const res = await createLead({
     name: get("name") ?? "", phone: get("phone") ?? "", email: get("email"), city: get("city") ?? "", area: get("area"),
     serviceSlug: get("serviceSlug"), variant: get("variant"), addons: fd.getAll("addons").map(String), proSlug: get("proSlug"),
-    eventDate: get("eventDate"), message: get("message"), sourceUrl: get("sourceUrl"), website: get("website"),
+    eventDate: get("eventDate"), slot: get("slot"), message: get("message"), sourceUrl: get("sourceUrl"), website: get("website"),
   });
   if (!res.ok) return { status: "error", errors: res.errors };
   return { status: "done", outOfArea: res.outOfArea, ref: res.ref };

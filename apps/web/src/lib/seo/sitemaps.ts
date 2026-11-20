@@ -2,7 +2,7 @@ import type { PageType } from "@herrglow/db";
 
 /** Child sitemap id → Page.type values. Served at /sitemaps/{id}.xml; the index is /sitemap.xml. */
 export const SITEMAPS: Record<string, PageType[]> = {
-  pages: ["HOME", "STATIC", "CATEGORY"],
+  pages: ["HOME", "STATIC", "CATEGORY", "PACKAGE"],
   services: ["SERVICE"],
   areas: ["CITY", "AREA", "SERVICE_CITY"],
   artists: ["PRO"],

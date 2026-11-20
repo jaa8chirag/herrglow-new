@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { asFaqs, findPage, urls, type Faq } from "@herrglow/core";
+import { asFaqs, findPage, getCategoryExtras, urls, type Faq } from "@herrglow/core";
 import { Badge, ButtonLink, Card, Container, Section, SectionHeading } from "@herrglow/ui";
 import { BookingForm } from "@/components/BookingForm";
 import { Breadcrumbs, FaqList, Html, ProCard, ServiceCard, stripTags } from "@/components/parts";
 import { CATEGORY_COPY } from "@/lib/copy";
-import { getAreaPage, getCategoryPage, getCityHub, getLiveCities, getServiceCity } from "@/lib/data";
+import { getAreaPage, getCategoryPage, getCityHub, getLiveCities, getMediaKeys, getServiceCity } from "@/lib/data";
+import { realImage } from "@/lib/media";
+import { CategoryView } from "@/components/services/CategoryView";
 import { JsonLd, faqLd, serviceLd } from "@/lib/seo/jsonld";
 import { buildMetadata } from "@/lib/seo/metadata";
 
@@ -67,15 +69,14 @@ export default async function RootSlugPage(props: PageProps<"/[slug]">) {
     const cat = await getCategoryPage(slug);
     if (!cat) notFound();
     const copy = CATEGORY_COPY[slug];
+    const [keys, extras] = await Promise.all([getMediaKeys(), getCategoryExtras(cat.id)]);
+    const prices = cat.services.flatMap((x) => [x.offerPrice ?? x.price, ...x.variants.map((v) => v.offerPrice ?? v.price)]).map((n) => (n == null ? NaN : Number(n))).filter((n) => n > 0);
     return (
-      <Section>
-        <Container>
-          <Breadcrumbs items={[{ name: cat.name, path }]} />
-          <SectionHeading as="h1" eyebrow="Services" title={copy?.h1 ?? `${cat.name} at Home`} intro={copy?.intro} />
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{cat.services.map((s) => <ServiceCard key={s.id} s={s} />)}</div>
-          <div className="mt-14 max-w-xl"><BookingForm cities={cities} sourcePath={path} enquiry heading={`Enquire about ${cat.name.toLowerCase()}`} /></div>
-        </Container>
-      </Section>
+      <CategoryView path={path} slug={slug} name={cat.name} h1={copy?.h1 ?? `${cat.name} at Home`} intro={copy?.intro} cities={cities}
+        heroImage={realImage(keys, cat.services.find((x) => realImage(keys, x.image))?.image)}
+        services={cat.services.map((x) => ({ ...x, category: { name: cat.name, slug: cat.slug } }))}
+        packages={extras.packages.map((p) => ({ slug: p.slug, title: p.title, image: realImage(keys, p.image), price: p.price == null ? null : Number(p.price), offerPrice: p.offerPrice == null ? null : Number(p.offerPrice), short: p.shortDescription }))}
+        priceRange={prices.length ? { min: Math.min(...prices), max: Math.max(...prices) } : null} />
     );
   }
 

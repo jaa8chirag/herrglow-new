@@ -103,11 +103,12 @@ test("legacy /beauticians/{slug} and /makeover-artists/{slug} → 301 to the new
 });
 test("legacy /beauty-pro-card/{slug} → 410", () => gone("/beauty-pro-card/best-makeover-artist-in-gaur-city-pritibha-singh"));
 test("legacy static pages: built pages keep the URL, retired sections 301, listings 410", () => {
-  const c = ctx({ pageUrls: new Set(["/", "/contact", "/services", "/join-as-beautician"]) });
+  const c = ctx({ pageUrls: new Set(["/", "/contact", "/services", "/join-as-beautician", "/packages", "/packages/luxe-party-glam-package"]) });
   eq("/join-as-beautician", { kind: "pass" }, c);
   eq("/services", { kind: "pass" }, c);
-  eq("/packages", { kind: "redirect", to: "/services", code: 301 }, c);
-  eq("/packages/luxe-party-glam-package", { kind: "redirect", to: "/services", code: 301 }, c);
+  eq("/packages", { kind: "pass" }, c); // built page, same URL
+  eq("/packages/luxe-party-glam-package", { kind: "pass" }, c); // the imported package keeps its URL
+  gone("/packages/some-old-removed-package", c);
   eq("/testimonials", { kind: "redirect", to: "/about#reviews", code: 301 }, c);
   eq("/gallery", { kind: "redirect", to: "/", code: 301 }, c);
   for (const p of ["/beauticians", "/makeover-artists"]) gone(p, c);

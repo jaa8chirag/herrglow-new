@@ -1,13 +1,11 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import { getCategoryPage } from "@/lib/data";
-import { getCategories } from "@/lib/data";
-import { Container, Section, SectionHeading } from "@herrglow/ui";
-import { Breadcrumbs, ServiceCard } from "@/components/parts";
-import { CATEGORY_COPY } from "@/lib/copy";
+import { getAllServicesForExplorer } from "@herrglow/core";
+import { Container, Section } from "@herrglow/ui";
+import { PageHero } from "@/components/page/PageHero";
+import { ServiceExplorer } from "@/components/services/ServiceExplorer";
+import { getCategories, getMediaKeys } from "@/lib/data";
+import { realImage } from "@/lib/media";
 import { buildMetadata } from "@/lib/seo/metadata";
-
-export const revalidate = 600;
 
 export const metadata: Metadata = buildMetadata({
   title: "All Services: Makeup, Salon, Facial, Nails & More at Home",
@@ -15,26 +13,23 @@ export const metadata: Metadata = buildMetadata({
   path: "/services",
 });
 
+const num = (v: unknown) => (v == null ? null : Number(v));
+
 export default async function ServicesIndex() {
-  const cats = await getCategories();
-  const full = await Promise.all(cats.map((c) => getCategoryPage(c.slug)));
+  const [cats, all, keys] = await Promise.all([getCategories(), getAllServicesForExplorer(), getMediaKeys()]);
+  const items = all.map((s) => {
+    const prices = [s.offerPrice ?? s.price, ...s.variants.map((v) => v.offerPrice ?? v.price)].map((n) => (n == null ? NaN : Number(n))).filter((n) => n > 0);
+    return {
+      slug: s.slug, title: s.title, short: s.shortDescription, category: s.category.name, categorySlug: s.category.slug, image: realImage(keys, s.image), alt: s.imageAlt || s.title,
+      price: prices.length ? Math.min(...prices) : num(s.price), offerPrice: null, from: s.variants.length > 1 || s.priceLabel === "Starting at", duration: s.duration, popular: s.leadCount >= 5, isPackage: s.isPackage,
+    };
+  });
   return (
-    <Section>
-      <Container>
-        <Breadcrumbs items={[{ name: "Services", path: "/services" }]} />
-        <SectionHeading as="h1" eyebrow="Services" title="Everything we offer, at your home" intro="Pick a category to compare options and prices." />
-        <div className="space-y-14">
-          {full.filter((c) => !!c).map((c) => (
-            <div key={c!.slug}>
-              <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
-                <h2 className="text-2xl"><Link className="hover:text-rose-700" href={`/${c!.slug}`}>{CATEGORY_COPY[c!.slug]?.h1 ?? c!.name}</Link></h2>
-                <Link className="text-sm text-rose-700 underline underline-offset-4" href={`/${c!.slug}`}>View all {c!.name.toLowerCase()}</Link>
-              </div>
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{c!.services.slice(0, 6).map((s) => <ServiceCard key={s.id} s={s} />)}</div>
-            </div>
-          ))}
-        </div>
-      </Container>
-    </Section>
+    <>
+      <PageHero crumbs={[{ name: "Services", path: "/services" }]} eyebrow="Services" title="Everything we offer, at your home" intro="Bridal and party makeup, salon, facials, nails, hair, mehndi and packages. Filter by category or search by name." />
+      <Section className="pt-6">
+        <Container><ServiceExplorer items={items} categories={cats.map((c) => ({ slug: c.slug, name: c.name }))} /></Container>
+      </Section>
+    </>
   );
 }
