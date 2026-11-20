@@ -1,0 +1,82 @@
+/*
+ * HerrGlow design tokens (Tailwind v4 @theme).
+ * Feel: luxury salon, warm and premium. Ivory/blush base, deep plum/rose accent, gold ONLY as a highlight
+ * (decorative / large type; never body text on ivory: it fails contrast).
+ */
+@theme {
+  /* base */
+  --color-ivory: #fbf7f2;
+  --color-ivory-deep: #f4ece3;
+  --color-blush-50: #fcf1ef;
+  --color-blush-100: #f8e3df;
+  --color-blush-200: #f1cdc7;
+  --color-blush-300: #e7aea6;
+
+  /* accent: deep rose → plum */
+  --color-rose-600: #a63d5f;
+  --color-rose-700: #8c2f4f;
+  --color-plum-700: #6e2748;
+  --color-plum-800: #571f3a;
+  --color-plum-900: #3f1629;
+
+  /* highlight */
+  --color-gold-300: #e6cf9a;
+  --color-gold-400: #d3b46b;
+  --color-gold-500: #b8934a;
+
+  /* text & lines */
+  --color-ink: #2a1f24;
+  --color-ink-soft: #5e4f55;
+  --color-line: #e9ddd5;
+
+  /* semantic aliases */
+  --color-background: var(--color-ivory);
+  --color-foreground: var(--color-ink);
+  --color-primary: var(--color-plum-700);
+  --color-primary-hover: var(--color-plum-800);
+  --color-accent: var(--color-rose-600);
+
+  /* type */
+  --font-serif: var(--font-fraunces), "Playfair Display", Georgia, serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* shape & depth */
+  --radius-card: 1.25rem;
+  --radius-pill: 999px;
+  --shadow-soft: 0 1px 2px rgb(63 22 41 / 0.04), 0 8px 24px -12px rgb(63 22 41 / 0.14);
+  --shadow-lift: 0 2px 4px rgb(63 22 41 / 0.05), 0 18px 40px -16px rgb(63 22 41 / 0.28);
+
+  /* motion */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html { background: var(--color-ivory); color-scheme: light; }
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 { font-family: var(--font-serif); letter-spacing: -0.01em; color: var(--color-plum-900); }
+  h1 { font-size: clamp(2.25rem, 5vw, 3.75rem); line-height: 1.08; font-weight: 500; }
+  h2 { font-size: clamp(1.75rem, 3.4vw, 2.5rem); line-height: 1.15; font-weight: 500; }
+  h3 { font-size: 1.25rem; line-height: 1.3; font-weight: 600; }
+  :focus-visible { outline: 2px solid var(--color-rose-600); outline-offset: 3px; border-radius: 6px; }
+  ::selection { background: var(--color-blush-200); }
+}
+
+/* long-form content (blogs, service descriptions, city drafts) */
+@utility prose-herr {
+  & p { margin-block: 0.9em; line-height: 1.75; color: var(--color-ink-soft); }
+  & h2 { margin-top: 1.8em; margin-bottom: 0.5em; }
+  & h3 { margin-top: 1.4em; margin-bottom: 0.4em; }
+  & ul { list-style: disc; padding-left: 1.25rem; color: var(--color-ink-soft); }
+  & li { margin-block: 0.35em; }
+  & a { color: var(--color-rose-700); text-decoration: underline; text-underline-offset: 3px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
