@@ -16,6 +16,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "page-preview": "tsx scripts/page-preview.ts"
+    "page-preview": "tsx scripts/page-preview.ts",
+    "generate-drafts": "tsx scripts/generate-drafts.ts"
   }
 }

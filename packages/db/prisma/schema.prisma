@@ -31,6 +31,11 @@ enum LeadStatus {
   COMPLETED
   LOST
 }
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+}
+
 enum PageType {
   HOME
   CATEGORY
@@ -92,13 +97,42 @@ model Service {
   status           Status   @default(ACTIVE)
   // set when merged into another service (drives 301)
   mergedIntoId     String?
+  /// enquiries received (rolled up from merged services)
+  leadCount        Int      @default(0)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
+  variants  ServiceVariant[]
+  addons    ServiceAddon[]
   cities    ServiceCity[]
   pros      ProService[]
   leads     LeadService[]
   packages  PackageService[]
+}
+
+model ServiceVariant {
+  id        String   @id @default(cuid())
+  serviceId String
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  name      String
+  price     Decimal? @db.Decimal(10, 2)
+  offerPrice Decimal? @db.Decimal(10, 2)
+  duration  String?
+  sortOrder Int      @default(0)
+  /// when the variant has its own page that stays live (e.g. HD / Airbrush bridal)
+  linkedServiceId String?
+  @@unique([serviceId, name])
+}
+
+/// Priced extras selectable on the booking form (e.g. nail-art add-ons)
+model ServiceAddon {
+  id        String   @id @default(cuid())
+  serviceId String
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  name      String
+  price     Decimal? @db.Decimal(10, 2)
+  sortOrder Int      @default(0)
+  @@unique([serviceId, name])
 }
 
 model Package {
@@ -130,8 +164,8 @@ model City {
   slug        String  @unique
   name        String
   state       String?
-  // a city gets public pages only when it has enough active pros (see core/seo)
-  isLaunched  Boolean @default(false)
+  /// Launch switch. Inactive cities: no hub, no service×city, no area pages, not in sitemaps/nav. Data is kept.
+  isActive    Boolean @default(false)
   seoTitle    String?
   seoDescription String?
   content     String?
@@ -159,6 +193,8 @@ model Area {
   seoTitle      String?
   seoDescription String?
   showOnHome    Boolean @default(false)
+  /// approx. enquiries that came from this area (legacy lead text matched to area names)
+  leadCount     Int     @default(0)
   status        Status  @default(ACTIVE)
   coverage      ProCoverage[]
   nearby        AreaNearby[] @relation("from")
@@ -180,6 +216,9 @@ model ServiceCity {
   cityId        String
   priceOverride Decimal? @db.Decimal(10, 2)
   localContent  String?
+  faqs          Json?
+  contentStatus ContentStatus @default(DRAFT)
+  generatedAt   DateTime?
   active        Boolean  @default(true)
   service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   city          City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
@@ -295,6 +334,8 @@ model Lead {
   finalAmount Decimal?   @db.Decimal(10, 2)
   adminNote   String?
   meta        Json?
+  /// e.g. ["out_of_area"]
+  tags        String[]   @default([])
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 

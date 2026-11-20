@@ -1,17 +1,17 @@
 import { planPages } from "../src/seo/plan";
 import { prisma } from "@herrglow/db";
 
-const plans = (await planPages()).filter((p) => p.activePros > 0 || p.areasTotal > 0).sort((a, b) => b.activePros - a.activePros);
-const pad = (s: string | number, n: number) => String(s).padEnd(n);
-console.log(pad("city", 16), pad("pros", 5), pad("hub", 4), pad("svc×city(pros)", 15), pad("svc×city(live)", 15), pad("areas", 6), "area pages");
-for (const p of plans)
-  console.log(pad(p.city, 16), pad(p.activePros, 5), pad(p.cityHub ? "YES" : "-", 4), pad(p.serviceCityByPros, 15), pad(p.serviceCityLive, 15), pad(p.areasTotal, 6), p.areaPages);
-const hubs = plans.filter((p) => p.cityHub);
-const sum = (f: (p: (typeof plans)[number]) => number) => plans.reduce((a, p) => a + f(p), 0);
-const proPages = await prisma.pro.count({ where: { status: "ACTIVE", photo: { not: null } } });
-const [svc, blog] = await Promise.all([prisma.service.count({ where: { status: "ACTIVE", mergedIntoId: null } }), prisma.blog.count({ where: { status: "ACTIVE" } })]);
-console.log(`\nCity hubs: ${hubs.length} (${hubs.map((h) => h.city).join(", ")})`);
-console.log(`Service×city if content gate ignored: ${sum((p) => p.serviceCityByPros)} | live today (needs localContent): ${sum((p) => p.serviceCityLive)}`);
-console.log(`Area pages: ${sum((p) => p.areaPages)}`);
-console.log(`Artist pages (active, photo): ${proPages} | Service pages: ${svc} | Blogs: ${blog} | Categories: 7 | Home: 1`);
+const plan = await planPages();
+const W = [14, 6, 6, 16, 11, 12, 13, 13];
+const row = (v: (string | number)[]) => v.map((x, i) => String(x).padEnd(W[i]!)).join("");
+console.log(row(["city", "pros", "hub", "svc×city drafts", "(eligible)", "area pages", "(text only)", "artist pages"]));
+for (const p of plan.cities)
+  console.log(row([p.city, p.activePros, p.cityHub ? "YES" : "no", p.serviceCityDrafts, p.serviceCityEligible, p.areaPages, p.areaTextOnly, p.artistPages]));
+const sum = (f: (p: (typeof plan.cities)[number]) => number) => plan.cities.reduce((a, p) => a + f(p), 0);
+const uniqueArtists = await prisma.pro.count({
+  where: { status: "ACTIVE", photo: { not: null }, coverage: { some: { area: { city: { isActive: true } } } } },
+});
+console.log(`\nTOTAL  hubs ${plan.cities.filter((c) => c.cityHub).length} | service×city drafts ${sum((p) => p.serviceCityDrafts)} (published ${sum((p) => p.serviceCityPublished)}) | area pages ${sum((p) => p.areaPages)} | artist pages ${uniqueArtists} unique (active, with photo)`);
+console.log(`GLOBAL service pages ${plan.servicePages} | categories ${plan.categories} | blogs ${plan.blogs} | home 1`);
+console.log(`INACTIVE (no pages, no sitemap, no nav): ${plan.inactiveCities.join(", ")}`);
 await prisma.$disconnect();

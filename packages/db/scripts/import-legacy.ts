@@ -13,6 +13,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { parseDump, type Row } from "./mysql-dump";
 import { prisma } from "../src/index";
+import { applyMerges, type Svc } from "./merge-plan";
 
 const args = process.argv.slice(2);
 const flag = (n: string) => args.includes(`--${n}`);
@@ -54,6 +55,7 @@ const d = parseDump(dumpPath, new Set([
   "services", "locations", "location_service", "blogs", "testimonials", "galleries",
   "packages", "package_service", "site_settings",
   "beauticians", "beautician_service", "beautician_location_prices",
+  "leads", "lead_service", // read ONLY for counts (service_id, location text). No lead/customer data is stored by this script.
 ]));
 const T = (n: string): Row[] => d.get(n) ?? [];
 
@@ -76,16 +78,16 @@ const categories = [...new Map(Object.values(CATEGORY).map((c) => [c.slug, c])).
 
 // ───────── services (+ clean slugs for city-baked ones) ─────────
 const CITY_SUFFIX = /-(in-)?(gaur-city|noida-extension|greater-noida|noida|ghaziabad|delhi|gurugram|faridabad)$/;
-const redirects: { fromPath: string; toPath: string; note: string }[] = [];
+const redirectsBase: { fromPath: string; toPath: string; note: string }[] = [];
 const usedSlugs = new Set<string>();
 const legacyServiceSlugs = T("services").map((s) => String(s.slug));
-const services = T("services").map((s) => {
+const servicesBase = T("services").map((s) => {
   const old = String(s.slug);
   let slug = old;
   if (CITY_SUFFIX.test(old)) {
     const clean = old.replace(CITY_SUFFIX, "");
     if (legacyServiceSlugs.includes(clean) || usedSlugs.has(clean)) warn.push(`slug collision: ${old} → ${clean} (kept old slug, needs manual merge)`);
-    else { slug = clean; redirects.push({ fromPath: `/services/${old}`, toPath: `/services/${clean}`, note: "legacy service slug had a city baked in; legacy URL pattern unverified until audit-pack" }); }
+    else { slug = clean; redirectsBase.push({ fromPath: `/services/${old}`, toPath: `/services/${clean}`, note: "legacy service slug had a city baked in; legacy URL pattern unverified until audit-pack" }); }
   }
   usedSlugs.add(slug);
   const pt = String(s.provider_type ?? "").toLowerCase();
@@ -111,11 +113,30 @@ const services = T("services").map((s) => {
     featured: s.featured === 1,
     sort: Number(s.display_order ?? 0),
     status: status(s.status),
+    leadCount: 0,
   };
 });
-for (const s of services) if (!CATEGORY[String(T("services").find((x) => `svc_${x.id}` === s.id)!.category)]) warn.push(`service ${s.slug}: unknown category`);
+for (const s of servicesBase) if (!CATEGORY[String(T("services").find((x) => `svc_${x.id}` === s.id)!.category)]) warn.push(`service ${s.slug}: unknown category`);
+
+// enquiries per service (unique lead ids), then roll merged children into parents
+const leadsByService = new Map<number, Set<number>>();
+const addLead = (sid: unknown, lid: unknown) => { if (sid == null) return; const k = Number(sid); (leadsByService.get(k) ?? leadsByService.set(k, new Set()).get(k)!).add(Number(lid)); };
+for (const l of T("leads")) addLead(l.service_id, l.id);
+for (const l of T("lead_service")) addLead(l.service_id, l.lead_id);
+for (const s of servicesBase) s.leadCount = leadsByService.get(s.legacyId)?.size ?? 0;
+
+// owner-approved merges (scripts/merge-plan.ts) → final services, variants, add-ons, redirects
+const merged = applyMerges(servicesBase as unknown as Svc[], redirectsBase);
+const services = merged.services;
+const redirects = merged.redirects;
+const variants = merged.variants;
+const addons = merged.addons;
+const parentOf = new Map(services.filter((x) => (x as { mergedIntoId?: string | null }).mergedIntoId).map((x) => [x.id, (x as { mergedIntoId?: string }).mergedIntoId!]));
+const toParent = (id: string) => parentOf.get(id) ?? id;
 
 // ───────── cities & areas ─────────
+/** Launch scope (owner decision). Other cities keep their data but stay inactive. */
+const ACTIVE_CITIES = new Set(["noida", "delhi", "greater-noida"]);
 const DELHI_ZONES = new Set(["delhi", "new delhi", "south delhi", "west delhi", "north west delhi", "east delhi", "north delhi", "central delhi", "north east delhi", "south east delhi", "rohini"]);
 function cityOf(raw: unknown): { name: string; zone: string | null } | null {
   const c = String(raw ?? "").trim();
@@ -141,6 +162,7 @@ const areas = T("locations").flatMap((l) => {
     slug: String(l.slug),
     name: rebrand(String(l.name)),
     sector: str(l.sector),
+    leadCount: 0,
     zone: c.zone,
     latitude: num(l.latitude),
     longitude: num(l.longitude),
@@ -155,7 +177,17 @@ const areas = T("locations").flatMap((l) => {
     status: status(l.status),
   }];
 });
+const norm0 = (x: string) => x.toLowerCase().replace(/[^a-z0-9]/g, "");
 const knownAreaIds = new Set(areas.map((a) => a.id));
+// approx. leads per area: legacy free-text location contains the area name (active cities only; names ≥ 6 chars)
+{
+  const targets = areas.filter((a) => ACTIVE_CITIES.has(a.citySlug) && norm0(a.name).length >= 6);
+  for (const l of T("leads")) {
+    const text = norm0(String(l.location ?? "") + " " + String(l.address ?? ""));
+    if (!text) continue;
+    for (const a of targets) if (text.includes(norm0(a.name))) (a as { leadCount?: number }).leadCount = ((a as { leadCount?: number }).leadCount ?? 0) + 1;
+  }
+}
 for (const a of areas) a.nearbyAreaIds = a.nearbyAreaIds.filter((i) => knownAreaIds.has(i));
 
 const nearbyRows = areas.flatMap((a) => a.nearbyAreaIds.filter((n) => n !== a.id).map((nearbyId) => ({ areaId: a.id, nearbyId })));
@@ -176,7 +208,7 @@ const areaDataCoverage = {
 const svcCity = new Set<string>();
 for (const r of T("location_service")) {
   const city = areaCity.get(String(r.location_id));
-  if (city) svcCity.add(`svc_${r.service_id}|${city}`);
+  if (city) svcCity.add(`${toParent(`svc_${r.service_id}`)}|${city}`);
 }
 const serviceCities = [...svcCity].map((k) => { const [serviceId, cityId] = k.split("|"); return { serviceId: serviceId!, cityId: cityId! }; });
 
@@ -214,8 +246,13 @@ const proPrivate = T("beauticians").map((b) => ({
   referralCode: b.referral_code == null ? null : String(b.referral_code),
   referredById: b.referred_by_beautician_id != null && proIds.has(`pro_${b.referred_by_beautician_id}`) ? `pro_${b.referred_by_beautician_id}` : null,
 }));
-const proServices = T("beautician_service").filter((r) => proIds.has(`pro_${r.beautician_id}`) && serviceIds.has(`svc_${r.service_id}`))
-  .map((r) => ({ proId: `pro_${r.beautician_id}`, serviceId: `svc_${r.service_id}`, price: num(r.price) }));
+const proServiceMap = new Map<string, { proId: string; serviceId: string; price: number | null }>();
+for (const r of T("beautician_service")) {
+  if (!proIds.has(`pro_${r.beautician_id}`) || !serviceIds.has(`svc_${r.service_id}`)) continue;
+  const serviceId = toParent(`svc_${r.service_id}`), proId = `pro_${r.beautician_id}`;
+  if (!proServiceMap.has(proId + "|" + serviceId)) proServiceMap.set(proId + "|" + serviceId, { proId, serviceId, price: num(r.price) });
+}
+const proServices = [...proServiceMap.values()];
 const coverageMap = new Map<string, { proId: string; areaId: string; price: number | null; priceLabel: string | null }>();
 for (const r of T("beautician_location_prices")) {
   const proId = `pro_${r.beautician_id}`, areaId = `area_${r.location_id}`;
@@ -287,10 +324,21 @@ const settings: { key: string; value: string | null }[] = [
 ];
 const skippedSettings = T("site_settings").filter((s) => !SETTINGS_ALLOW.has(String(s.key))).map((s) => String(s.key));
 
+// redirect sanity: no chains, no self-redirects, no redirect away from a live page
+{
+  const from = new Set(redirects.map((r) => r.fromPath));
+  const live = new Set(services.filter((x) => x.status === "ACTIVE").map((x) => "/services/" + x.slug));
+  for (const r of redirects) {
+    if (from.has(r.toPath)) warn.push("redirect chain: " + r.fromPath + " → " + r.toPath);
+    if (r.fromPath === r.toPath) warn.push("self redirect: " + r.fromPath);
+    if (live.has(r.fromPath)) warn.push("redirect from a live page: " + r.fromPath);
+  }
+}
+
 // ───────── report ─────────
 Object.assign(report, {
   counts: {
-    categories: categories.length, services: services.length, cities: cities.size, areas: areas.length,
+    categories: categories.length, services: `${services.filter((x) => x.status === "ACTIVE").length} active (of ${services.length}; ${servicesBase.length} legacy)`, variants: variants.length, addons: addons.length, cities: cities.size, areas: areas.length,
     serviceCities: `${serviceCities.length} (from ${T("location_service").length} location_service rows)`,
     blogs: blogs.length, testimonials: testimonials.length, gallery: gallery.length,
     pros: pros.length, packages: packages.length, settings: settings.length, redirects: redirects.length,
@@ -298,6 +346,8 @@ Object.assign(report, {
   citiesByAreaCount: Object.fromEntries([...cities.keys()].map((c) => [c, areas.filter((a) => a.citySlug === c).length])),
   areaDataCoverage, pros: proReport,
   unmappedLocations: unmapped,
+  activeServices: services.filter((x) => x.status === "ACTIVE").map((x) => x.slug + " (leads " + x.leadCount + ")"),
+  variants: variants.map((v) => v.serviceId + " · " + v.name + " · " + (v.offerPrice ?? v.price)),
   redirects, skippedSettings, warnings: warn,
 });
 mkdirSync(new URL("../../../infra/import/out/", import.meta.url), { recursive: true });
@@ -310,11 +360,16 @@ if (!APPLY) { console.log("\nDRY RUN — nothing written. Full report: infra/imp
 const chunk = <T>(a: T[], n = 1000) => Array.from({ length: Math.ceil(a.length / n) }, (_, i) => a.slice(i * n, i * n + n));
 await prisma.$transaction(async (tx) => {
   for (const c of categories) await tx.category.upsert({ where: { slug: c.slug }, update: { name: c.name, sort: c.sort }, create: { id: c.slug, ...c } });
-  for (const c of cities.values()) await tx.city.upsert({ where: { slug: c.slug }, update: { name: c.name }, create: { id: c.slug, ...c } });
+  for (const c of cities.values()) await tx.city.upsert({ where: { slug: c.slug }, update: { name: c.name, ...(ACTIVE_CITIES.has(c.slug) ? { isActive: true } : {}) }, create: { id: c.slug, ...c, isActive: ACTIVE_CITIES.has(c.slug) } });
   for (const s of services) {
     const { categoryId, ...rest } = s;
     await tx.service.upsert({ where: { id: s.id }, update: { ...rest, category: { connect: { slug: categoryId } } } as never, create: { ...rest, categoryId } as never });
   }
+  const parentIds = [...new Set([...variants.map((v) => v.serviceId), ...addons.map((a) => a.serviceId)])];
+  await tx.serviceVariant.deleteMany({ where: { serviceId: { in: parentIds } } });
+  await tx.serviceVariant.createMany({ data: variants });
+  await tx.serviceAddon.deleteMany({ where: { serviceId: { in: parentIds } } });
+  await tx.serviceAddon.createMany({ data: addons });
   for (const { nearbyAreaIds: _n, ...a } of areas) await tx.area.upsert({ where: { id: a.id }, update: a as never, create: a as never });
   for (const part of chunk(nearbyRows)) await tx.areaNearby.createMany({ data: part, skipDuplicates: true });
   for (const p of pros) await tx.pro.upsert({ where: { id: p.id }, update: p as never, create: p as never });
