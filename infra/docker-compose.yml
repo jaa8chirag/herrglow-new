@@ -1,0 +1,22 @@
+name: herrglow
+
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: herrglow
+      POSTGRES_PASSWORD: herrglow_dev
+      POSTGRES_DB: herrglow
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U herrglow"]
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7
+    ports: ["6379:6379"]
+
+volumes:
+  pgdata:

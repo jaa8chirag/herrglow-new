@@ -1,0 +1,29 @@
+# deps / build
+node_modules/
+.next/
+dist/
+bin/
+obj/
+*.user
+.vs/
+
+# secrets & env
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+secrets.json
+
+# DATA — never commit database dumps or exports (contain SMTP password, hashes, customer PII)
+*.sql
+*.sql.gz
+*.dump
+*.bak
+infra/import/source/
+infra/import/out/
+audit-pack/
+audit-pack.zip
+
+# local
+.DS_Store
+*.log

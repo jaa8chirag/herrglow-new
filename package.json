@@ -1,0 +1,12 @@
+{
+  "name": "herrglow",
+  "private": true,
+  "packageManager": "pnpm@12.6.0",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "infra:up": "docker compose -f infra/docker-compose.yml up -d",
+    "infra:down": "docker compose -f infra/docker-compose.yml down",
+    "dev:web": "pnpm --filter @herrglow/web dev",
+    "dev:admin": "pnpm --filter @herrglow/admin dev"
+  }
+}
