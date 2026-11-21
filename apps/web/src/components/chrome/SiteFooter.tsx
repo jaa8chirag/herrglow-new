@@ -14,7 +14,7 @@ export interface FooterProps {
 }
 
 const SocialIcon = ({ label }: { label: string }) => (
-  <span aria-hidden className="grid size-10 place-items-center rounded-full border border-white/20 text-xs font-semibold uppercase text-gold-300 transition group-hover:border-gold-400 group-hover:bg-white/5">{label.slice(0, 2)}</span>
+  <span aria-hidden className="grid size-11 place-items-center rounded-full border border-white/20 text-xs font-semibold uppercase text-gold-300 transition group-hover:border-gold-400 group-hover:bg-white/5">{label.slice(0, 2)}</span>
 );
 
 export function SiteFooter({ siteName, categories, cities, popular, whatsapp, phone, email, waText, socials }: FooterProps) {
@@ -59,7 +59,7 @@ export function SiteFooter({ siteName, categories, cities, popular, whatsapp, ph
         <div className="gold-rule opacity-50" />
         <div className="flex flex-col items-center justify-between gap-3 pt-6 text-xs text-blush-300 sm:flex-row">
           <p>© {new Date().getFullYear()} {siteName}. All rights reserved.</p>
-          <p className="flex gap-4"><Link className="hover:text-gold-300" href="/privacy-policy">Privacy policy</Link><Link className="hover:text-gold-300" href="/terms">Terms</Link></p>
+          <p className="flex items-center gap-6"><Link className="inline-block py-1.5 hover:text-gold-300" href="/privacy-policy">Privacy policy</Link><Link className="inline-block py-1.5 hover:text-gold-300" href="/terms">Terms</Link></p>
         </div>
       </Container>
     </footer>
@@ -70,8 +70,8 @@ function FooterList({ title, items }: { title: string; items: { href: string; la
   return (
     <div>
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-300">{title}</p>
-      <ul className="mt-4 space-y-2.5 text-[0.95rem]">
-        {items.map((i) => <li key={i.href}><Link href={i.href} className="text-blush-100 transition hover:text-white hover:underline hover:underline-offset-4">{i.label}</Link></li>)}
+      <ul className="mt-4 space-y-1 text-[0.95rem]">
+        {items.map((i) => <li key={i.href}><Link href={i.href} className="inline-block py-1 text-blush-100 transition hover:text-white hover:underline hover:underline-offset-4">{i.label}</Link></li>)}
       </ul>
     </div>
   );

@@ -34,8 +34,22 @@ const where = (f: LeadFilter) => ({
 });
 
 const row = {
-  id: true, bookingRef: true, name: true, phone: true, status: true, tags: true, locationText: true, source: true, createdAt: true, eventDate: true,
-  services: { select: { service: { select: { title: true } } } }, pro: { select: { name: true } },
+  id: true,
+  bookingRef: true,
+  name: true,
+  phone: true,
+  status: true,
+  tags: true,
+  locationText: true,
+  source: true,
+  createdAt: true,
+  eventDate: true,
+  timeSlot: true,
+  amount: true,
+  finalAmount: true,
+  services: { select: { service: { select: { title: true } } } },
+  package: { select: { title: true, slug: true } },
+  pro: { select: { name: true } },
 } as const;
 
 export async function listLeads(f: LeadFilter) {
@@ -61,7 +75,11 @@ export async function leadBoard(f: Omit<LeadFilter, "status" | "page">) {
 export async function getLead(id: string) {
   return prisma.lead.findUnique({
     where: { id },
-    include: { services: { include: { service: { select: { title: true, slug: true } } } }, pro: { select: { id: true, name: true } } },
+    include: {
+      services: { include: { service: { select: { title: true, slug: true, price: true } } } },
+      package: { select: { id: true, title: true, slug: true, price: true } },
+      pro: { select: { id: true, name: true } },
+    },
   });
 }
 

@@ -13,7 +13,7 @@ export default async function CitiesPage(props: PageProps<"/admin/cities">) {
   const owner = can(me.role, "cities.toggle");
   return (
     <>
-      <PageHeader title="Cities & areas" subtitle="Inactive cities keep all their data but have no pages, sitemap entries or navigation. Their old URLs return 410." />
+      <PageHeader title="Service Cities & Neighborhood Areas" subtitle="Manage active salon zones across Delhi, Gurgaon, and Noida and their neighborhood coverage." />
       {ok && <p className="mb-4 rounded-lg bg-emerald-100 p-3 text-sm text-emerald-800">{ok}</p>}
       <Table head={["City", "Areas", "Active artists", "Hub page", "Status", "Launch switch"]}>
         {cities.map((c) => (

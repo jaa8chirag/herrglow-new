@@ -13,6 +13,8 @@ export interface BookingFormProps {
   /** preselected city (on city/area pages) */
   defaultCity?: string;
   service?: { slug: string; title: string; variants?: { name: string; price: number | null }[]; addons?: { name: string; price: number | null }[] };
+  /** preselected package (on package pages) */
+  packageItem?: { slug: string; title: string; price?: number | null };
   proSlug?: string;
   proName?: string;
   sourcePath: string;
@@ -21,6 +23,7 @@ export interface BookingFormProps {
   enquiry?: boolean;
   /** pre-filled message (e.g. which package is being booked) */
   initialMessage?: string;
+  whatsappNumber?: string;
 }
 
 const SLOTS = ["Morning (9am to 12pm)", "Afternoon (12pm to 4pm)", "Evening (4pm to 8pm)"] as const;
@@ -97,16 +100,18 @@ function Confetti() {
   );
 }
 
-export function BookingForm({ cities, defaultCity, service, proSlug, proName, sourcePath, heading, enquiry, initialMessage }: BookingFormProps) {
+export function BookingForm({ cities, defaultCity, service, packageItem, proSlug, proName, sourcePath, heading, enquiry, initialMessage, whatsappNumber }: BookingFormProps) {
   const [state, action, pending] = useActionState<FormState, FormData>(submitLead, { status: "idle" });
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
   const [v, setV] = useState({
     serviceSlug: service?.slug ?? "",
+    packageSlug: packageItem?.slug ?? "",
     variant: "",
     addons: [] as string[],
     city: defaultCity ?? "",
     area: "",
+    address: "",
     eventDate: "",
     slot: "",
     name: "",
@@ -116,7 +121,7 @@ export function BookingForm({ cities, defaultCity, service, proSlug, proName, so
   });
 
   // Use TanStack Query to fetch service picker options cached across form sessions
-  const isEnquiryMode = !service && !!enquiry;
+  const isEnquiryMode = !service && !packageItem && !!enquiry;
   const { data: options = [], isLoading: isLoadingOptions } = useServiceOptions({
     enabled: isEnquiryMode,
   });
@@ -163,7 +168,7 @@ export function BookingForm({ cities, defaultCity, service, proSlug, proName, so
 
   const err = (k: string) => (state.status === "error" ? state.errors[k] : undefined);
   const cityName = cities.find((c) => c.slug === v.city)?.name ?? (v.city === "other" ? "Other city" : "");
-  const serviceTitle = service?.title ?? options.find((o) => o.slug === v.serviceSlug)?.title ?? "";
+  const serviceTitle = packageItem?.title ?? service?.title ?? options.find((o) => o.slug === v.serviceSlug)?.title ?? "";
 
   const go = (to: number) => {
     setDir(to > step ? 1 : -1);
@@ -188,6 +193,11 @@ export function BookingForm({ cities, defaultCity, service, proSlug, proName, so
   };
 
   if (state.status === "done") {
+    const rawWa = whatsappNumber || "9876543210";
+    const waDigits = rawWa.replace(/\D/g, "");
+    const waFull = waDigits.length === 10 ? `91${waDigits}` : waDigits;
+    const waUrl = `https://wa.me/${waFull}?text=${encodeURIComponent(`Hi HerrGlow! I just submitted request ${state.ref}. Can you please confirm artist availability?`)}`;
+
     return (
       <Card id="book" className="relative scroll-mt-24 overflow-hidden p-6 text-center sm:p-10">
         <Confetti />
@@ -204,9 +214,17 @@ export function BookingForm({ cities, defaultCity, service, proSlug, proName, so
         ) : (
           <>
             <h3 className="mt-5 !text-2xl font-serif text-plum-900">Thank you, your appointment request is received!</h3>
-            <p className="mx-auto mt-2 max-w-md text-ink-soft">
-              Your booking reference is <strong className="text-plum-800">{state.ref}</strong>. <span className="font-semibold text-emerald-800">No payment is required right now.</span>
-            </p>
+            <div className="mx-auto mt-3 max-w-md rounded-2xl border border-gold-400/50 bg-blush-50/70 p-4">
+              <span className="text-xs font-semibold uppercase tracking-wider text-rose-700">Booking Reference</span>
+              <p className="mt-1 font-mono text-2xl font-bold tracking-wider text-plum-900">{state.ref}</p>
+              {state.finalAmount ? (
+                <p className="mt-1.5 text-sm font-semibold text-emerald-800">
+                  Estimated Total: ₹{Math.round(state.finalAmount).toLocaleString("en-IN")} · Pay After Service
+                </p>
+              ) : (
+                <p className="mt-1 text-xs text-ink-soft">No advance payment required. Pay only after your service.</p>
+              )}
+            </div>
 
             <div className="mx-auto mt-6 max-w-md rounded-2xl border border-line bg-blush-50/80 p-5 text-left">
               <p className="text-xs font-semibold uppercase tracking-wider text-rose-700">What happens next?</p>
@@ -228,7 +246,7 @@ export function BookingForm({ cities, defaultCity, service, proSlug, proName, so
 
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <a
-                href={`https://wa.me/919999999999?text=${encodeURIComponent(`Hi HerrGlow! I just submitted request ${state.ref}. Can you please confirm artist availability?`)}`}
+                href={waUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-[#1f8f4e] px-6 py-2.5 text-sm font-medium text-white shadow-soft hover:bg-[#187a41] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
@@ -329,12 +347,13 @@ export function BookingForm({ cities, defaultCity, service, proSlug, proName, so
               }}
             >
               {/* Mirrored hidden inputs */}
-              {(["serviceSlug", "variant", "city", "area", "eventDate", "slot", "name", "phone", "email", "message"] as const).map((k) => (
+              {(["serviceSlug", "packageSlug", "variant", "city", "area", "address", "eventDate", "slot", "name", "phone", "email", "message"] as const).map((k) => (
                 <input key={k} type="hidden" name={k} value={v[k]} />
               ))}
               {v.addons.map((a) => (
                 <input key={a} type="hidden" name="addons" value={a} />
               ))}
+              <input type="hidden" name="guestCount" value={isGroup ? groupCount : "1"} />
               <input type="hidden" name="proSlug" value={proSlug ?? ""} />
               <input type="hidden" name="sourceUrl" value={sourcePath} />
               <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
@@ -350,6 +369,13 @@ export function BookingForm({ cities, defaultCity, service, proSlug, proName, so
                                   <br />
                                   <strong className="text-lg">{service.title}</strong>
                                   {proName ? <span className="text-ink-soft"> · with {proName}</span> : null}
+                                </div>
+                              ) : packageItem ? (
+                                <div className="rounded-2xl border border-line bg-white px-4 py-3 text-plum-800">
+                                  <span className="text-xs text-ink-soft">Package</span>
+                                  <br />
+                                  <strong className="text-lg">{packageItem.title}</strong>
+                                  {packageItem.price ? <span className="text-sm font-semibold text-emerald-700"> · ₹{Math.round(packageItem.price).toLocaleString("en-IN")}</span> : null}
                                 </div>
                               ) : (
                                 <div className="grid gap-1.5">

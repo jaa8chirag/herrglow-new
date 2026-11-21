@@ -19,6 +19,7 @@ const throttled = (key: string) => {
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  secret: process.env.AUTH_SECRET || "herrglow-admin-secure-auth-secret-key-32chars-min",
   providers: [
     Credentials({
       credentials: { email: {}, password: {} },

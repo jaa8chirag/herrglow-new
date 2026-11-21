@@ -50,7 +50,12 @@ export default async function PackagePage(props: PageProps<"/packages/[slug]">) 
       <section className="section-dark py-16 sm:py-20">
         <Container className="grid items-center gap-10 lg:grid-cols-2">
           <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-300">Book now</p><h2 className="mt-3 text-ivory">Book {p.title}</h2><div className="gold-rule my-5 w-24" /><p className="max-w-md text-lg text-blush-100">We confirm your artist team and the price before anything is final.</p></div>
-          <BookingForm cities={cities} sourcePath={path} enquiry heading={`Book ${p.title}`} initialMessage={`Package: ${p.title}`} />
+          <BookingForm
+            cities={cities}
+            sourcePath={path}
+            packageItem={{ slug: p.slug, title: p.title, price: Number(p.offerPrice ?? p.price) }}
+            heading={`Book ${p.title}`}
+          />
         </Container>
       </section>
     </>

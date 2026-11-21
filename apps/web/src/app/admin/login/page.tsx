@@ -7,7 +7,11 @@ import { SubmitButton, inputCls, Field } from "@/components/admin/ui";
 async function login(fd: FormData) {
   "use server";
   try {
-    await signIn("credentials", { email: String(fd.get("email") ?? ""), password: String(fd.get("password") ?? ""), redirectTo: "/admin" });
+    await signIn("credentials", {
+      email: String(fd.get("email") ?? "").trim().toLowerCase(),
+      password: String(fd.get("password") ?? ""),
+      redirectTo: "/admin",
+    });
   } catch (e) {
     if (e instanceof AuthError) redirect("/admin/login?error=1");
     throw e; // NEXT_REDIRECT on success
@@ -17,17 +21,63 @@ async function login(fd: FormData) {
 export default async function LoginPage(props: PageProps<"/admin/login">) {
   const sp = await props.searchParams;
   const session = await auth();
-  // only skip the form for a user who is still active (a deactivated user with a live cookie must not loop)
-  if (session?.user?.id && (await getAdminState(session.user.id))?.active) redirect("/admin");
+  if (session?.user?.id && (await getAdminState(session.user.id))?.active) {
+    redirect("/admin");
+  }
+
   return (
-    <main className="grid min-h-dvh place-items-center p-6">
-      <form action={login} className="w-full max-w-sm space-y-4 rounded-2xl border border-line bg-white p-8 shadow-lift">
-        <p className="font-serif text-2xl text-plum-800">HerrGlow Admin</p>
-        <Field label="Email"><input name="email" type="email" required autoComplete="username" className={inputCls} /></Field>
-        <Field label="Password"><input name="password" type="password" required autoComplete="current-password" className={inputCls} /></Field>
-        {sp.error && <p className="text-sm text-rose-700">Incorrect email or password.</p>}
-        {sp.inactive && <p className="text-sm text-rose-700">This account is no longer active.</p>}
-        <SubmitButton className="w-full">Sign in</SubmitButton>
+    <main className="grid min-h-dvh place-items-center bg-ivory p-6">
+      <form
+        action={login}
+        className="w-full max-w-sm space-y-4 rounded-3xl border border-line bg-white p-8 shadow-soft"
+      >
+        <div className="text-center pb-2">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-plum-900 text-ivory font-serif text-2xl font-bold shadow-soft">
+            H
+          </div>
+          <h1 className="mt-3 font-serif text-2xl font-bold text-plum-950">
+            HerrGlow Portal
+          </h1>
+          <p className="mt-1 text-xs text-ink-soft">
+            Sign in to manage salon bookings, appointments & team
+          </p>
+        </div>
+
+        <Field label="Email Address">
+          <input
+            name="email"
+            type="email"
+            required
+            autoComplete="username"
+            placeholder="admin@herrglow.com"
+            className={inputCls}
+          />
+        </Field>
+
+        <Field label="Password">
+          <input
+            name="password"
+            type="password"
+            required
+            autoComplete="current-password"
+            placeholder="••••••••••••"
+            className={inputCls}
+          />
+        </Field>
+
+        {sp.error && (
+          <p className="rounded-xl bg-rose-50 p-3 text-center text-xs font-medium text-rose-700 ring-1 ring-rose-200">
+            Incorrect email or password. Please verify and try again.
+          </p>
+        )}
+
+        {sp.inactive && (
+          <p className="rounded-xl bg-rose-50 p-3 text-center text-xs font-medium text-rose-700 ring-1 ring-rose-200">
+            This staff account is currently deactivated.
+          </p>
+        )}
+
+        <SubmitButton className="w-full !mt-6">Sign In to Dashboard</SubmitButton>
       </form>
     </main>
   );

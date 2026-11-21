@@ -16,7 +16,7 @@ export default async function ProsPage(props: PageProps<"/admin/pros">) {
   const [{ items, total, pages, needsPhotoCount }, needs] = await Promise.all([listProsAdmin({ q, status, needsCoverage: filter === "needs-coverage", needsPhoto: filter === "needs-photo", page }), needsCoverageCount()]);
   return (
     <>
-      <PageHeader title="Artists" subtitle={`${total} shown`} />
+      <PageHeader title="Beauticians & Makeup Artists" subtitle={`${total} artists on your team. Manage verified profiles, city coverage, and assigned services.`} />
       <Tabs items={[
         { href: "/admin/pros", label: "All", active: !filter && !status },
         { href: "?status=ACTIVE", label: "Active", active: status === "ACTIVE" },

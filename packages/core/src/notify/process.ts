@@ -27,9 +27,30 @@ const failIf = (results: { error?: Error }[], what: string) => {
 };
 
 export async function loadLeadView(id: string): Promise<LeadView | null> {
-  const l = await prisma.lead.findUnique({ where: { id }, include: { services: { include: { service: { select: { title: true } } } } } });
+  const l = await prisma.lead.findUnique({
+    where: { id },
+    include: {
+      services: { include: { service: { select: { title: true } } } },
+      package: { select: { title: true } },
+    },
+  });
   if (!l) return null;
-  return { id: l.id, bookingRef: l.bookingRef, name: l.name, phone: l.phone, email: l.email, locationText: l.locationText, eventDate: l.eventDate, message: l.message, tags: l.tags, createdAt: l.createdAt, services: l.services.map((s) => s.service.title), variant: (l.meta as { variant?: string } | null)?.variant };
+  return {
+    id: l.id,
+    bookingRef: l.bookingRef,
+    name: l.name,
+    phone: l.phone,
+    email: l.email,
+    locationText: l.locationText,
+    eventDate: l.eventDate,
+    message: l.message,
+    tags: l.tags,
+    createdAt: l.createdAt,
+    services: l.services.map((s) => s.service.title),
+    packageName: l.package?.title ?? null,
+    variant: (l.meta as { variant?: string } | null)?.variant,
+    amount: l.finalAmount ? Number(l.finalAmount) : l.amount ? Number(l.amount) : null,
+  };
 }
 
 /** Owner alert: email + Telegram (+ WhatsApp to the owner is intentionally not sent; owner uses Telegram). */

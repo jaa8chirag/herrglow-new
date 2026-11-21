@@ -17,7 +17,7 @@ export default async function ServicesPage(props: PageProps<"/admin/services">) 
   const { items, total, pages, categories, needsPhotoCount } = await listServicesAdmin({ q, categoryId, status, page, needsPhoto });
   return (
     <>
-      <PageHeader title="Services" subtitle={`${total} services (merged duplicates are hidden; they redirect to their parent)`} />
+      <PageHeader title="Services & Rate Cards" subtitle={`${total} salon services and treatments in your catalog. Click 'Edit' to update prices, photos, and descriptions.`} />
       <Tabs items={[{ href: "/admin/services", label: "All", active: !needsPhoto }, { href: "?photo=missing", label: `Needs photo (${needsPhotoCount})`, active: needsPhoto }]} />
       <form className="mb-4 flex flex-wrap gap-2">
         <input name="q" defaultValue={q} placeholder="Search title" className={inputCls + " max-w-xs"} />

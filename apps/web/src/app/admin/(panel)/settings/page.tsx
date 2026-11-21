@@ -11,7 +11,7 @@ export default async function SettingsPage(props: PageProps<"/admin/settings">) 
   const s = await getSettingsAdmin();
   return (
     <>
-      <PageHeader title="Settings" subtitle="Owner only. Empty contact numbers hide WhatsApp and call buttons across the site and remove the telephone from structured data." />
+      <PageHeader title="Salon & WhatsApp Settings" subtitle="Configure your salon's primary WhatsApp number, phone contacts, business hours, and operational notifications." />
       {one(sp.ok) && <p className="mb-4 rounded-lg bg-emerald-100 p-3 text-sm text-emerald-800">{one(sp.ok)}</p>}
       {one(sp.err) && <p className="mb-4 rounded-lg bg-rose-100 p-3 text-sm text-rose-700">{one(sp.err)}</p>}
       <form action={saveSettingsAction} className="grid max-w-3xl gap-6">

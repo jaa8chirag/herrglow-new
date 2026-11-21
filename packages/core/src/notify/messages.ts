@@ -4,20 +4,37 @@ const when = (d: Date) => d.toLocaleString("en-IN", { timeZone: "Asia/Kolkata", 
 const day = (d: Date | null | undefined) => (d ? d.toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric" }) : null);
 
 export interface LeadView {
-  id: string; bookingRef: string | null; name: string; phone: string; email: string | null; locationText: string | null;
-  eventDate: Date | null; message: string | null; tags: string[]; createdAt: Date; services: string[]; variant?: string;
+  id: string;
+  bookingRef: string | null;
+  name: string;
+  phone: string;
+  email: string | null;
+  locationText: string | null;
+  eventDate: Date | null;
+  message: string | null;
+  tags: string[];
+  createdAt: Date;
+  services: string[];
+  packageName?: string | null;
+  variant?: string;
+  amount?: number | null;
 }
 
 export const isOutOfArea = (l: Pick<LeadView, "tags">) => l.tags.includes("out_of_area");
 
 /** Owner alert: short, scannable, with the admin link. */
 export function ownerLeadText(l: LeadView): string {
+  const serviceLabel = l.services.length
+    ? l.services.join(", ")
+    : (l.packageName ? `Package: ${l.packageName}` : "General enquiry");
+
   return [
-    isOutOfArea(l) ? "OUT OF AREA lead" : "New lead",
-    l.bookingRef ? `Ref ${l.bookingRef}` : null,
+    isOutOfArea(l) ? "OUT OF AREA lead" : "New booking request",
+    l.bookingRef ? `Booking ID: ${l.bookingRef}` : null,
     "",
-    `${l.name} · ${l.phone}`,
-    `Service: ${l.services.join(", ") || "General enquiry"}${l.variant ? ` (${l.variant})` : ""}`,
+    `${l.name} · +91 ${l.phone}`,
+    `Service: ${serviceLabel}${l.variant ? ` (${l.variant})` : ""}`,
+    l.amount ? `Estimated Amount: ₹${Math.round(l.amount).toLocaleString("en-IN")}` : null,
     `Where: ${l.locationText ?? "not given"}`,
     day(l.eventDate) ? `Date: ${day(l.eventDate)}` : null,
     l.message ? `Note: ${l.message.slice(0, 200)}` : null,
@@ -27,18 +44,32 @@ export function ownerLeadText(l: LeadView): string {
   ].filter((x) => x !== null).join("\n");
 }
 
-export const ownerLeadSubject = (l: LeadView) => `${isOutOfArea(l) ? "[Out of area] " : ""}New lead: ${l.name}, ${l.services[0] ?? "enquiry"}${l.locationText ? ` (${l.locationText})` : ""}`;
+export const ownerLeadSubject = (l: LeadView) =>
+  `${isOutOfArea(l) ? "[Out of area] " : ""}Booking ${l.bookingRef ?? ""}: ${l.name}, ${l.services[0] ?? l.packageName ?? "enquiry"}${l.locationText ? ` (${l.locationText})` : ""}`;
 
 /** Customer confirmation. Honest about what happens next: no invented time promises. */
 export function customerEmail(l: LeadView, siteName = "HerrGlow") {
   const first = l.name.split(" ")[0];
   const out = isOutOfArea(l);
+  const serviceLabel = l.services.length
+    ? l.services.join(", ")
+    : (l.packageName ? `Package: ${l.packageName}` : "appointment");
+
   const lines = out
     ? [`Hi ${first},`, "", `Thank you for your interest in ${siteName}. We do not serve your area yet, but we have saved your request and will let you know as soon as artists are available near you.`]
-    : [`Hi ${first},`, "", `Thank you, we have received your request${l.services.length ? ` for ${l.services.join(", ")}` : ""}. Our team will contact you on ${l.phone} to confirm the details and your artist.`, "", l.bookingRef ? `Your reference: ${l.bookingRef}` : "", day(l.eventDate) ? `Requested date: ${day(l.eventDate)}` : "", l.locationText ? `Location: ${l.locationText}` : ""].filter((x) => x !== undefined);
+    : [
+        `Hi ${first},`,
+        "",
+        `Thank you for booking with ${siteName}! We have received your appointment request for ${serviceLabel}.`,
+        "",
+        l.bookingRef ? `Booking ID: ${l.bookingRef}` : "",
+        l.amount ? `Estimated Total: ₹${Math.round(l.amount).toLocaleString("en-IN")} (Pay after service)` : "",
+        day(l.eventDate) ? `Requested date: ${day(l.eventDate)}` : "",
+        l.locationText ? `Location: ${l.locationText}` : "",
+      ].filter((x) => x !== undefined);
   const text = [...lines, "", `If anything above is wrong, just reply to this email.`, "", `${siteName}`, siteUrl()].join("\n");
   const html = `<div style="font-family:system-ui,sans-serif;line-height:1.6;color:#2a1f24;max-width:520px">${lines.map((x) => (x ? `<p>${esc(x)}</p>` : "")).join("")}<p style="color:#5e4f55">If anything above is wrong, just reply to this email.</p><p><strong>${esc(siteName)}</strong><br><a href="${siteUrl()}">${siteUrl()}</a></p></div>`;
-  return { subject: out ? `We have noted your request, ${first}` : `We received your request${l.bookingRef ? ` (${l.bookingRef})` : ""}`, text, html };
+  return { subject: out ? `We have noted your request, ${first}` : `Booking Confirmed: ${l.bookingRef ?? first} · ${siteName}`, text, html };
 }
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
 

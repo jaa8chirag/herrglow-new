@@ -12,7 +12,7 @@ export default async function MediaPage(props: PageProps<"/admin/media">) {
   const items = await listMedia(120);
   return (
     <>
-      <PageHeader title="Media library" subtitle={r2Configured() ? "Storage: Cloudflare R2" : "Storage: local disk (development). Set R2_* variables to use Cloudflare R2."} />
+      <PageHeader title="Photo & Media Library" subtitle="Upload and manage salon portfolio photos, customer transformation showcases, and website images." />
       {err && <p className="mb-4 rounded-lg bg-rose-100 p-3 text-sm text-rose-700">{err}</p>}
       <Panel className="mb-6"><UploadField folder="uploads" label="Upload image (JPEG, PNG, WebP or AVIF, up to 8 MB). Alt text is required." /></Panel>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-6">

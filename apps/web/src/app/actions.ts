@@ -6,7 +6,7 @@ import { createLead } from "@herrglow/core";
 export type FormState =
   | { status: "idle" }
   | { status: "error"; errors: Record<string, string> }
-  | { status: "done"; outOfArea: boolean; ref: string };
+  | { status: "done"; outOfArea: boolean; ref: string; bookingId: string; finalAmount?: number | null };
 
 // In-memory rate limit: 5 submissions / 10 min / IP
 const hits = new Map<string, number[]>();
@@ -36,12 +36,15 @@ const hits = new Map<string, number[]>();
         email: get("email"),
         city: get("city") ?? "",
         area: get("area"),
+        address: get("address"),
         serviceSlug: get("serviceSlug"),
+        packageSlug: get("packageSlug"),
         variant: get("variant"),
         addons: fd.getAll("addons").map(String),
         proSlug: get("proSlug"),
         eventDate: get("eventDate"),
         slot: get("slot"),
+        guestCount: get("guestCount") ? Number(get("guestCount")) : undefined,
         message: get("message"),
         sourceUrl: get("sourceUrl"),
         website: get("website"),
@@ -50,7 +53,13 @@ const hits = new Map<string, number[]>();
       if (!res.ok) {
         return { status: "error", errors: res.errors };
       }
-      return { status: "done", outOfArea: res.outOfArea, ref: res.ref };
+      return {
+        status: "done",
+        outOfArea: res.outOfArea,
+        ref: res.ref,
+        bookingId: res.bookingId,
+        finalAmount: res.finalAmount,
+      };
     } catch (error) {
       // Graceful error handling: log detailed trace on server, return compassionate microcopy to user
       console.error("Unhandled error in submitLead Server Action:", error);

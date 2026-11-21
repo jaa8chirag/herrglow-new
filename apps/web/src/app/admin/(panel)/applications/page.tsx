@@ -14,7 +14,7 @@ export default async function ApplicationsPage(props: PageProps<"/admin/applicat
   const tone = { NEW: "warn", APPROVED: "good", REJECTED: "neutral" } as const;
   return (
     <>
-      <PageHeader title="Artist applications" subtitle="From /join-as-beautician. Approving creates an inactive artist you then complete." />
+      <PageHeader title="Artist Join Applications" subtitle="Applications submitted by beauticians wishing to join HerrGlow. Review and approve new team members." />
       {one(sp.ok) && <p className="mb-4 rounded-lg bg-emerald-100 p-3 text-sm text-emerald-800">{one(sp.ok)}</p>}
       <Tabs items={[{ href: "/admin/applications", label: "All", active: !status }, ...(["NEW", "APPROVED", "REJECTED"] as const).map((s) => ({ href: `?status=${s}`, label: `${s[0]}${s.slice(1).toLowerCase()} (${counts[s] ?? 0})`, active: status === s }))]} />
       <Table head={["Applicant", "City", "Offers", "Experience", "Received", "Status", ""]} empty={rows.length ? undefined : "No applications."}>
