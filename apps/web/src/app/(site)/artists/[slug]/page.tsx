@@ -31,7 +31,7 @@ export default async function ProPage(props: PageProps<"/artists/[slug]">) {
   const [data, cities] = await Promise.all([getProPage(slug), getLiveCities()]);
   if (!data) notFound();
   const { pro, services, cities: covered, realMedia } = data;
-  const real = (p: string | null | undefined) => (p && (/^https?:\/\//.test(p) || realMedia.has(p)) ? mediaUrl(p) : null);
+  const real = (p: string | null | undefined) => (p && (/^https?:\/\//.test(p) || p.startsWith("/") || realMedia.has(p)) ? mediaUrl(p) : null);
   const photo = real(pro.photo);
   const portfolio = ((Array.isArray(pro.portfolio) ? pro.portfolio : []) as { path: string; alt: string }[]).map((p) => ({ src: real(p.path), alt: p.alt || `${pro.name} portfolio` })).filter((p): p is { src: string; alt: string } => !!p.src);
   const path = urls.pro(slug);

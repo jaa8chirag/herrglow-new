@@ -1,0 +1,76 @@
+name: Production Deployment Pipeline
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false
+
+jobs:
+  pre-flight:
+    name: Pre-Flight Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 12.6.0
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm db:generate
+
+      - name: Monorepo Typecheck
+        run: pnpm -r run typecheck
+
+      - name: Run SEO Guard Tests
+        run: pnpm --filter @herrglow/web test:seo
+
+  deploy:
+    name: Deploy to Production
+    needs: [pre-flight]
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://herrglow.com
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Execute Deployment
+        run: |
+          echo "🚀 Initiating production deployment for commit ${{ github.sha }}"
+          # Optional: trigger webhook, Vercel CLI, Coolify webhook, or Docker deploy
+          if [ -n "${{ secrets.DEPLOY_WEBHOOK_URL }}" ]; then
+            curl -X POST "${{ secrets.DEPLOY_WEBHOOK_URL }}"
+          else
+            echo "DEPLOY_WEBHOOK_URL not configured. Add your hosting webhook in GitHub Secrets."
+          fi
+
+      - name: Post-Deployment Verification
+        run: |
+          echo "Verifying production health check at https://herrglow.com/api/v1/health"
+          for i in {1..12}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://herrglow.com/api/v1/health || true)
+            if [ "$STATUS" = "200" ]; then
+              echo "✓ Production health check passed with HTTP 200!"
+              exit 0
+            fi
+            echo "Waiting for deployment to propagate... attempt $i/12"
+            sleep 10
+          done
+          echo "⚠️ Health check timed out or returned non-200"

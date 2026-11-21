@@ -1,4 +1,4 @@
-import { Check, ClipboardCheck, Home, Sparkles, UserCheck } from "lucide-react";
+import { Check, ClipboardCheck, Home, ShieldCheck, Sparkles, UserCheck } from "lucide-react";
 import { BlurFade, Container, Section, SectionHeading } from "@herrglow/ui";
 import { BRANDS } from "@/components/home/brands";
 
@@ -46,6 +46,80 @@ export function ProductsUsed() {
     <div>
       <h2 className="mb-4 !text-2xl sm:!text-3xl">Products our artists work with</h2>
       <div className="flex flex-wrap gap-2">{BRANDS.slice(0, 6).map((b) => <span key={b} className="rounded-full border border-line bg-white px-4 py-2 font-serif text-lg text-plum-700/80">{b}</span>)}</div>
+    </div>
+  );
+}
+
+/** Home Safety & Hygiene Promise for female clients */
+export function SafetyHygienePromise() {
+  const points = [
+    {
+      title: "100% Female Verified Professionals",
+      desc: "Every beautician undergoes police background verification and practical skills testing before home visits.",
+    },
+    {
+      title: "Sealed Single-Use Kits",
+      desc: "Disposable bedsheets, towels, gowns, wooden spatulas, and sealed wax strips opened right in front of you.",
+    },
+    {
+      title: "Sanitized Implements & Brushes",
+      desc: "All metal tools and makeup brushes are sterilized and sanitized before every appointment.",
+    },
+    {
+      title: "Authentic Luxury Brands",
+      desc: "Zero diluted salon dupes. We use authentic sealed products from MAC, Kryolan, Huda, Rica, and O3+.",
+    },
+  ];
+
+  return (
+    <div className="rounded-3xl border border-line bg-blush-50/70 p-6 sm:p-8">
+      <div className="mb-5 flex items-center gap-3">
+        <span className="grid size-11 place-items-center rounded-2xl bg-rose-600 text-white shadow-soft">
+          <ShieldCheck className="size-6" />
+        </span>
+        <div>
+          <h2 className="!text-xl sm:!text-2xl font-serif text-plum-900">Our Home Safety &amp; Hygiene Promise</h2>
+          <p className="text-xs sm:text-sm text-ink-soft">Your safety, privacy, and hygiene at home are our top priorities.</p>
+        </div>
+      </div>
+      <div className="grid gap-3.5 sm:grid-cols-2">
+        {points.map((p) => (
+          <div key={p.title} className="rounded-2xl border border-line/70 bg-white p-4">
+            <h4 className="text-sm font-semibold text-plum-900">{p.title}</h4>
+            <p className="mt-1 text-xs text-ink-soft leading-relaxed">{p.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** What our artist brings vs what the customer needs at home */
+export function HomeSetupGuide() {
+  return (
+    <div className="rounded-3xl border border-line bg-white p-6 sm:p-8">
+      <h2 className="mb-2 !text-xl sm:!text-2xl font-serif text-plum-900">What to Expect at Home</h2>
+      <p className="mb-6 text-sm text-ink-soft">Zero stress preparation. Here is how we ensure a seamless salon experience in your living space:</p>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div className="rounded-2xl border border-emerald-600/20 bg-emerald-50/40 p-5">
+          <p className="text-xs font-semibold uppercase tracking-wider text-emerald-800">What Our Artist Brings</p>
+          <ul className="mt-3 space-y-2 text-xs sm:text-sm text-emerald-950">
+            <li className="flex items-start gap-2"><span className="text-emerald-700 font-bold">✓</span><span>Complete professional product kit and sanitized tools</span></li>
+            <li className="flex items-start gap-2"><span className="text-emerald-700 font-bold">✓</span><span>Fresh disposable bedsheet, gown &amp; towels</span></li>
+            <li className="flex items-start gap-2"><span className="text-emerald-700 font-bold">✓</span><span>Professional ring light &amp; power extension board</span></li>
+            <li className="flex items-start gap-2"><span className="text-emerald-700 font-bold">✓</span><span>Post-service cleanup and disposable waste bag</span></li>
+          </ul>
+        </div>
+        <div className="rounded-2xl border border-line bg-blush-50/40 p-5">
+          <p className="text-xs font-semibold uppercase tracking-wider text-plum-800">What You Provide</p>
+          <ul className="mt-3 space-y-2 text-xs sm:text-sm text-ink-soft">
+            <li className="flex items-start gap-2"><span>•</span><span>A normal comfortable chair near a mirror</span></li>
+            <li className="flex items-start gap-2"><span>•</span><span>Access to a standard electrical power socket</span></li>
+            <li className="flex items-start gap-2"><span>•</span><span>Clean running water (warm water for facials/pedicures)</span></li>
+            <li className="flex items-start gap-2"><span>•</span><span>A well-lit, comfortable room for your privacy</span></li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }

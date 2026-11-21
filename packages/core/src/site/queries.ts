@@ -37,10 +37,13 @@ export async function getPopularServices(n = 6) {
   return prisma.service.findMany({ where: liveService, orderBy: [{ leadCount: "desc" }, { sort: "asc" }], take: n, include: { category: true } });
 }
 
-/** Cities that have a live hub page: the ONLY cities shown in nav/footer/"areas we serve". */
+/** Cities that have a live hub page: the ONLY cities shown in nav/footer/"areas we serve". Falls back to all active cities if no city pages exist yet. */
 export async function getLiveCities() {
   const pages = await prisma.page.findMany({ where: { type: "CITY", isIndexable: true }, select: { entityId: true } });
   const slugs = pages.map((p) => p.entityId!).filter(Boolean);
+  if (slugs.length === 0) {
+    return prisma.city.findMany({ where: { isActive: true }, orderBy: { name: "asc" }, select: { slug: true, name: true } });
+  }
   return prisma.city.findMany({ where: { slug: { in: slugs }, isActive: true }, orderBy: { name: "asc" }, select: { slug: true, name: true } });
 }
 

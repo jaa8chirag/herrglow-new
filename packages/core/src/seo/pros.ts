@@ -11,7 +11,7 @@ const wordCount = (html: string | null | undefined) => (html ? html.replace(/<[^
 export const mediaConfigured = () => !!(process.env.MEDIA_BASE ?? process.env.NEXT_PUBLIC_MEDIA_BASE ?? "").trim();
 
 export const hasRealPhoto = (photo: string | null | undefined, mediaKeys?: ReadonlySet<string>) =>
-  !!photo && (/^https?:\/\//.test(photo) || (mediaConfigured() && !!mediaKeys?.has(photo)));
+  !!photo && (/^https?:\/\//.test(photo) || photo.startsWith("/") || (mediaConfigured() && !!mediaKeys?.has(photo)));
 
 export const proBioWords = wordCount;
 

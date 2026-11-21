@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import { robotsMeta } from "@/lib/seo/metadata";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 import "./globals.css";
 
 const fraunces = Fraunces({ variable: "--font-fraunces", subsets: ["latin"], display: "swap" });
@@ -20,7 +21,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en-IN" className={`${fraunces.variable} ${inter.variable}`} suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} /></head>
-      <body className="min-h-dvh">{children}</body>
+      <body className="min-h-dvh">
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }

@@ -9,8 +9,10 @@ import { ArtistCard } from "@/components/page/ArtistCard";
 import { Breadcrumbs, FaqList, Html, ServiceCard, stripTags } from "@/components/parts";
 import { Photo } from "@/components/Photo";
 import { PriceBox } from "@/components/services/PriceBox";
-import { Included, ProcessSteps, ProductsUsed } from "@/components/services/blocks";
-import { getLiveCities, getMediaKeys, getServicePage } from "@/lib/data";
+import { FrequentlyPaired } from "@/components/services/FrequentlyPaired";
+import { RealLooksGallery } from "@/components/services/RealLooksGallery";
+import { HomeSetupGuide, Included, ProcessSteps, ProductsUsed, SafetyHygienePromise } from "@/components/services/blocks";
+import { getLiveCities, getMediaKeys, getServicePage, getSettings } from "@/lib/data";
 import { realImage } from "@/lib/media";
 import { JsonLd, faqLd, serviceLd } from "@/lib/seo/jsonld";
 import { buildMetadata } from "@/lib/seo/metadata";
@@ -35,13 +37,42 @@ export async function generateMetadata(props: PageProps<"/services/[slug]">): Pr
 const num = (v: unknown) => (v == null ? null : Number(v));
 const PRODUCT_CATS = new Set(["makeup", "facial-skincare", "hair", "pre-bridal"]);
 
+const DEFAULT_FAQS = [
+  {
+    question: "Are your makeup artists and beauticians 100% female & verified?",
+    answer: "Yes, 100%. Every visiting professional sent to your home is female, background-checked, identity-verified, and evaluated for safety and professional hygiene standards.",
+  },
+  {
+    question: "Is there any travel fee or extra hidden charge for my area?",
+    answer: "No. Zero hidden charges. All prices shown on our website include travel, artist fees, and single-use disposable kits across all areas we serve in Noida, Greater Noida, and Delhi.",
+  },
+  {
+    question: "What do I need to keep ready at home before the artist arrives?",
+    answer: "Zero stress! All you need is a comfortable chair, access to a mirror, and a normal power socket. Our artist brings their own professional ring light, extension cord, clean disposable sheets, sanitized tools, and authentic products.",
+  },
+  {
+    question: "When and how do I make payment?",
+    answer: "You do NOT pay anything in advance. You pay directly after the service is completed to your 100% satisfaction via Google Pay, PhonePe, Paytm, Debit/Credit Card, or Cash.",
+  },
+  {
+    question: "Can I book for multiple people (e.g., bride + mother/sister/friends)?",
+    answer: "Yes! You can add extra services or specify additional family members during booking. We can allocate extra service time or assign 2 verified artists so everyone is ready on time.",
+  },
+  {
+    question: "What if I need to reschedule or cancel?",
+    answer: "We understand wedding and family schedules can change. You can reschedule or cancel your appointment for free anytime up to 2 hours before the scheduled time with no penalty.",
+  },
+];
+
 export default async function ServicePage(props: PageProps<"/services/[slug]">) {
   const { slug } = await props.params;
-  const [data, cities, keys] = await Promise.all([getServicePage(slug), getLiveCities(), getMediaKeys()]);
+  const [data, cities, keys, s] = await Promise.all([getServicePage(slug), getLiveCities(), getMediaKeys(), getSettings()]);
   if (!data) notFound();
   const { svc, related, serviceCities, variantLinks } = data;
   const [artists, reviews, blogs] = await Promise.all([getServiceArtists(svc.id), getReviewsFor(svc.title), getRelatedBlogs(`${svc.title} ${svc.category.name}`, null, 3)]);
   const faqs = asFaqs(svc.faqs);
+  const isMakeover = /bridal|makeup/i.test(svc.category.slug) || /bridal|makeup/i.test(svc.slug);
+  const displayFaqs = faqs.length >= 4 ? faqs : [...faqs, ...DEFAULT_FAQS.filter((df) => !faqs.some((f) => f.question.toLowerCase().slice(0, 15) === df.question.toLowerCase().slice(0, 15)))];
   const path = urls.service(slug);
   const features = (svc.features ?? "").split(/\r?\n|;|•/).map((f) => f.trim()).filter(Boolean);
   const nowPrice = svc.offerPrice ?? svc.price;
@@ -71,7 +102,7 @@ export default async function ServicePage(props: PageProps<"/services/[slug]">) 
               </div>
             </div>
             <aside className="lg:sticky lg:top-28">
-              <PriceBox title={svc.title} options={options} price={num(svc.price)} offerPrice={num(svc.offerPrice)} label={svc.priceLabel && !/d/.test(svc.priceLabel) ? svc.priceLabel : null} duration={svc.duration} />
+              <PriceBox title={svc.title} options={options} price={num(svc.price)} offerPrice={num(svc.offerPrice)} label={svc.priceLabel && !/d/.test(svc.priceLabel) ? svc.priceLabel : null} duration={svc.duration} whatsappNumber={s.whatsappNumber} />
               {options.some((o) => o.name && variantLinks && svc.variants.find((v) => v.name === o.name)?.linkedServiceId) && (
                 <p className="mt-4 hidden text-sm text-ink-soft lg:block">More detail: {svc.variants.filter((v) => v.linkedServiceId && variantLinks[v.linkedServiceId]).map((v, i) => <span key={v.id}>{i > 0 && " · "}<Link className="text-rose-700 underline underline-offset-4" href={urls.service(variantLinks[v.linkedServiceId!]!)}>{v.name} page</Link></span>)}</p>
               )}
@@ -86,6 +117,10 @@ export default async function ServicePage(props: PageProps<"/services/[slug]">) 
             <Included items={features} />
             {svc.description && <div><h2 className="mb-2 !text-2xl sm:!text-3xl">About this service</h2><Html html={svc.description} /></div>}
             {PRODUCT_CATS.has(svc.category.slug) && <ProductsUsed />}
+            <SafetyHygienePromise />
+            <HomeSetupGuide />
+            <FrequentlyPaired categorySlug={svc.category.slug} serviceTitle={svc.title} />
+            {isMakeover && <RealLooksGallery />}
           </div>
         </Container>
       </Section>
@@ -116,7 +151,7 @@ export default async function ServicePage(props: PageProps<"/services/[slug]">) 
         </Section>
       )}
 
-      {faqs.length > 0 && <Section><Container className="max-w-3xl"><SectionHeading eyebrow="FAQ" title="Frequently asked questions" /><FaqList faqs={faqs} /></Container></Section>}
+      {displayFaqs.length > 0 && <Section><Container className="max-w-3xl"><SectionHeading eyebrow="FAQ" title="Frequently asked questions" /><FaqList faqs={displayFaqs} /></Container></Section>}
 
       {serviceCities.length > 0 && (
         <Section tone="blush"><Container><SectionHeading title={`${svc.title} near you`} /><div className="flex flex-wrap gap-3">{serviceCities.map((c) => <Link key={c.slug} href={urls.serviceCity(slug, c.slug)} className="rounded-full border border-plum-700/20 bg-white px-5 py-2.5 text-sm text-plum-800 hover:bg-blush-100">{svc.title} in {c.name}</Link>)}</div></Container></Section>
