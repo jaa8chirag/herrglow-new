@@ -222,8 +222,24 @@ export async function getHomeExtras() {
 /** Every live service, lightweight, for the /services explorer (client-side filter). */
 export async function getAllServicesForExplorer() {
   return prisma.service.findMany({
-    where: liveService, orderBy: [{ leadCount: "desc" }, { sort: "asc" }],
-    select: { id: true, slug: true, title: true, shortDescription: true, price: true, offerPrice: true, priceLabel: true, duration: true, image: true, imageAlt: true, leadCount: true, isPackage: true, category: { select: { slug: true, name: true } }, variants: { select: { price: true, offerPrice: true } } },
+    where: liveService,
+    orderBy: [{ category: { sort: "asc" } }, { sort: "asc" }, { leadCount: "desc" }],
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      shortDescription: true,
+      price: true,
+      offerPrice: true,
+      priceLabel: true,
+      duration: true,
+      image: true,
+      imageAlt: true,
+      leadCount: true,
+      isPackage: true,
+      category: { select: { slug: true, name: true, sort: true } },
+      variants: { select: { price: true, offerPrice: true } },
+    },
   });
 }
 

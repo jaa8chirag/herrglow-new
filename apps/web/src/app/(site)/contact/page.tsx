@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { prisma } from "@herrglow/db";
 import { Container, Section, SectionHeading } from "@herrglow/ui";
 import { BookingForm } from "@/components/BookingForm";
 import { Breadcrumbs } from "@/components/parts";
@@ -12,8 +13,21 @@ export const metadata: Metadata = buildMetadata({
   path: "/contact",
 });
 
-export default async function ContactPage() {
-  const [cities, s] = await Promise.all([getLiveCities(), getSettings()]);
+export default async function ContactPage(props: PageProps<"/contact">) {
+  const sp = await props.searchParams;
+  const serviceSlug = Array.isArray(sp.service) ? sp.service[0] : sp.service;
+
+  const [cities, s, preselectedSvc] = await Promise.all([
+    getLiveCities(),
+    getSettings(),
+    serviceSlug
+      ? prisma.service.findFirst({
+          where: { slug: serviceSlug, status: "ACTIVE" },
+          select: { slug: true, title: true },
+        })
+      : null,
+  ]);
+
   const wa = whatsappLink(s.whatsappNumber), tel = telLink(s.contactPhone);
   return (
     <Section>
@@ -29,7 +43,14 @@ export default async function ContactPage() {
               <li>We serve {cities.map((c) => c.name).join(", ")}.</li>
             </ul>
           </div>
-          <BookingForm cities={cities} sourcePath="/contact" enquiry />
+          <div id="book">
+            <BookingForm
+              cities={cities}
+              sourcePath="/contact"
+              service={preselectedSvc ?? undefined}
+              enquiry
+            />
+          </div>
         </div>
       </Container>
     </Section>

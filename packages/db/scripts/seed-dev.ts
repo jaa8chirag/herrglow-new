@@ -9,12 +9,14 @@ async function main() {
 
   // 1. Categories
   const categories = [
-    { slug: "bridal-makeup", name: "Bridal Makeup", sort: 1 },
-    { slug: "salon-at-home", name: "Salon at Home", sort: 2 },
-    { slug: "facial-and-skincare", name: "Facial & Skincare", sort: 3 },
-    { slug: "waxing", name: "Waxing", sort: 4 },
-    { slug: "nail-art", name: "Nail Art", sort: 5 },
-    { slug: "hair-styling", name: "Hair Styling", sort: 6 },
+    { slug: "bridal-makeup", name: "Bridal & Wedding Makeup", sort: 1 },
+    { slug: "engagement-party-makeup", name: "Engagement, Pre-Wedding & Party Makeup", sort: 2 },
+    { slug: "pre-bridal-packages", name: "Pre-Bridal & Combo Packages", sort: 3 },
+    { slug: "draping-eye-mehndi", name: "Draping, Eye Makeup & Mehndi", sort: 4 },
+    { slug: "hair-styling", name: "Hair Styling & Treatments", sort: 5 },
+    { slug: "facial-and-skincare", name: "Facials, Skin & Body Care (Salon at Home)", sort: 6 },
+    { slug: "waxing", name: "Waxing (Salon at Home)", sort: 7 },
+    { slug: "nail-art", name: "Manicure, Pedicure & Nails (Salon at Home)", sort: 8 },
   ];
 
   const catMap = new Map<string, string>();
