@@ -10,9 +10,26 @@ export function AnnouncementBar({ text }: { text: string }) {
   useEffect(() => { try { if (localStorage.getItem(key)) setHidden(true); } catch { /* private mode */ } }, [key]);
   if (hidden) return null;
   return (
-    <div className="relative bg-plum-800 px-10 py-2 text-center text-sm text-ivory">
-      <p className="mx-auto max-w-5xl truncate sm:whitespace-normal"><span aria-hidden className="mr-2 text-gold-400">✦</span>{text}</p>
-      <button type="button" aria-label="Dismiss announcement" onClick={() => { setHidden(true); try { localStorage.setItem(key, "1"); } catch { /* ignore */ } }} className="absolute right-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-ivory/80 hover:bg-white/10 hover:text-ivory"><X className="size-4" /></button>
+    <div className="relative bg-gradient-to-r from-plum-950 via-plum-900 to-plum-950 px-8 py-2 text-center text-xs font-medium text-ivory tracking-wide border-b border-gold-400/20 shadow-xs">
+      <div className="mx-auto flex max-w-7xl items-center justify-center gap-2 truncate sm:whitespace-normal">
+        <span aria-hidden className="text-gold-400 font-bold">✦</span>
+        <span>{text}</span>
+      </div>
+      <button
+        type="button"
+        aria-label="Dismiss announcement"
+        onClick={() => {
+          setHidden(true);
+          try {
+            localStorage.setItem(key, "1");
+          } catch {
+            /* ignore */
+          }
+        }}
+        className="absolute right-3 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-full text-ivory/70 hover:bg-white/10 hover:text-ivory"
+      >
+        <X className="size-3.5" />
+      </button>
     </div>
   );
 }

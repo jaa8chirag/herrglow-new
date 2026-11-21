@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ChevronDown, Menu, MapPin, X } from "lucide-react";
+import { ArrowRight, ChevronDown, Menu, MapPin, X, ShieldCheck, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -84,41 +84,48 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
           {/* mobile: full-screen drawer */}
           <Drawer.Root direction="right">
             <Drawer.Trigger asChild>
-              <button type="button" aria-label="Open menu" className="grid size-11 place-items-center rounded-full border border-line bg-white/70 text-plum-800 lg:hidden"><Menu className="size-5" /></button>
+              <button type="button" aria-label="Open menu" className="grid size-12 place-items-center rounded-full border border-line bg-white/80 text-plum-900 lg:hidden shadow-xs hover:bg-blush-50 active:scale-95"><Menu className="size-5" /></button>
             </Drawer.Trigger>
             <DrawerShell title="Menu" direction="right">
               <div className="flex h-full flex-col overflow-y-auto">
                 <div className="flex h-20 shrink-0 items-center justify-between px-5">
-                  <span className="font-serif text-2xl font-semibold text-plum-800">{siteName}<span className="text-gold-400">.</span></span>
-                  <Drawer.Close asChild><button type="button" aria-label="Close menu" className="grid size-11 place-items-center rounded-full border border-line text-plum-800"><X className="size-5" /></button></Drawer.Close>
+                  <div>
+                    <span className="font-serif text-2xl font-bold text-plum-900">{siteName}<span className="text-gold-400">.</span></span>
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-gold-600">Luxury Doorstep Salon &amp; Bridal</p>
+                  </div>
+                  <Drawer.Close asChild><button type="button" aria-label="Close menu" className="grid size-12 place-items-center rounded-full border border-line text-plum-900 hover:bg-blush-50"><X className="size-5" /></button></Drawer.Close>
                 </div>
                 <div className="gold-rule mx-5" />
+                <div className="mx-5 my-3 flex items-center gap-2 rounded-xl border border-emerald-300/60 bg-emerald-50/70 p-2.5 text-xs text-emerald-900 font-medium">
+                  <ShieldCheck className="size-4 text-emerald-600 shrink-0" />
+                  <span>100% Female Verified · Pay After Service</span>
+                </div>
                 <nav className="flex-1 space-y-1 p-5" aria-label="Mobile">
-                  <Drawer.Close asChild><Link href="/" className="block rounded-xl px-3 py-3 font-serif text-2xl text-plum-800">Home</Link></Drawer.Close>
+                  <Drawer.Close asChild><Link href="/" className="flex items-center min-h-[48px] rounded-xl px-3 py-3 font-serif text-2xl text-plum-800">Home</Link></Drawer.Close>
                   <details className="group rounded-xl">
-                    <summary className="flex cursor-pointer list-none items-center justify-between rounded-xl px-3 py-3 font-serif text-2xl text-plum-800">Services <ChevronDown className="size-5 transition-transform group-open:rotate-180" /></summary>
+                    <summary className="flex cursor-pointer list-none items-center justify-between min-h-[48px] rounded-xl px-3 py-3 font-serif text-2xl text-plum-800">Services <ChevronDown className="size-5 transition-transform group-open:rotate-180" /></summary>
                     <div className="mt-1 space-y-1 pb-2 pl-2">
                       {menu.map((c) => {
                         const Icon = categoryIcon(c.slug);
                         return (
                           <details key={c.slug} className="group/c rounded-xl bg-blush-50">
-                            <summary className="flex cursor-pointer list-none items-center gap-3 px-3 py-3 text-base font-medium text-plum-800"><Icon className="size-5 text-rose-600" />{c.name}<ChevronDown className="ml-auto size-4 transition-transform group-open/c:rotate-180" /></summary>
+                            <summary className="flex cursor-pointer list-none items-center gap-3 min-h-[44px] px-3 py-2.5 text-base font-medium text-plum-800"><Icon className="size-5 text-rose-600" />{c.name}<ChevronDown className="ml-auto size-4 transition-transform group-open/c:rotate-180" /></summary>
                             <ul className="space-y-0.5 px-3 pb-3">
-                              {c.services.map((s) => <li key={s.slug}><Drawer.Close asChild><Link href={`/services/${s.slug}`} className="block rounded-lg px-3 py-2 text-ink-soft hover:bg-white">{s.title}</Link></Drawer.Close></li>)}
-                              <li><Drawer.Close asChild><Link href={c.href} className="block rounded-lg px-3 py-2 font-medium text-rose-700">View all {c.name.toLowerCase()} →</Link></Drawer.Close></li>
+                              {c.services.map((s) => <li key={s.slug}><Drawer.Close asChild><Link href={`/services/${s.slug}`} className="flex items-center min-h-[40px] rounded-lg px-3 py-2 text-ink-soft hover:bg-white">{s.title}</Link></Drawer.Close></li>)}
+                              <li><Drawer.Close asChild><Link href={c.href} className="flex items-center min-h-[40px] rounded-lg px-3 py-2 font-medium text-rose-700">View all {c.name.toLowerCase()} →</Link></Drawer.Close></li>
                             </ul>
                           </details>
                         );
                       })}
                     </div>
                   </details>
-                  {NAV.slice(1).map((n) => <Drawer.Close key={n.href} asChild><Link href={n.href} className="block rounded-xl px-3 py-3 font-serif text-2xl text-plum-800">{n.label}</Link></Drawer.Close>)}
+                  {NAV.slice(1).map((n) => <Drawer.Close key={n.href} asChild><Link href={n.href} className="flex items-center min-h-[48px] rounded-xl px-3 py-3 font-serif text-2xl text-plum-800">{n.label}</Link></Drawer.Close>)}
                   {cities.length > 0 && (
-                    <div className="pt-4"><p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-rose-700">Cities</p>
-                      <div className="flex flex-wrap gap-2 px-1">{cities.map((c) => <Drawer.Close key={c.slug} asChild><Link href={`/makeup-artist-in-${c.slug}`} className="rounded-full border border-line bg-white px-4 py-2 text-sm text-plum-800">{c.name}</Link></Drawer.Close>)}</div></div>
+                    <div className="pt-4"><p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-rose-700">Service Cities</p>
+                      <div className="flex flex-wrap gap-2 px-1">{cities.map((c) => <Drawer.Close key={c.slug} asChild><Link href={`/makeup-artist-in-${c.slug}`} className="flex items-center min-h-[44px] rounded-full border border-line bg-white px-4 py-2 text-sm text-plum-800">{c.name}</Link></Drawer.Close>)}</div></div>
                   )}
                 </nav>
-                <div className="shrink-0 p-5"><Drawer.Close asChild><Link href="/contact#book" onClick={book} className={cn(buttonStyles({ variant: "shimmer", size: "lg" }), "w-full")}>Book Now</Link></Drawer.Close></div>
+                <div className="shrink-0 p-5"><Drawer.Close asChild><Link href="/contact#book" onClick={book} className={cn(buttonStyles({ variant: "shimmer", size: "lg" }), "w-full min-h-12 text-base font-bold")}>Book Appointment</Link></Drawer.Close></div>
               </div>
             </DrawerShell>
           </Drawer.Root>

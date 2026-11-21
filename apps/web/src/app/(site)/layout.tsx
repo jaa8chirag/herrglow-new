@@ -24,8 +24,11 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   const makeup = cats.find((c) => c.slug === "makeup");
   const menu = [...(makeup ? [makeup] : []), ...(mega.bridal.length ? [toCat("bridal", "Bridal", "/makeup", mega.bridal)] : []), ...cats.filter((c) => c.slug !== "makeup")];
 
-  // opt-in only: legacy offer text from the old site is stored but never shown unless an admin enables the strip
-  const strip = s.raw.offer_strip_enabled === "1" && s.raw.offer_strip_text?.trim() ? s.raw.offer_strip_text.trim() : null;
+  // Luxury trust tagline banner (shown by default or replaced by custom offer from admin settings)
+  const strip =
+    s.raw.offer_strip_enabled === "1" && s.raw.offer_strip_text?.trim()
+      ? s.raw.offer_strip_text.trim()
+      : "Delhi NCR's Most Trusted Luxury Doorstep Salon & Bridal Artistry · 100% Female Verified · Sealed Kits · Pay After Service";
   const socials = [["Instagram", s.raw.social_instagram], ["Facebook", s.raw.social_facebook], ["YouTube", s.raw.social_youtube]].filter((x): x is [string, string] => !!x[1]?.trim()).map(([label, href]) => ({ label, href }));
   const logo = realImage(keys, s.raw.site_logo);
 

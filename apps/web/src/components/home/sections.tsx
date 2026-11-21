@@ -16,37 +16,52 @@ export function TrustBadges() {
     {
       icon: ShieldCheck,
       title: "100% Female Verified Staff",
-      desc: "Background & police-checked female beauticians for your complete safety at home.",
+      desc: "Background & police-checked senior female beauticians. Complete safety & privacy in your home.",
     },
     {
       icon: Sparkles,
-      title: "Single-Use Sealed Kits",
-      desc: "Fresh disposable gowns, bedsheets, wooden spatulas & sealed strips for every visit.",
+      title: "Hospital-Grade Sealed Kits",
+      desc: "Fresh disposable gowns, bedsheets, wooden spatulas & sealed strips opened in front of you.",
     },
     {
       icon: BadgeCheck,
-      title: "100% Authentic Brands",
-      desc: "MAC, Huda, Kryolan, Rica & O3+ opened in front of you. Zero fake or diluted salon dupes.",
+      title: "100% Authentic Luxury Brands",
+      desc: "MAC, Huda Beauty, Kryolan, Rica & O3+. Zero fake, expired, or diluted duplicates.",
     },
     {
       icon: Wallet,
-      title: "Pay After Service",
-      desc: "Zero advance required for salon visits. Pay via UPI, Cash or Card once fully satisfied.",
+      title: "Zero Advance · Pay After Service",
+      desc: "No advance payment required. Pay via UPI, Card, or Cash only when 100% satisfied with your look.",
     },
   ];
 
   return (
-    <section aria-label="Our safety and quality guarantees" className="border-b border-line bg-white/70 py-6 sm:py-8 backdrop-blur-sm">
+    <section aria-label="Our safety and quality guarantees" className="border-b border-line bg-gradient-to-b from-white via-blush-50/40 to-white py-12 sm:py-16">
       <Container>
+        <div className="mb-8 text-center max-w-2xl mx-auto">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-500">
+            Our Safety &amp; Trust Guarantee
+          </p>
+          <h2 className="mt-2 font-serif text-2xl sm:text-3xl font-bold text-plum-950">
+            Why 12,000+ Women Trust HerrGlow
+          </h2>
+          <p className="mt-2 text-sm text-ink-soft">
+            Five-star salon luxury and bridal artistry, delivered to your doorstep without compromising on safety, hygiene, or authentic products.
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {items.map((it) => (
-            <div key={it.title} className="flex items-start gap-3.5 rounded-2xl bg-blush-50/60 p-4 sm:bg-transparent sm:p-0">
-              <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-blush-100 text-rose-700">
-                <it.icon className="size-5" strokeWidth={1.75} />
+            <div
+              key={it.title}
+              className="flex items-start gap-4 rounded-2xl border border-line/70 bg-white p-5 shadow-soft transition-all duration-300 hover:border-gold-300 hover:shadow-lift"
+            >
+              <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-blush-100 to-blush-200 text-rose-700 shadow-xs">
+                <it.icon className="size-6 text-rose-700" strokeWidth={1.75} />
               </span>
               <div>
-                <p className="text-sm font-semibold text-plum-900 sm:text-[0.95rem]">{it.title}</p>
-                <p className="mt-0.5 text-xs text-ink-soft leading-relaxed">{it.desc}</p>
+                <p className="text-sm font-bold text-plum-950 sm:text-[0.95rem]">{it.title}</p>
+                <p className="mt-1 text-xs text-ink-soft leading-relaxed">{it.desc}</p>
               </div>
             </div>
           ))}

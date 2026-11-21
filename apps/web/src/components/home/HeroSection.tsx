@@ -22,26 +22,29 @@ interface HeroProps {
         <div className="relative mx-auto grid w-full max-w-7xl items-center gap-12 px-5 pb-16 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:pb-24">
           <div>
             <Rise>
-              <span className="inline-flex items-center gap-2 rounded-full border border-gold-400/50 bg-white/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-plum-800 backdrop-blur">
-                <Sparkles className="size-3.5 text-gold-500" /> Makeup &amp; salon, at your home
+              <span className="inline-flex items-center gap-2 rounded-full border border-gold-400/50 bg-white/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-plum-900 backdrop-blur shadow-xs">
+                <Sparkles className="size-3.5 text-gold-500" /> Delhi NCR&apos;s Most Trusted Doorstep Salon
               </span>
             </Rise>
             <Rise delay={0.05} soft>
-              <h1 className="mt-6">Look and feel your best, <GradientText>without leaving home.</GradientText></h1>
+              <h1 className="mt-5 font-serif text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-plum-950 leading-[1.12]">
+                Salon Luxury &amp; Bridal Artistry, <GradientText>Delivered to Your Doorstep.</GradientText>
+              </h1>
             </Rise>
             <Rise delay={0.12}>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft sm:text-xl">
-                Verified makeup artists and beauticians for bridal, party and everyday glam across {cityNames.length ? cityNames.join(", ") : "Delhi NCR"}. Clear prices. Your schedule.
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft sm:text-lg">
+                Experience five-star bridal glam and luxury salon pampering in the comfort and privacy of your home. 100% background-verified female beauticians, hospital-grade single-use kits, and transparent prices across {cityNames.length ? cityNames.join(", ") : "Delhi, Noida & Greater Noida"}.
               </p>
             </Rise>
-            <Rise delay={0.18} className="mt-9 flex flex-wrap gap-3">
-              <BookLink className="min-h-13 px-9 text-base" label="Book Now" />
-              <Link href="/services" className={cn(buttonStyles({ variant: "outline", size: "lg" }), "bg-white/60 backdrop-blur")}>View Services <ArrowRight className="size-4" /></Link>
+            <Rise delay={0.18} className="mt-8 flex flex-col sm:flex-row gap-3.5">
+              <BookLink className="min-h-12 w-full sm:w-auto px-8 text-sm sm:text-base font-semibold shadow-soft" label="Book Appointment" />
+              <Link href="/services" className={cn(buttonStyles({ variant: "outline", size: "lg" }), "min-h-12 w-full sm:w-auto bg-white/70 backdrop-blur font-semibold")}>View 8 Categories &amp; Prices <ArrowRight className="size-4" /></Link>
             </Rise>
-            <Rise delay={0.22} className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs font-medium text-emerald-800">
-              <span className="flex items-center gap-1.5"><ShieldCheck className="size-4 text-emerald-600" /> 100% Female Verified Artists</span>
-              <span className="flex items-center gap-1.5"><Wallet className="size-4 text-emerald-600" /> Pay After Service</span>
-              <span className="flex items-center gap-1.5"><Sparkles className="size-4 text-emerald-600" /> Zero Hidden Travel Fees</span>
+            <Rise delay={0.22} className="mt-6 grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:items-center sm:gap-x-5 sm:gap-y-2 text-xs font-semibold text-plum-900">
+              <span className="flex items-center gap-1.5 rounded-lg bg-white/70 p-1.5 sm:p-0"><ShieldCheck className="size-4 text-emerald-600 shrink-0" /> 100% Female Verified</span>
+              <span className="flex items-center gap-1.5 rounded-lg bg-white/70 p-1.5 sm:p-0"><Sparkles className="size-4 text-gold-600 shrink-0" /> Sealed Single-Use Kits</span>
+              <span className="flex items-center gap-1.5 rounded-lg bg-white/70 p-1.5 sm:p-0"><Wallet className="size-4 text-emerald-600 shrink-0" /> Pay After Service</span>
+              <span className="flex items-center gap-1.5 rounded-lg bg-white/70 p-1.5 sm:p-0"><ShieldCheck className="size-4 text-plum-600 shrink-0" /> Zero Hidden Charges</span>
             </Rise>
             <Rise delay={0.26} className="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-sm text-ink-soft">
               {reviews.avg != null && reviews.count > 0 && <span className="flex items-center gap-2"><Star className="size-4 fill-gold-400 text-gold-400" /><strong className="text-plum-800">{reviews.avg.toFixed(1)}</strong> from {reviews.count} customer reviews</span>}
