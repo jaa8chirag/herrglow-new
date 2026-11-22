@@ -104,10 +104,24 @@ export interface ApplyFormProps {
   areas?: string[];
   whatsappNumber?: string;
   initialLang?: "en" | "hi";
+  lang?: "en" | "hi";
+  onLangChange?: (newLang: "en" | "hi") => void;
+  hideLangToggle?: boolean;
+  hideWhatsAppCard?: boolean;
 }
 
-export function ApplyForm({ categories, areas = [], whatsappNumber, initialLang = "en" }: ApplyFormProps) {
-  const [lang, setLang] = useState<"en" | "hi">(initialLang);
+export function ApplyForm({
+  categories,
+  areas = [],
+  whatsappNumber,
+  initialLang = "en",
+  lang: controlledLang,
+  onLangChange,
+  hideLangToggle = false,
+  hideWhatsAppCard = false,
+}: ApplyFormProps) {
+  const [internalLang, setInternalLang] = useState<"en" | "hi">(initialLang);
+  const lang = controlledLang ?? internalLang;
   const [state, action, pending] = useActionState<ApplyState, FormData>(submitApplication, { status: "idle" });
   const [geoStatus, setGeoStatus] = useState<"idle" | "detecting" | "success" | "error">("idle");
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
@@ -120,7 +134,11 @@ export function ApplyForm({ categories, areas = [], whatsappNumber, initialLang 
 
   // Sync lang with URL query param and localStorage
   const handleLanguageChange = (newLang: "en" | "hi") => {
-    setLang(newLang);
+    if (onLangChange) {
+      onLangChange(newLang);
+    } else {
+      setInternalLang(newLang);
+    }
     if (typeof window !== "undefined") {
       try {
         localStorage.setItem("herrglow_apply_lang", newLang);
@@ -138,19 +156,20 @@ export function ApplyForm({ categories, areas = [], whatsappNumber, initialLang 
   };
 
   useEffect(() => {
+    if (controlledLang) return;
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const urlLang = params.get("lang");
       if (urlLang === "hi" || urlLang === "en") {
-        setLang(urlLang);
+        setInternalLang(urlLang);
       } else {
         const stored = localStorage.getItem("herrglow_apply_lang");
         if (stored === "hi" || stored === "en") {
-          setLang(stored);
+          setInternalLang(stored);
         }
       }
     }
-  }, []);
+  }, [controlledLang]);
 
   const err = (k: string) => {
     if (state.status !== "error") return undefined;
@@ -335,56 +354,58 @@ export function ApplyForm({ categories, areas = [], whatsappNumber, initialLang 
 
   return (
     <Card id="apply" className="scroll-mt-24 p-6 sm:p-8 lg:p-10 w-full min-w-0">
-      {/* Language Selector Header */}
-      <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-blush-200/90 bg-gradient-to-r from-blush-50 via-white to-blush-50/60 p-3.5 sm:p-4 sm:flex-row sm:items-center sm:justify-between shadow-xs min-w-0">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-plum-100 font-bold text-xs text-plum-900 shadow-xs">
-            A/आ
-          </span>
-          <div className="min-w-0">
-            <p className="text-xs sm:text-sm font-semibold text-plum-950 truncate">
-              {lang === "hi" ? "Form ki Bhasha (Language)" : "Choose Form Language"}
-            </p>
-            <p className="text-[0.72rem] text-ink-soft">
-              {lang === "hi"
-                ? "Form aasan Hinglish (spoken Hindi) mein dikhaya ja raha hai"
-                : "Select English or simple conversational Hinglish"}
-            </p>
+      {/* Language Selector Header (rendered when not controlled externally) */}
+      {!hideLangToggle && (
+        <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-blush-200/90 bg-gradient-to-r from-blush-50 via-white to-blush-50/60 p-3.5 sm:p-4 sm:flex-row sm:items-center sm:justify-between shadow-xs min-w-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-plum-100 font-bold text-xs text-plum-900 shadow-xs">
+              A/आ
+            </span>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm font-semibold text-plum-950 truncate">
+                {lang === "hi" ? "Form ki Bhasha (Language)" : "Choose Form Language"}
+              </p>
+              <p className="text-[0.72rem] text-ink-soft">
+                {lang === "hi"
+                  ? "Form aasan Hinglish (spoken Hindi) mein dikhaya ja raha hai"
+                  : "Select English or simple conversational Hinglish"}
+              </p>
+            </div>
+          </div>
+
+          <div className="inline-flex rounded-xl bg-blush-100/90 p-1 border border-blush-200/80 self-start sm:self-center shadow-xs shrink-0">
+            <button
+              type="button"
+              onClick={() => handleLanguageChange("en")}
+              className={cn(
+                "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
+                lang === "en"
+                  ? "bg-white text-plum-950 shadow-xs ring-1 ring-black/5"
+                  : "text-ink-soft hover:text-plum-950"
+              )}
+              aria-pressed={lang === "en"}
+            >
+              English
+            </button>
+            <button
+              type="button"
+              onClick={() => handleLanguageChange("hi")}
+              className={cn(
+                "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer",
+                lang === "hi"
+                  ? "bg-plum-700 text-ivory shadow-xs font-bold"
+                : "text-ink-soft hover:text-plum-950"
+              )}
+              aria-pressed={lang === "hi"}
+            >
+              <span>हिन्दी</span>
+              <span className="text-[0.68rem] opacity-90 font-medium">(Hinglish)</span>
+            </button>
           </div>
         </div>
+      )}
 
-        <div className="inline-flex rounded-xl bg-blush-100/90 p-1 border border-blush-200/80 self-start sm:self-center shadow-xs shrink-0">
-          <button
-            type="button"
-            onClick={() => handleLanguageChange("en")}
-            className={cn(
-              "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
-              lang === "en"
-                ? "bg-white text-plum-950 shadow-xs ring-1 ring-black/5"
-                : "text-ink-soft hover:text-plum-950"
-            )}
-            aria-pressed={lang === "en"}
-          >
-            English
-          </button>
-          <button
-            type="button"
-            onClick={() => handleLanguageChange("hi")}
-            className={cn(
-              "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer",
-              lang === "hi"
-                ? "bg-plum-700 text-ivory shadow-xs font-bold"
-                : "text-ink-soft hover:text-plum-950"
-            )}
-            aria-pressed={lang === "hi"}
-          >
-            <span>हिन्दी</span>
-            <span className="text-[0.68rem] opacity-90 font-medium">(Hinglish)</span>
-          </button>
-        </div>
-      </div>
-
-      {waUrl && (
+      {!hideWhatsAppCard && waUrl && (
         <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 sm:flex-row sm:items-center sm:justify-between min-w-0">
           <div className="flex items-start gap-3 min-w-0">
             <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-emerald-600 text-white shadow-sm">

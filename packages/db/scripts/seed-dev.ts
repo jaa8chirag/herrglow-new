@@ -657,6 +657,43 @@ async function main() {
     });
   }
 
+  // 10. Premium SEO Blogs
+  try {
+    const { PREMIUM_BLOGS } = await import("./seed-blogs.js").catch(() => import("./seed-blogs.ts"));
+    for (const b of PREMIUM_BLOGS) {
+      await prisma.blog.upsert({
+        where: { slug: b.slug },
+        update: {
+          title: b.title,
+          seoTitle: b.seoTitle,
+          seoDescription: b.seoDescription,
+          excerpt: b.excerpt,
+          content: b.content,
+          authorName: b.authorName,
+          image: b.image,
+          imageAlt: b.imageAlt,
+          status: "PUBLISHED",
+        },
+        create: {
+          slug: b.slug,
+          title: b.title,
+          seoTitle: b.seoTitle,
+          seoDescription: b.seoDescription,
+          excerpt: b.excerpt,
+          content: b.content,
+          authorName: b.authorName,
+          image: b.image,
+          imageAlt: b.imageAlt,
+          status: "PUBLISHED",
+          publishedAt: new Date(),
+        },
+      });
+    }
+    console.log("✓ Premium SEO blogs seeded successfully!");
+  } catch (err) {
+    console.warn("Notice: Could not seed premium blogs in seed-dev:", err);
+  }
+
   console.log("✓ Pre-launch seeding with watermarked images completed successfully!");
 }
 
