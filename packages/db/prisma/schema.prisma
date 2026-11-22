@@ -11,6 +11,7 @@ datasource db {
 enum Status {
   ACTIVE
   INACTIVE
+  COMING_SOON
 }
 enum ProStatus {
   PENDING
@@ -39,6 +40,7 @@ enum ContentStatus {
 enum PageType {
   HOME
   CATEGORY
+  CATEGORY_CITY
   SERVICE
   CITY
   SERVICE_CITY
@@ -65,44 +67,81 @@ enum MediaType {
 
 // ───────── Catalog ─────────
 model Category {
-  id       String    @id @default(cuid())
-  slug     String    @unique
-  name     String
-  sort     Int       @default(0)
-  services Service[]
+  id                 String         @id @default(cuid())
+  slug               String         @unique
+  name               String
+  icon               String?
+  shortDescription   String?
+  longContent        String?
+  displayOrder       Int            @default(0)
+  sort               Int            @default(0)
+  status             Status         @default(ACTIVE)
+  seoTitle           String?
+  seoDescription     String?
+  faqs               Json?
+  relatedCategoryIds String[]       @default([])
+  subcategories      SubCategory[]
+  services           Service[]
+  cities             CategoryCity[]
+}
+
+model SubCategory {
+  id           String    @id @default(cuid())
+  categoryId   String
+  category     Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  slug         String
+  name         String
+  displayOrder Int       @default(0)
+  status       Status    @default(ACTIVE)
+  services     Service[]
+
+  @@unique([categoryId, slug])
 }
 
 model Service {
-  id               String   @id @default(cuid())
-  legacyId         Int?     @unique
-  slug             String   @unique
-  title            String
-  categoryId       String
-  category         Category @relation(fields: [categoryId], references: [id])
-  providerType     ProviderType @default(BOTH)
-  shortDescription String?
-  description      String?
-  features         String?
-  price            Decimal? @db.Decimal(10, 2)
-  offerPrice       Decimal? @db.Decimal(10, 2)
-  priceLabel       String?
-  duration         String?
-  image            String?
-  imageAlt         String?
-  seoTitle         String?
-  seoDescription   String?
-  faqs             Json?
-  featured         Boolean  @default(false)
+  id                String          @id @default(cuid())
+  legacyId          Int?            @unique
+  slug              String          @unique
+  title             String
+  categoryId        String
+  category          Category        @relation(fields: [categoryId], references: [id])
+  subCategoryId     String?
+  subCategory       SubCategory?    @relation(fields: [subCategoryId], references: [id], onDelete: SetNull)
+  providerType      ProviderType    @default(BOTH)
+  shortDescription  String?
+  description       String?
+  longContent       String?
+  features          String?
+  whatsIncluded     String[]        @default([])
+  howItWorks        String[]        @default([])
+  aftercareTips     String[]        @default([])
+  suitableFor       String?
+  price             Decimal?        @db.Decimal(10, 2)
+  offerPrice        Decimal?        @db.Decimal(10, 2)
+  mrp               Decimal?        @db.Decimal(10, 2)
+  priceLabel        String?
+  duration          String?
+  durationMins      Int?
+  image             String?
+  imageAlt          String?
+  seoTitle          String?
+  seoDescription    String?
+  faqs              Json?
+  featured          Boolean         @default(false)
+  isPopular         Boolean         @default(false)
   /// bundle/package services shown on /packages (Complete Bridal Package, pre-bridal tiers, …)
-  isPackage        Boolean  @default(false)
-  sort             Int      @default(0)
-  status           Status   @default(ACTIVE)
+  isPackage         Boolean         @default(false)
+  sort              Int             @default(0)
+  displayOrder      Int             @default(0)
+  status            Status          @default(ACTIVE)
   // set when merged into another service (drives 301)
-  mergedIntoId     String?
+  mergedIntoId      String?
+  relatedServiceIds String[]        @default([])
+  upsellServiceIds  String[]        @default([])
   /// enquiries received (rolled up from merged services)
-  leadCount        Int      @default(0)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  leadCount         Int             @default(0)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   variants  ServiceVariant[]
   addons    ServiceAddon[]
@@ -113,14 +152,17 @@ model Service {
 }
 
 model ServiceVariant {
-  id        String   @id @default(cuid())
-  serviceId String
-  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  name      String
-  price     Decimal? @db.Decimal(10, 2)
-  offerPrice Decimal? @db.Decimal(10, 2)
-  duration  String?
-  sortOrder Int      @default(0)
+  id              String   @id @default(cuid())
+  serviceId       String
+  service         Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  name            String
+  price           Decimal? @db.Decimal(10, 2)
+  offerPrice      Decimal? @db.Decimal(10, 2)
+  priceDelta      Decimal? @db.Decimal(10, 2)
+  duration        String?
+  durationMins    Int?
+  sortOrder       Int      @default(0)
+  displayOrder    Int      @default(0)
   /// when the variant has its own page that stays live (e.g. HD / Airbrush bridal)
   linkedServiceId String?
   @@unique([serviceId, name])
@@ -162,18 +204,40 @@ model PackageService {
 
 // ───────── Locations ─────────
 model City {
-  id          String  @id @default(cuid())
-  slug        String  @unique
-  name        String
-  state       String?
+  id             String         @id @default(cuid())
+  slug           String         @unique
+  name           String
+  state          String?
   /// Launch switch. Inactive cities: no hub, no service×city, no area pages, not in sitemaps/nav. Data is kept.
-  isActive    Boolean @default(false)
-  seoTitle    String?
+  isActive       Boolean        @default(false)
+  seoTitle       String?
   seoDescription String?
-  content     String?
-  faqs        Json?
-  areas       Area[]
-  services    ServiceCity[]
+  content        String?
+  faqs           Json?
+  areas          Area[]
+  services       ServiceCity[]
+  categories     CategoryCity[]
+}
+
+model CategoryCity {
+  id             String        @id @default(cuid())
+  categoryId     String
+  category       Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  cityId         String
+  city           City          @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  slug           String        @unique // e.g. "waxing-at-home-noida"
+  localTitle     String?
+  localIntro     String?
+  areasServed    String[]      @default([])
+  faqs           Json?
+  seoTitle       String?
+  seoDescription String?
+  contentStatus  ContentStatus @default(DRAFT)
+  active         Boolean       @default(true)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@unique([categoryId, cityId])
 }
 
 model Area {
