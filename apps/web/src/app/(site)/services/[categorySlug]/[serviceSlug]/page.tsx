@@ -170,24 +170,41 @@ export default async function ServicePage({ params }: { params: Promise<ServiceP
 
             <aside className="lg:sticky lg:top-28">
               {isP2 ? (
-                <div className="rounded-[1.75rem] border border-line bg-white p-6 shadow-lift text-center">
-                  <span className="mx-auto grid size-12 place-items-center rounded-full bg-plum-100 text-plum-900 mb-4">
-                    <Sparkles className="size-6 text-gold-500" />
-                  </span>
-                  <h3 className="font-serif text-xl font-bold text-plum-950">Coming Soon in Phase 2</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                    {svc.title} is currently being prepared for doorstep rollout with specialized training and authentic clinical equipment.
-                  </p>
-                  <a
-                    href={notifyWaUrl || "https://wa.me/919319260069"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={cn(buttonStyles({ variant: "shimmer", size: "lg" }), "mt-6 flex w-full items-center justify-center gap-2")}
-                  >
-                    <MessageCircle className="size-5" />
-                    Notify Me on WhatsApp
-                  </a>
-                </div>
+                <>
+                  <div className="rounded-[1.75rem] border border-line bg-white p-6 shadow-lift text-center">
+                    <span className="mx-auto grid size-12 place-items-center rounded-full bg-plum-100 text-plum-900 mb-4">
+                      <Sparkles className="size-6 text-gold-500" />
+                    </span>
+                    <h3 className="font-serif text-xl font-bold text-plum-950">Coming Soon in Phase 2</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                      {svc.title} is currently being prepared for doorstep rollout with specialized training and authentic clinical equipment.
+                    </p>
+                    <a
+                      href={notifyWaUrl || "https://wa.me/919319260069"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={cn(buttonStyles({ variant: "shimmer", size: "lg" }), "mt-6 flex w-full items-center justify-center gap-2")}
+                    >
+                      <MessageCircle className="size-5" />
+                      Notify Me on WhatsApp
+                    </a>
+                  </div>
+
+                  {/* Mobile Fixed CTA for Phase 2 */}
+                  <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex flex-col items-center px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden">
+                    <div className="pointer-events-auto flex w-full max-w-md items-center gap-2 rounded-full border border-gold-400/30 bg-ivory/95 p-2 shadow-lift backdrop-blur-xl">
+                      <a
+                        href={notifyWaUrl || "https://wa.me/919319260069"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={cn(buttonStyles({ variant: "shimmer", size: "md" }), "flex-1 min-h-12 text-sm font-bold flex items-center justify-center gap-2")}
+                      >
+                        <MessageCircle className="size-5 text-emerald-600" />
+                        Notify Me on WhatsApp
+                      </a>
+                    </div>
+                  </div>
+                </>
               ) : (
                 <>
                   <PriceBox

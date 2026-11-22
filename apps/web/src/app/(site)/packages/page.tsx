@@ -24,12 +24,28 @@ export default async function PackagesPage() {
   void cities;
   const cards = [
     ...services.map((s) => ({
-      key: s.slug, href: `/services/${s.slug}`, title: s.title, image: realImage(keys, s.image), price: num(s.price), offer: low(s.offerPrice, ...s.variants.map((v) => v.offerPrice)) ?? num(s.offerPrice),
-      included: (s.features ?? "").split(/\r?\n|;|•/).map((x) => x.trim()).filter(Boolean), popular: s.slug === FLAGSHIP, tag: s.category.name, lead: s.leadCount,
+      key: `svc-${s.id ?? s.slug}`,
+      href: `/services/${s.category.slug}/${s.slug}`,
+      title: s.title,
+      image: realImage(keys, s.image),
+      price: num(s.price),
+      offer: low(s.offerPrice, ...s.variants.map((v) => v.offerPrice)) ?? num(s.offerPrice),
+      included: (s.features ?? "").split(/\r?\n|;|•/).map((x) => x.trim()).filter(Boolean),
+      popular: s.slug === FLAGSHIP,
+      tag: s.category.name,
+      lead: s.leadCount,
     })),
     ...packages.map((p) => ({
-      key: p.slug, href: `/packages/${p.slug}`, title: p.title, image: realImage(keys, p.image), price: num(p.price), offer: num(p.offerPrice),
-      included: p.services.map((x) => x.service.title), popular: false, tag: "Package", lead: 0,
+      key: `pkg-${p.id ?? p.slug}`,
+      href: `/packages/${p.slug}`,
+      title: p.title,
+      image: realImage(keys, p.image),
+      price: num(p.price),
+      offer: num(p.offerPrice),
+      included: p.services.map((x) => x.service.title),
+      popular: false,
+      tag: "Package",
+      lead: 0,
     })),
   ].sort((a, b) => Number(b.popular) - Number(a.popular) || b.lead - a.lead);
 

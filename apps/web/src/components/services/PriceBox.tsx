@@ -120,56 +120,55 @@ export function PriceBox({
         </div>
       </div>
 
-      {/* Mobile Unified Floating Bottom Action Dock (Clean, Single Dock, No Overlapping) */}
+      {/* Mobile Unified Floating Bottom Action Dock (Clean, Single Cohesive Card, No Loose Badges) */}
       <Drawer.Root open={open} onOpenChange={setOpen}>
         <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex flex-col items-center px-3 pb-[max(0.6rem,env(safe-area-inset-bottom))] lg:hidden">
-          {/* Micro Luxury Trust Indicator */}
-          <div
-            className="pointer-events-auto mb-1.5 flex max-w-[94vw] items-center justify-center gap-1.5 rounded-full border border-gold-400/40 bg-[#190618] px-3.5 py-1 text-[10px] font-semibold tracking-wide text-[#F5E9C9] shadow-soft backdrop-blur-md"
-            style={{ backgroundColor: "#190618", color: "#F5E9C9" }}
-          >
-            <ShieldCheck className="size-3 shrink-0 text-gold-400" />
-            <span className="truncate">100% Female Verified · 10% Advance · 100% Refund</span>
-          </div>
+          <div className="pointer-events-auto w-full max-w-md overflow-hidden rounded-2xl border border-gold-400/40 bg-ivory/95 shadow-lift backdrop-blur-xl">
+            {/* Integrated Luxury Trust Banner */}
+            <div className="flex items-center justify-center gap-1.5 bg-gradient-to-r from-plum-950 via-plum-900 to-plum-950 px-3 py-1 text-[10px] font-semibold tracking-wide text-gold-300">
+              <ShieldCheck className="size-3 shrink-0 text-gold-400" />
+              <span className="truncate">100% Female Verified · 10% Advance · 100% Refund Guarantee</span>
+            </div>
 
-          {/* Unified Action Dock */}
-          <div className="pointer-events-auto flex w-full max-w-md items-center gap-2 rounded-2xl border border-line/80 bg-ivory/95 p-2 shadow-lift backdrop-blur-xl">
-            {/* Price & Option selector: Tapping opens option picker sheet if variants exist */}
-            <button
-              type="button"
-              onClick={() => (options.length > 1 ? setOpen(true) : toForm())}
-              className="flex flex-1 min-w-0 flex-col text-left pl-2 cursor-pointer select-none"
-            >
-              <div className="flex items-center gap-1 text-[11px] font-medium text-rose-700 truncate">
-                <span className="truncate">{sel || title}</span>
-                {options.length > 1 && (
-                  <span className="text-[10px] text-ink-soft shrink-0 underline decoration-rose-300">Change ▾</span>
-                )}
-              </div>
-              <Price price={shownPrice.price} offerPrice={shownPrice.offer} className="[&>span:nth-child(2)]:text-base font-bold text-plum-950" />
-            </button>
-
-            {/* Book Now Button */}
-            <button
-              type="button"
-              onClick={toForm}
-              className={cn(buttonStyles({ variant: "shimmer", size: "sm" }), "h-11 px-4 text-xs font-bold shrink-0")}
-            >
-              Book Now
-            </button>
-
-            {/* WhatsApp Direct Chat */}
-            {wa && (
-              <a
-                href={wa}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Chat with Beauty Expert on WhatsApp"
-                className="grid size-11 shrink-0 place-items-center rounded-full bg-[#25D366] text-white shadow-soft transition hover:bg-[#1f8f4e] active:scale-95"
+            {/* Unified Action Dock */}
+            <div className="flex items-center gap-2 p-2">
+              {/* Price & Option selector: Tapping opens option picker sheet if variants exist */}
+              <button
+                type="button"
+                onClick={() => (options.length > 1 ? setOpen(true) : toForm())}
+                className="flex flex-1 min-w-0 flex-col text-left pl-2 cursor-pointer select-none"
               >
-                <MessageCircle className="size-5" />
-              </a>
-            )}
+                <div className="flex items-center gap-1 text-[11px] font-medium text-rose-700 truncate">
+                  <span className="truncate">{sel || title}</span>
+                  {options.length > 1 && (
+                    <span className="text-[10px] text-ink-soft shrink-0 underline decoration-rose-300">Change ▾</span>
+                  )}
+                </div>
+                <Price price={shownPrice.price} offerPrice={shownPrice.offer} className="[&>span:nth-child(2)]:text-base font-bold text-plum-950" />
+              </button>
+
+              {/* Book Now Button */}
+              <button
+                type="button"
+                onClick={toForm}
+                className={cn(buttonStyles({ variant: "shimmer", size: "sm" }), "h-11 px-4 text-xs font-bold shrink-0")}
+              >
+                Book Now
+              </button>
+
+              {/* WhatsApp Direct Chat */}
+              {wa && (
+                <a
+                  href={wa}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Chat with Beauty Expert on WhatsApp"
+                  className="grid size-11 shrink-0 place-items-center rounded-full bg-[#25D366] text-white shadow-soft transition hover:bg-[#1f8f4e] active:scale-95"
+                >
+                  <MessageCircle className="size-5" />
+                </a>
+              )}
+            </div>
           </div>
         </div>
 
