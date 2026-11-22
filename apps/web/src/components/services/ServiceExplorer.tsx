@@ -365,7 +365,7 @@ export function ServiceExplorer({
                 >
                   {/* Image area */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-ivory-deep">
-                    <Link href={`/services/${s.slug}`} className="block h-full w-full">
+                    <Link href={`/services/${s.categorySlug}/${s.slug}`} className="block h-full w-full">
                       <Photo
                         src={s.image}
                         alt={s.alt}
@@ -403,7 +403,7 @@ export function ServiceExplorer({
 
                     {/* Service Name */}
                     <Link
-                      href={`/services/${s.slug}`}
+                      href={`/services/${s.categorySlug}/${s.slug}`}
                       className="group-hover:text-rose-700 transition"
                     >
                       <h3 className="font-serif text-base font-bold text-plum-950 line-clamp-2">
@@ -458,7 +458,7 @@ export function ServiceExplorer({
                       </div>
 
                       <Link
-                        href={`/services/${s.slug}#book`}
+                        href={`/services/${s.categorySlug}/${s.slug}#book`}
                         className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-xl bg-plum-800 px-3.5 py-1.5 text-xs font-bold text-white shadow-soft transition hover:bg-rose-700 active:scale-95"
                       >
                         <span>Book Now</span>

@@ -4,9 +4,10 @@
  */
 export const urls = {
   home: () => "/",
-  category: (slug: string) => `/${slug}`,
-  service: (slug: string) => `/services/${slug}`,
-  cityHub: (citySlug: string) => `/makeup-artist-in-${citySlug}`,
+  category: (slug: string) => `/services/${slug}`,
+  service: (slug: string, categorySlug?: string) => (categorySlug ? `/services/${categorySlug}/${slug}` : `/services/${slug}`),
+  cityHub: (citySlug: string) => `/salon-at-home-${citySlug}`,
+  categoryCity: (categorySlug: string, citySlug: string) => `/${categorySlug}-at-home-${citySlug}`,
   serviceCity: (serviceSlug: string, citySlug: string) => `/${serviceSlug}-in-${citySlug}`,
   area: (areaSlug: string) => `/makeup-artist-in-${areaSlug}`,
   pro: (slug: string) => `/artists/${slug}`,

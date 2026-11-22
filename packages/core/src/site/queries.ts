@@ -29,7 +29,24 @@ export async function getCategories() {
 export async function getCategoryPage(slug: string) {
   return prisma.category.findUnique({
     where: { slug },
-    include: { services: { where: liveService, orderBy: [{ leadCount: "desc" }, { sort: "asc" }], include: { variants: { orderBy: { sortOrder: "asc" } } } } },
+    include: {
+      subcategories: {
+        where: { status: "ACTIVE" },
+        orderBy: { displayOrder: "asc" },
+        include: {
+          services: {
+            where: { status: { in: ["ACTIVE", "COMING_SOON"] }, mergedIntoId: null },
+            orderBy: [{ leadCount: "desc" }, { sort: "asc" }],
+            include: { variants: { orderBy: { sortOrder: "asc" } } },
+          },
+        },
+      },
+      services: {
+        where: { status: { in: ["ACTIVE", "COMING_SOON"] }, mergedIntoId: null },
+        orderBy: [{ leadCount: "desc" }, { sort: "asc" }],
+        include: { variants: { orderBy: { sortOrder: "asc" } }, subCategory: true },
+      },
+    },
   });
 }
 
@@ -55,20 +72,30 @@ export async function getLiveAreas() {
   });
 }
 
-export async function getServicePage(slug: string) {
+export async function getServicePage(slug: string, categorySlug?: string) {
   const svc = await prisma.service.findFirst({
-    where: { slug, ...liveService },
-    include: { category: true, variants: { orderBy: { sortOrder: "asc" } }, addons: { orderBy: { sortOrder: "asc" } } },
+    where: {
+      slug,
+      status: { in: ["ACTIVE", "COMING_SOON"] },
+      mergedIntoId: null,
+      ...(categorySlug ? { category: { slug: categorySlug } } : {}),
+    },
+    include: {
+      category: true,
+      subCategory: true,
+      variants: { orderBy: { sortOrder: "asc" } },
+      addons: { orderBy: { sortOrder: "asc" } },
+    },
   });
   if (!svc) return null;
   const [related, cityPages] = await Promise.all([
-    prisma.service.findMany({ where: { categoryId: svc.categoryId, id: { not: svc.id }, ...liveService }, orderBy: { leadCount: "desc" }, take: 4 }),
+    prisma.service.findMany({ where: { categoryId: svc.categoryId, id: { not: svc.id }, status: "ACTIVE", mergedIntoId: null }, orderBy: { leadCount: "desc" }, take: 6 }),
     prisma.page.findMany({ where: { type: "SERVICE_CITY", isIndexable: true, entityId: { startsWith: `${slug}|` } }, select: { url: true, entityId: true } }),
   ]);
   const citySlugs = cityPages.map((p) => p.entityId!.split("|")[1]!);
   const cities = citySlugs.length ? await prisma.city.findMany({ where: { slug: { in: citySlugs } }, select: { slug: true, name: true } }) : [];
   const linkedIds = svc.variants.map((v) => v.linkedServiceId).filter((x): x is string => !!x);
-  const linked = linkedIds.length ? await prisma.service.findMany({ where: { id: { in: linkedIds }, ...liveService }, select: { id: true, slug: true } }) : [];
+  const linked = linkedIds.length ? await prisma.service.findMany({ where: { id: { in: linkedIds }, status: "ACTIVE", mergedIntoId: null }, select: { id: true, slug: true } }) : [];
   return { svc, related, serviceCities: cities, variantLinks: Object.fromEntries(linked.map((l) => [l.id, l.slug])) as Record<string, string> };
 }
 

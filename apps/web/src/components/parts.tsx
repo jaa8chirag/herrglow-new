@@ -55,8 +55,9 @@ export async function ServiceCard({ s, fromLabel }: { s: { slug: string; title: 
   const nums = [s.offerPrice ?? s.price, ...(s.variants ?? []).map((v) => v.offerPrice ?? v.price)].map((n) => (n == null ? NaN : Number(n))).filter((n) => Number.isFinite(n) && n > 0);
   const low = nums.length ? Math.min(...nums) : null;
   const showFrom = fromLabel || (s.variants?.length ?? 0) > 1 || s.priceLabel === "Starting at";
+  const targetHref = s.category?.slug ? `/services/${s.category.slug}/${s.slug}` : `/services/${s.slug}`;
   return (
-    <Link href={`/services/${s.slug}`} className="group block h-full">
+    <Link href={targetHref} className="group block h-full">
       <Card className="flex h-full flex-col overflow-hidden transition-transform duration-300 group-hover:-translate-y-1">
         <div className="relative aspect-[4/3] w-full"><Photo src={src} alt={s.imageAlt || s.title} kind={s.category?.slug ?? s.categoryId} seedKey={s.slug} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" /></div>
         <div className="flex flex-1 flex-col p-5">
