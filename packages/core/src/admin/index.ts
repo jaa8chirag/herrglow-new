@@ -11,3 +11,4 @@ export * from "./seo";
 export * from "./content";
 export * from "./users";
 export * from "./applications";
+export * from "./matching";

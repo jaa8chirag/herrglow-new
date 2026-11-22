@@ -57,7 +57,7 @@ export function PriceBox({
 
   const finalPriceStr = shownPrice.offer ? `₹${Math.round(shownPrice.offer).toLocaleString("en-IN")}` : shownPrice.price ? `₹${Math.round(shownPrice.price).toLocaleString("en-IN")}` : "";
   const wa = whatsappLink(
-    whatsappNumber || "9876543210",
+    whatsappNumber || "9319260069",
     `Hi HerrGlow! I'm interested in booking ${title}${sel ? ` (${sel})` : ""}${finalPriceStr ? ` for ${finalPriceStr}` : ""}. Could you please share artist availability and details?`
   );
 

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Drawer, DrawerShell, FallbackArt, buttonStyles, categoryIcon, cn } from "@herrglow/ui";
+import { Logo } from "@/components/brand/Logo";
 
 export interface MenuCat { slug: string; name: string; href: string; services: { slug: string; title: string }[]; featured: { slug: string; title: string; image: string | null } | null }
 export interface HeaderProps { siteName: string; logo: string | null; menu: MenuCat[]; cities: { slug: string; name: string }[] }
@@ -49,11 +50,13 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
   return (
     <header className={cn("sticky top-0 z-40 transition-[background,box-shadow,border-color] duration-300", isHome && "-mb-20", solid ? "border-b border-line bg-ivory/85 shadow-soft backdrop-blur-xl" : "border-b border-transparent bg-transparent")} onMouseLeave={closeSoon}>
       <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
-        <Link href="/" aria-label={`${siteName} home`} className="flex shrink-0 items-center gap-2">
-          {logo ? <Image src={logo} alt={siteName} width={140} height={44} className="h-9 w-auto" priority /> : (
-            <span className="font-serif text-[1.7rem] font-semibold tracking-tight text-plum-800">{siteName}<span aria-hidden className="text-gold-400">.</span></span>
-          )}
-        </Link>
+        {logo ? (
+          <Link href="/" aria-label={`${siteName} home`} className="flex shrink-0 items-center">
+            <Image src={logo} alt={siteName} width={180} height={44} className="h-9 sm:h-10 w-auto" priority />
+          </Link>
+        ) : (
+          <Logo size="md" />
+        )}
 
         <nav aria-label="Main" className="hidden items-center gap-1 text-[0.95rem] lg:flex">
           <Link href="/" className="rounded-full px-4 py-2 text-ink-soft transition hover:bg-blush-100 hover:text-plum-800">Home</Link>
@@ -89,10 +92,7 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
             <DrawerShell title="Menu" direction="right">
               <div className="flex h-full flex-col overflow-y-auto">
                 <div className="flex h-20 shrink-0 items-center justify-between px-5">
-                  <div>
-                    <span className="font-serif text-2xl font-bold text-plum-900">{siteName}<span className="text-gold-400">.</span></span>
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-gold-600">Luxury Doorstep Salon &amp; Bridal</p>
-                  </div>
+                  <Logo size="sm" withLink={false} />
                   <Drawer.Close asChild><button type="button" aria-label="Close menu" className="grid size-12 place-items-center rounded-full border border-line text-plum-900 hover:bg-blush-50"><X className="size-5" /></button></Drawer.Close>
                 </div>
                 <div className="gold-rule mx-5" />
@@ -125,7 +125,17 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
                       <div className="flex flex-wrap gap-2 px-1">{cities.map((c) => <Drawer.Close key={c.slug} asChild><Link href={`/makeup-artist-in-${c.slug}`} className="flex items-center min-h-[44px] rounded-full border border-line bg-white px-4 py-2 text-sm text-plum-800">{c.name}</Link></Drawer.Close>)}</div></div>
                   )}
                 </nav>
-                <div className="shrink-0 p-5"><Drawer.Close asChild><Link href="/contact#book" onClick={book} className={cn(buttonStyles({ variant: "shimmer", size: "lg" }), "w-full min-h-12 text-base font-bold")}>Book Appointment</Link></Drawer.Close></div>
+                <div className="mx-5 mb-2 rounded-2xl border border-blush-200 bg-blush-50/70 p-3.5 space-y-2 text-xs">
+                  <div className="flex items-center justify-between text-plum-950 font-medium">
+                    <span>Call / WhatsApp:</span>
+                    <a href="tel:+919319260069" className="font-bold text-rose-700 underline hover:text-rose-800">+91 9319260069</a>
+                  </div>
+                  <div className="flex items-center justify-between text-plum-950 font-medium">
+                    <span>Email:</span>
+                    <a href="mailto:herrglow77@gmail.com" className="font-bold text-rose-700 underline hover:text-rose-800">herrglow77@gmail.com</a>
+                  </div>
+                </div>
+                <div className="shrink-0 p-5 pt-0"><Drawer.Close asChild><Link href="/contact#book" onClick={book} className={cn(buttonStyles({ variant: "shimmer", size: "lg" }), "w-full min-h-12 text-base font-bold")}>Book Appointment</Link></Drawer.Close></div>
               </div>
             </DrawerShell>
           </Drawer.Root>

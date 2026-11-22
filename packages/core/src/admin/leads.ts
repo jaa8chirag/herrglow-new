@@ -6,21 +6,23 @@ import { OUT_OF_AREA } from "../site/leads";
 export const PIPELINE: LeadStatus[] = ["NEW", "CONTACTED", "FOLLOW_UP", "QUOTED", "BOOKED", "COMPLETED", "LOST"];
 export const STATUS_LABEL: Record<LeadStatus, string> = { NEW: "New", CONTACTED: "Contacted", FOLLOW_UP: "Follow-up", QUOTED: "Quoted", BOOKED: "Booked", COMPLETED: "Completed", LOST: "Lost" };
 
-export interface LeadFilter { status?: LeadStatus; outOfArea?: boolean; q?: string; page?: number }
+export interface LeadFilter { status?: LeadStatus; outOfArea?: boolean; unassigned?: boolean; q?: string; page?: number }
 const PAGE = 40;
 
 export async function leadCounts() {
-  const [byStatus, outOfArea, total] = await Promise.all([
+  const [byStatus, outOfArea, unassigned, total] = await Promise.all([
     prisma.lead.groupBy({ by: ["status"], _count: true }),
     prisma.lead.count({ where: { tags: { has: OUT_OF_AREA } } }),
+    prisma.lead.count({ where: { proId: null, status: { in: ["NEW", "BOOKED", "CONTACTED", "FOLLOW_UP", "QUOTED"] as LeadStatus[] } } }),
     prisma.lead.count(),
   ]);
-  return { byStatus: Object.fromEntries(byStatus.map((b) => [b.status, b._count])) as Partial<Record<LeadStatus, number>>, outOfArea, total };
+  return { byStatus: Object.fromEntries(byStatus.map((b) => [b.status, b._count])) as Partial<Record<LeadStatus, number>>, outOfArea, unassigned, total };
 }
 
 const where = (f: LeadFilter) => ({
   ...(f.status ? { status: f.status } : {}),
   ...(f.outOfArea ? { tags: { has: OUT_OF_AREA } } : {}),
+  ...(f.unassigned ? { proId: null, status: { in: ["NEW", "BOOKED", "CONTACTED", "FOLLOW_UP", "QUOTED"] as LeadStatus[] } } : {}),
   ...(f.q
     ? {
         OR: [

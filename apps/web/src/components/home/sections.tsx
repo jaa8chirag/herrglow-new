@@ -1,5 +1,6 @@
 import { ArrowRight, BadgeCheck, CalendarCheck, Check, Clock, DoorOpen, Search, ShieldCheck, Sparkles, Star, Wallet } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Badge, BentoGrid, BlurFade, BorderBeam, Card, Carousel, Container, InfiniteMovingCards, Marquee, NumberTicker, Price, Section, SectionHeading, Spotlight, TiltCard, buttonStyles, categoryIcon, cn } from "@herrglow/ui";
 import { BookingForm } from "@/components/BookingForm";
 import { BookLink } from "@/components/chrome/BookLink";
@@ -283,7 +284,7 @@ export function StatsBand({ stats }: { stats: { artists: number; services: numbe
 }
 
 /* ───────── 10. testimonials ───────── */
-export function ReviewsMarquee({ reviews }: { reviews: { id: string; name: string; location: string | null; rating: number; review: string; serviceName: string | null }[] }) {
+export function ReviewsMarquee({ reviews }: { reviews: { id: string; name: string; location: string | null; rating: number; review: string; serviceName: string | null; photo?: string | null }[] }) {
   if (!reviews.length) return null;
   return (
     <Section>
@@ -293,8 +294,21 @@ export function ReviewsMarquee({ reviews }: { reviews: { id: string; name: strin
           <Card key={t.id} className="w-[19rem] shrink-0 p-6 sm:w-[24rem]">
             <p aria-label={`${t.rating} out of 5`} className="text-gold-500">{"★".repeat(t.rating)}</p>
             <p className="mt-3 leading-relaxed text-ink-soft">&ldquo;{t.review}&rdquo;</p>
-            <p className="mt-4 text-sm font-medium text-plum-800">{t.name}{t.location ? `, ${t.location}` : ""}</p>
-            {t.serviceName && <p className="text-xs text-ink-soft">{t.serviceName}</p>}
+            <div className="mt-4 flex items-center gap-3">
+              {t.photo ? (
+                <div className="relative size-11 shrink-0 overflow-hidden rounded-full border border-gold-400/40 shadow-sm">
+                  <Image src={t.photo} alt={t.name} fill sizes="44px" className="object-cover" />
+                </div>
+              ) : (
+                <div className="grid size-11 shrink-0 place-items-center rounded-full bg-blush-100 font-serif text-sm font-bold text-plum-800">
+                  {t.name.charAt(0)}
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-plum-800">{t.name}{t.location ? <span className="font-normal text-ink-soft">, {t.location}</span> : ""}</p>
+                {t.serviceName && <p className="truncate text-xs font-medium text-rose-700">{t.serviceName}</p>}
+              </div>
+            </div>
           </Card>
         ))}
       </InfiniteMovingCards>
@@ -303,6 +317,12 @@ export function ReviewsMarquee({ reviews }: { reviews: { id: string; name: strin
 }
 
 /* ───────── 11. cities ───────── */
+const CITY_CARDS_IMAGES: Record<string, string> = {
+  delhi: "/images/cities/delhi.jpg",
+  noida: "/images/cities/noida.jpg",
+  "greater-noida": "/images/cities/greater-noida.jpg",
+};
+
 export function CityCards({ cities }: { cities: { slug: string; name: string; artists: number; areas: number }[] }) {
   if (!cities.length) return null;
   return (
@@ -314,8 +334,8 @@ export function CityCards({ cities }: { cities: { slug: string; name: string; ar
             <BlurFade key={c.slug} delay={i * 0.08}>
               <TiltCard>
                 <Link href={`/makeup-artist-in-${c.slug}`} className="group relative block aspect-[4/5] overflow-hidden rounded-[1.75rem] shadow-soft transition-shadow hover:shadow-lift">
-                  <Photo src={null} alt={c.name} kind="city" seedKey={c.slug} />
-                  <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-plum-900/80 via-plum-900/10 to-transparent" />
+                  <Photo src={CITY_CARDS_IMAGES[c.slug] ?? null} alt={c.name} kind="city" seedKey={c.slug} />
+                  <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-plum-900/85 via-plum-900/20 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-6">
                     <h3 className="!text-3xl text-ivory">{c.name}</h3>
                     <p className="mt-1 text-blush-100">{c.artists} artists · {c.areas} areas</p>

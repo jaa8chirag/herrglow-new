@@ -29,7 +29,7 @@ export const organizationLd = (o: OrgInput = {}): Json =>
     url: SITE_URL,
     logo: o.logo ? (o.logo.startsWith("http") ? o.logo : abs(o.logo)) : undefined,
     email: o.email,
-    telephone: o.telephone,
+    telephone: o.telephone ? (o.telephone.startsWith("+") ? o.telephone : `+91-${o.telephone.replace(/^91/, "")}`) : undefined,
     priceRange: "₹₹",
     areaServed: o.areaServed?.map((n) => ({ "@type": "City", name: n })),
     sameAs: o.sameAs?.length ? o.sameAs : undefined,

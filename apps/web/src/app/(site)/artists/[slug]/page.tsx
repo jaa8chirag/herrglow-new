@@ -44,7 +44,10 @@ export default async function ProPage(props: PageProps<"/artists/[slug]">) {
       <JsonLd data={personLd({ name: pro.name, path, image: photo, jobTitle: role, description: pro.specialization })} />
       {/* cover */}
       <section className="relative">
-        <div className="relative h-44 overflow-hidden sm:h-56"><FallbackArt kind="artist" seed={slug.length} /><div aria-hidden className="absolute inset-0 bg-gradient-to-b from-transparent to-ivory" /></div>
+        <div className="relative h-48 overflow-hidden sm:h-64">
+          <Image src="/hero/bridal-glam.jpg" alt={`${pro.name} studio background`} fill sizes="100vw" className="object-cover object-center brightness-90 filter" priority />
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-plum-950/40 via-plum-950/15 to-ivory" />
+        </div>
         <Container className="relative -mt-24 sm:-mt-28">
           <Breadcrumbs items={[{ name: covered[0]?.name ?? "Artists", path: covered[0] ? urls.cityHub(covered[0].slug) : "/" }, { name: pro.name, path }]} />
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end">

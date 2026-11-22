@@ -32,4 +32,33 @@ export async function moveLead(fd: FormData) {
   await updateLead(id, { status: status as never });
   await log(me, "lead.move", "Lead", id, { status });
   revalidatePath("/admin/leads");
+  revalidatePath(`/admin/leads/${id}`);
+  revalidatePath("/admin");
+}
+
+/** 1-Click assign nearest / recommended beautician to customer booking */
+export async function assignNearestPro(leadId: string, proId: string) {
+  const me = await requireAdmin("leads");
+  if (!leadId || !proId) throw new Error("Missing leadId or proId");
+  const lead = await updateLead(leadId, {
+    proId,
+    status: "BOOKED",
+  });
+  await log(me, "lead.assign_pro", "Lead", leadId, { proId, status: "BOOKED" });
+  revalidatePath("/admin/leads");
+  revalidatePath(`/admin/leads/${leadId}`);
+  revalidatePath("/admin");
+  return { success: true, lead };
+}
+
+/** 1-Click unassign pro from lead */
+export async function unassignPro(leadId: string) {
+  const me = await requireAdmin("leads");
+  if (!leadId) throw new Error("Missing leadId");
+  const lead = await updateLead(leadId, { proId: null });
+  await log(me, "lead.unassign_pro", "Lead", leadId, {});
+  revalidatePath("/admin/leads");
+  revalidatePath(`/admin/leads/${leadId}`);
+  revalidatePath("/admin");
+  return { success: true, lead };
 }

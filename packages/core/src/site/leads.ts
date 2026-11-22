@@ -30,6 +30,8 @@ export const leadInput = z.object({
     .refine((d) => !d || !Number.isNaN(d.getTime()), "Invalid date"),
   guestCount: z.coerce.number().int().min(1).max(20).optional(),
   message: z.string().trim().max(1000).optional().transform((v) => v || undefined),
+  latitude: z.coerce.number().min(-90).max(90).optional(),
+  longitude: z.coerce.number().min(-180).max(180).optional(),
   sourceUrl: z.string().trim().max(300).optional(),
   /** honeypot: real users leave it empty */
   website: z.string().optional(),
@@ -180,6 +182,8 @@ export async function createLead(raw: LeadInput): Promise<LeadResult> {
       email: d.email,
       locationText,
       address: d.address,
+      latitude: d.latitude,
+      longitude: d.longitude,
       areaId: area?.id,
       packageId: pkg?.id,
       eventDate: d.eventDate,

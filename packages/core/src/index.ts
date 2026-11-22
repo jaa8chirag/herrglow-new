@@ -7,3 +7,4 @@ export * from "./admin";
 export * from "./notify";
 export * from "./site/applications";
 export * from "./site/subscribe";
+export * from "./site/whatsapp";

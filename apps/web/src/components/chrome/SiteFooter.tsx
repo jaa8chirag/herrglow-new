@@ -1,6 +1,7 @@
-import { Mail } from "lucide-react";
+import { Mail, MessageCircle, Phone } from "lucide-react";
 import Link from "next/link";
 import { Container } from "@herrglow/ui";
+import { Logo } from "@/components/brand/Logo";
 import { NewsletterForm } from "./NewsletterForm";
 import { telLink, whatsappLink } from "@/lib/whatsapp";
 
@@ -35,13 +36,34 @@ export function SiteFooter({ siteName, categories, cities, popular, whatsapp, ph
 
         <div className="grid gap-10 py-12 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
-            <p className="font-serif text-3xl text-ivory">{siteName}<span className="text-gold-400">.</span></p>
+            <Logo variant="dark" size="md" />
             <p className="mt-3 max-w-sm leading-relaxed text-blush-200">Verified makeup artists and beauticians who come to you, with clear prices and your schedule.</p>
             {(wa || tel || email) && (
-              <ul className="mt-5 space-y-2 text-sm">
-                {wa && <li><a className="underline-offset-4 hover:text-gold-300 hover:underline" href={wa}>WhatsApp us</a></li>}
-                {tel && <li><a className="underline-offset-4 hover:text-gold-300 hover:underline" href={tel}>Call us</a></li>}
-                {email && <li><a className="inline-flex items-center gap-2 underline-offset-4 hover:text-gold-300 hover:underline" href={`mailto:${email}`}><Mail className="size-4" />{email}</a></li>}
+              <ul className="mt-5 space-y-2.5 text-sm">
+                {tel && (
+                  <li>
+                    <a className="inline-flex items-center gap-2 underline-offset-4 hover:text-gold-300 hover:underline" href={tel}>
+                      <Phone className="size-4 text-gold-300 shrink-0" />
+                      <span>+91 9319260069</span>
+                    </a>
+                  </li>
+                )}
+                {wa && (
+                  <li>
+                    <a className="inline-flex items-center gap-2 underline-offset-4 hover:text-gold-300 hover:underline" href={wa} target="_blank" rel="noopener noreferrer">
+                      <MessageCircle className="size-4 text-[#25D366] shrink-0" />
+                      <span>WhatsApp: +91 9319260069</span>
+                    </a>
+                  </li>
+                )}
+                {email && (
+                  <li>
+                    <a className="inline-flex items-center gap-2 underline-offset-4 hover:text-gold-300 hover:underline" href={`mailto:${email}`}>
+                      <Mail className="size-4 text-gold-300 shrink-0" />
+                      <span>{email}</span>
+                    </a>
+                  </li>
+                )}
               </ul>
             )}
             {socials.length > 0 && <div className="mt-6 flex gap-2">{socials.map((s) => <a key={s.href} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label} className="group"><SocialIcon label={s.label} /></a>)}</div>}

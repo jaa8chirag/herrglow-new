@@ -25,6 +25,12 @@ const Chips = ({ items }: { items: { href?: string; label: string }[] }) => (
   <div className="flex flex-wrap gap-2">{items.map((c) => c.href ? <Link key={c.label} href={c.href} className="rounded-full border border-plum-700/20 bg-white px-4 py-2 text-sm text-plum-800 transition hover:bg-blush-100">{c.label}</Link> : <span key={c.label} className="rounded-full bg-blush-50 px-4 py-2 text-sm text-ink-soft">{c.label}</span>)}</div>
 );
 
+const CITY_HERO_IMAGES: Record<string, string> = {
+  delhi: "/images/cities/delhi.jpg",
+  noida: "/images/cities/noida.jpg",
+  "greater-noida": "/images/cities/greater-noida.jpg",
+};
+
 /* ───────── city hub ───────── */
 export function CityHubView({ city, path, cities, services, artists, withPage, textOnly, serviceCityPages, faqs, areaCount }: {
   city: { slug: string; name: string }; path: string; cities: { slug: string; name: string }[]; services: Svc[]; artists: ArtistCardData[];
@@ -33,7 +39,7 @@ export function CityHubView({ city, path, cities, services, artists, withPage, t
   return (
     <>
       <JsonLd data={faqLd(faqs)!} />
-      <PageHero crumbs={[{ name: city.name, path }]} eyebrow={`${city.name}`} title={<>Makeup Artist at Home in {city.name}</>} intro={`Bridal, party and salon services at your doorstep in ${city.name}. Pick a service, see clear prices and book an artist who covers your area.`} image={{ src: null, alt: city.name, kind: "city", seedKey: city.slug }}>
+      <PageHero crumbs={[{ name: city.name, path }]} eyebrow={`${city.name}`} title={<>Makeup Artist at Home in {city.name}</>} intro={`Bridal, party and salon services at your doorstep in ${city.name}. Pick a service, see clear prices and book an artist who covers your area.`} image={{ src: CITY_HERO_IMAGES[city.slug] ?? null, alt: city.name, kind: "city", seedKey: city.slug }}>
         <div className="flex flex-wrap gap-8">
           {([[artists.length, "verified artists"], [areaCount, "areas covered"], [services.length, "services"]] as const).map(([n, l]) => <div key={l}><p className="font-serif text-4xl text-plum-800"><NumberTicker value={n} /></p><p className="text-sm text-ink-soft">{l}</p></div>)}
         </div>

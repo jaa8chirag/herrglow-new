@@ -37,6 +37,8 @@ const hits = new Map<string, number[]>();
         city: get("city") ?? "",
         area: get("area"),
         address: get("address"),
+        latitude: get("latitude") ? Number(get("latitude")) : undefined,
+        longitude: get("longitude") ? Number(get("longitude")) : undefined,
         serviceSlug: get("serviceSlug"),
         packageSlug: get("packageSlug"),
         variant: get("variant"),

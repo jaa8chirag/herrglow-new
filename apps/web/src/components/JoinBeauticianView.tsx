@@ -13,10 +13,9 @@ import {
   ShieldCheck,
   Sparkles,
   Star,
-  UserCheck,
   Wallet,
 } from "lucide-react";
-import { Card, Container, Section, cn } from "@herrglow/ui";
+import { Container, Section, cn } from "@herrglow/ui";
 import { ApplyForm } from "@/components/ApplyForm";
 import { whatsappLink } from "@/lib/whatsapp";
 
@@ -215,114 +214,168 @@ export function JoinBeauticianView({
           </div>
         </div>
 
-        {/* ───────── MOBILE & TABLET VIEW (< lg: Mobile First Preference) ───────── */}
-        <div className="block lg:hidden space-y-6 sm:space-y-8">
-          {/* Mobile/Tablet Hero Header */}
-          <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 rounded-full border border-gold-300/80 bg-blush-50/80 px-3 py-1 text-[11px] font-semibold tracking-wide text-rose-800 shadow-2xs">
-              <Sparkles className="size-3 text-gold-600" />
-              <span>{isHi ? "HerrGlow Elite Partner Network · Delhi NCR" : "HerrGlow Elite Partner Network · Delhi NCR"}</span>
-            </div>
-            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-plum-950 leading-[1.25] tracking-tight">
-              {isHi ? (
-                <>HerrGlow ke saath apna <span className="text-rose-700">beauty &amp; makeup</span> business badhaiye</>
-              ) : (
-                <>Grow your <span className="text-rose-700">beauty &amp; makeup</span> business with HerrGlow</>
-              )}
-            </h1>
-            <p className="text-xs sm:text-sm text-ink-soft leading-relaxed max-w-2xl">
-              {isHi
-                ? "Delhi NCR ka sabse trusted luxury home salon brand. 75-80% seedha payout, bina kisi joining fee ke, aur poori azaadi."
-                : "Delhi NCR's most trusted luxury doorstep beauty network. Keep 75% to 80% payouts with zero upfront fees."}
-            </p>
-          </div>
-
-          {/* Quick Trust Chips Grid (2x2 on Mobile, 4x1 on Tablet) */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 text-xs font-medium text-plum-900">
-            <div className="flex items-center gap-2.5 rounded-2xl border border-blush-200 bg-white p-3 shadow-xs">
-              <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-emerald-100 text-emerald-800 font-bold text-sm">
-                ₹
-              </span>
-              <div className="min-w-0">
-                <p className="font-bold text-plum-950 truncate">75%–80%</p>
-                <p className="text-[10px] text-ink-soft truncate">{isHi ? "Seedha UPI Payout" : "Direct UPI Payout"}</p>
+        {/* ───────── RESPONSIVE LAYOUT (Single Unified ApplyForm Instance) ───────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[420px_1fr] xl:grid-cols-[460px_1fr] gap-8 xl:gap-12 items-start">
+          {/* Column 1: Header, Value Proposition, Metrics & Social Proof */}
+          <div className="space-y-5 lg:sticky lg:top-24">
+            {/* Hero Heading & Subtitle */}
+            <div className="space-y-3">
+              <div className="inline-flex items-center gap-2 rounded-full border border-gold-300/80 bg-blush-50/80 px-3 py-1 text-[11px] font-semibold tracking-wide text-rose-800 shadow-2xs">
+                <Sparkles className="size-3 text-gold-600" />
+                <span>{isHi ? "HerrGlow Elite Partner Network · Delhi NCR" : "HerrGlow Elite Partner Network · Delhi NCR"}</span>
               </div>
-            </div>
-            <div className="flex items-center gap-2.5 rounded-2xl border border-blush-200 bg-white p-3 shadow-xs">
-              <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-rose-100 text-rose-800 font-bold text-sm">
-                📍
-              </span>
-              <div className="min-w-0">
-                <p className="font-bold text-plum-950 truncate">{isHi ? "Aapka Area" : "Your Sectors"}</p>
-                <p className="text-[10px] text-ink-soft truncate">{isHi ? "Sirf paas ke orders" : "Hyperlocal radius"}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2.5 rounded-2xl border border-blush-200 bg-white p-3 shadow-xs">
-              <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-gold-100 text-gold-800 font-bold text-sm">
-                🛡️
-              </span>
-              <div className="min-w-0">
-                <p className="font-bold text-plum-950 truncate">{isHi ? "100% Female" : "100% Female"}</p>
-                <p className="text-[10px] text-ink-soft truncate">{isHi ? "Verified surakshit ghar" : "Verified clients"}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2.5 rounded-2xl border border-blush-200 bg-white p-3 shadow-xs">
-              <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-plum-100 text-plum-800 font-bold text-sm">
-                ⏰
-              </span>
-              <div className="min-w-0">
-                <p className="font-bold text-plum-950 truncate">{isHi ? "Azaad Time" : "Own Hours"}</p>
-                <p className="text-[10px] text-ink-soft truncate">{isHi ? "Jab chahein kaam karein" : "Zero penalty"}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Artist Protection Callout: 10% Advance Deposit by Clients */}
-          <div className="rounded-2xl border border-gold-300/60 bg-gradient-to-r from-gold-50/70 via-white to-blush-50/60 p-3.5 sm:p-4 shadow-xs">
-            <div className="flex items-start gap-3">
-              <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-gold-500 text-white font-bold text-xs mt-0.5">
-                ✓
-              </span>
-              <div className="text-xs text-plum-950 leading-relaxed">
-                <strong className="font-semibold text-rose-800">
-                  {isHi ? "Aapke Samay ki Suraksha: " : "Artist Time Protection: "}
-                </strong>
+              <h1 className="font-serif text-2xl sm:text-3xl lg:text-[1.95rem] xl:text-[2.2rem] font-bold text-plum-950 leading-[1.22] tracking-tight">
+                {isHi ? (
+                  <>HerrGlow ke saath apna <span className="text-rose-700">beauty &amp; makeup</span> business badhaiye</>
+                ) : (
+                  <>Grow your <span className="text-rose-700">beauty &amp; makeup</span> business with HerrGlow</>
+                )}
+              </h1>
+              <p className="text-xs sm:text-sm text-ink-soft leading-relaxed">
                 {isHi
-                  ? "Clients se hum 10% advance deposit lete hain taaki aakhri waqt par order cancel na ho aur aapka aana-jaana bekaar na jaye. Baaki 90% payment service ke turant baad milti hai."
-                  : "Clients pay a 10% advance deposit to reserve your slot, eliminating last-minute fake cancellations. Balance 90% is collected immediately upon service completion."}
-              </div>
+                  ? "Delhi NCR ka sabse trusted luxury home salon brand. 75-80% seedha payout, bina kisi joining fee ke, aur poori azaadi."
+                  : "Delhi NCR's most trusted luxury doorstep beauty network. Keep 75% to 80% payouts with zero upfront fees."}
+              </p>
             </div>
-          </div>
 
-          {/* Instant WhatsApp Option on Mobile */}
-          {waUrl && (
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-3.5 flex items-center justify-between gap-3 shadow-xs">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-emerald-600 text-white shadow-xs">
-                  <MessageCircle className="size-4.5" />
+            {/* Quick Trust Chips Grid (2x2 on Mobile, 4x1 on Tablet/Desktop) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-2.5 text-xs font-medium text-plum-900">
+              <div className="flex items-center gap-2.5 rounded-2xl border border-blush-200 bg-white p-2.5 sm:p-3 shadow-xs">
+                <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-emerald-100 text-emerald-800 font-bold text-sm">
+                  ₹
                 </span>
                 <div className="min-w-0">
-                  <p className="text-xs sm:text-sm font-semibold text-emerald-950 truncate">
-                    {isHi ? "WhatsApp par seedhi Onboarding" : "Apply via WhatsApp"}
-                  </p>
-                  <p className="text-[0.68rem] sm:text-xs text-emerald-800 truncate">
-                    {isHi ? "Hiring Manager se direct baat karein" : "Fast-track profile review"}
-                  </p>
+                  <p className="font-bold text-plum-950 truncate">75%–80%</p>
+                  <p className="text-[10px] text-ink-soft truncate">{isHi ? "Seedha UPI Payout" : "Direct UPI Payout"}</p>
                 </div>
               </div>
-              <a
-                href={waUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl bg-[#1f8f4e] px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-[#187a41] transition"
-              >
-                <MessageCircle className="size-3.5" />
-                <span>Chat</span>
-              </a>
+              <div className="flex items-center gap-2.5 rounded-2xl border border-blush-200 bg-white p-2.5 sm:p-3 shadow-xs">
+                <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-rose-100 text-rose-800 font-bold text-sm">
+                  📍
+                </span>
+                <div className="min-w-0">
+                  <p className="font-bold text-plum-950 truncate">{isHi ? "Aapka Area" : "Your Sectors"}</p>
+                  <p className="text-[10px] text-ink-soft truncate">{isHi ? "Sirf paas ke orders" : "Hyperlocal radius"}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5 rounded-2xl border border-blush-200 bg-white p-2.5 sm:p-3 shadow-xs">
+                <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-gold-100 text-gold-800 font-bold text-sm">
+                  🛡️
+                </span>
+                <div className="min-w-0">
+                  <p className="font-bold text-plum-950 truncate">{isHi ? "100% Female" : "100% Female"}</p>
+                  <p className="text-[10px] text-ink-soft truncate">{isHi ? "Verified surakshit ghar" : "Verified clients"}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5 rounded-2xl border border-blush-200 bg-white p-2.5 sm:p-3 shadow-xs">
+                <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-plum-100 text-plum-800 font-bold text-sm">
+                  ⏰
+                </span>
+                <div className="min-w-0">
+                  <p className="font-bold text-plum-950 truncate">{isHi ? "Azaad Time" : "Own Hours"}</p>
+                  <p className="text-[10px] text-ink-soft truncate">{isHi ? "Jab chahein kaam karein" : "Zero penalty"}</p>
+                </div>
+              </div>
             </div>
-          )}
 
-          {/* Mobile Registration Form (Prominently Positioned) */}
+            {/* Artist Protection Callout: 10% Advance Deposit by Clients */}
+            <div className="rounded-2xl border border-gold-300/60 bg-gradient-to-r from-gold-50/70 via-white to-blush-50/60 p-3.5 sm:p-4 shadow-xs">
+              <div className="flex items-start gap-3">
+                <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-gold-500 text-white font-bold text-xs mt-0.5">
+                  ✓
+                </span>
+                <div className="text-xs text-plum-950 leading-relaxed">
+                  <strong className="font-semibold text-rose-800">
+                    {isHi ? "Aapke Samay ki Suraksha: " : "Artist Time Protection: "}
+                  </strong>
+                  {isHi
+                    ? "Clients se hum 10% advance deposit lete hain taaki aakhri waqt par order cancel na ho aur aapka aana-jaana bekaar na jaye. Baaki 90% payment service ke turant baad milti hai."
+                    : "Clients pay a 10% advance deposit to reserve your slot, eliminating last-minute fake cancellations. Balance 90% is collected immediately upon service completion."}
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop Additional Sidebar Elements (hidden on mobile to keep form near top) */}
+            <div className="hidden lg:block space-y-4">
+              {/* 4 Luxury Benefit Items */}
+              <ul className="space-y-2.5">
+                {points.map((p) => (
+                  <li key={p.title} className="flex gap-3 rounded-2xl border border-line/60 bg-white/80 p-3 shadow-xs hover:border-plum-300 transition">
+                    <span aria-hidden className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-lg bg-gold-100 text-gold-700 text-xs font-bold">
+                      ✦
+                    </span>
+                    <div>
+                      <h2 className="text-xs font-semibold text-plum-950">{p.title}</h2>
+                      <p className="text-ink-soft text-[11px] leading-relaxed mt-0.5">{p.desc}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Verified Artist Spotlight Card */}
+              <div className="rounded-2xl border border-blush-200 bg-white p-4 shadow-xs space-y-3">
+                <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-rose-700">
+                  <Sparkles className="size-3 text-gold-500" />
+                  <span>{isHi ? "Verified Partner Story" : "Verified Partner Story"}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="relative size-12 shrink-0 overflow-hidden rounded-xl border border-gold-300/60 shadow-xs">
+                    <Image
+                      src="/images/pros/sunita-rawat.jpg"
+                      alt="Sunita Rawat"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-0.5 text-gold-500 text-xs mb-0.5">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="size-3 fill-gold-400 text-gold-400" />
+                      ))}
+                      <span className="ml-1 text-[11px] font-bold text-plum-950">5.0</span>
+                    </div>
+                    <h4 className="text-xs font-bold text-plum-950 truncate">Sunita Rawat</h4>
+                    <p className="text-[11px] text-ink-soft">Senior Aesthetician · Noida</p>
+                  </div>
+                </div>
+                <p className="text-[11px] text-ink-soft italic leading-relaxed border-t border-line/60 pt-2.5">
+                  {isHi
+                    ? "“HerrGlow ke saath kaam karke monthly ₹45,000+ kamai ho jaati hai mere hi Noida sectors mein. Direct UPI se payment samay par aati hai.”"
+                    : "“I earn ₹45,000+ monthly in my own Noida sectors. Clients are respectful and verified, with direct UPI settlements right on time.”"}
+                </p>
+              </div>
+
+              {/* Fast-Track WhatsApp Onboarding */}
+              {waUrl && (
+                <div className="rounded-2xl border border-emerald-200/90 bg-gradient-to-br from-emerald-50 via-white to-emerald-50/60 p-4 shadow-soft">
+                  <div className="flex items-center gap-3">
+                    <span className="grid size-9 place-items-center rounded-xl bg-emerald-600 text-white shadow-sm">
+                      <MessageCircle className="size-5" />
+                    </span>
+                    <div>
+                      <h3 className="text-sm font-semibold text-emerald-950">
+                        {isHi ? "WhatsApp par seedhi Onboarding" : "Fast-Track WhatsApp Onboarding"}
+                      </h3>
+                      <p className="text-[0.72rem] text-emerald-800">
+                        {isHi ? "Hiring Manager se direct baat karein" : "Instant registration & same-day review"}
+                      </p>
+                    </div>
+                  </div>
+                  <a
+                    href={waUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#1f8f4e] py-2.5 text-xs font-semibold text-white shadow-soft transition hover:bg-[#187a41] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
+                  >
+                    <MessageCircle className="size-4" />{" "}
+                    {isHi ? "Hiring Manager ko WhatsApp Karein" : "Message Hiring Manager on WhatsApp"}
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Column 2: Application Form (Rendered ONCE for mobile, tablet, and desktop) */}
           <div className="w-full min-w-0">
             <ApplyForm
               categories={categories}
@@ -334,7 +387,10 @@ export function JoinBeauticianView({
               hideWhatsAppCard={true}
             />
           </div>
+        </div>
 
+        {/* ───────── MOBILE/TABLET SECONDARY SECTIONS (Rendered below Form on < lg) ───────── */}
+        <div className="block lg:hidden mt-8 space-y-6">
           {/* Social Proof: Verified Artist Spotlight */}
           <div className="rounded-3xl border border-blush-200 bg-white p-5 sm:p-6 shadow-xs space-y-4">
             <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-rose-700">
@@ -368,12 +424,12 @@ export function JoinBeauticianView({
             </p>
           </div>
 
-          {/* Details & Benefits Accordion/Card below Form on Mobile */}
+          {/* Details & Benefits Cards */}
           <div className="rounded-3xl border border-line bg-gradient-to-b from-blush-50/60 to-white p-5 sm:p-6 space-y-4">
             <h2 className="font-serif text-lg sm:text-xl font-bold text-plum-950">
               {isHi ? "HerrGlow se judne ke mukhy fayde" : "Why Partner with HerrGlow?"}
             </h2>
-            <div className="grid gap-3.5">
+            <div className="grid gap-3.5 sm:grid-cols-2">
               {points.map((p) => (
                 <div key={p.title} className="flex items-start gap-3 rounded-2xl border border-blush-200/70 bg-white p-3.5 shadow-xs">
                   <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-gold-100 text-gold-700 font-bold text-xs mt-0.5">
@@ -388,197 +444,68 @@ export function JoinBeauticianView({
             </div>
           </div>
 
-          {/* Beautician FAQs Accordion */}
-          <div className="rounded-3xl border border-line bg-white p-5 sm:p-6 space-y-4">
-            <div className="flex items-center gap-2">
-              <HelpCircle className="size-5 text-rose-700" />
-              <h2 className="font-serif text-lg font-bold text-plum-950">
-                {isHi ? "Aam Taur Par Puchhe Jane Wale Sawal (FAQs)" : "Frequently Asked Questions"}
-              </h2>
-            </div>
-            <div className="divide-y divide-line/60">
-              {faqs.map((f, idx) => (
-                <div key={idx} className="py-3">
-                  <button
-                    type="button"
-                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                    className="flex w-full items-center justify-between gap-3 text-left font-medium text-xs sm:text-sm text-plum-950 hover:text-rose-700 transition cursor-pointer"
-                  >
-                    <span>{f.q}</span>
-                    <ChevronDown className={cn("size-4 shrink-0 transition-transform text-ink-soft", openFaq === idx && "rotate-180")} />
-                  </button>
-                  {openFaq === idx && (
-                    <p className="mt-2 text-xs text-ink-soft leading-relaxed pr-6">
-                      {f.a}
-                    </p>
-                  )}
+          {/* Fast WhatsApp Callout on Mobile */}
+          {waUrl && (
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-3.5 flex items-center justify-between gap-3 shadow-xs">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-emerald-600 text-white shadow-xs">
+                  <MessageCircle className="size-4.5" />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-xs sm:text-sm font-semibold text-emerald-950 truncate">
+                    {isHi ? "WhatsApp Onboarding" : "Apply via WhatsApp"}
+                  </p>
+                  <p className="text-[0.68rem] sm:text-xs text-emerald-800 truncate">
+                    {isHi ? "Hiring Manager se direct baat karein" : "Fast-track profile review"}
+                  </p>
                 </div>
-              ))}
+              </div>
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl bg-[#1f8f4e] px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-[#187a41] transition"
+              >
+                <MessageCircle className="size-3.5" />
+                <span>Chat</span>
+              </a>
             </div>
-          </div>
+          )}
         </div>
 
-        {/* ───────── DESKTOP VIEW (>= lg) ───────── */}
-        <div className="hidden lg:grid gap-10 xl:gap-14 lg:grid-cols-[400px_1fr] xl:grid-cols-[440px_1fr] 2xl:grid-cols-[460px_1fr] items-start">
-          {/* Left Column: Balanced Typography, Earnings Card & Benefits */}
-          <div className="lg:sticky lg:top-24 space-y-5">
-            <div className="space-y-3">
-              <div className="inline-flex items-center gap-2 rounded-full border border-gold-300/80 bg-blush-50/80 px-3 py-1 text-[11px] font-semibold tracking-wide text-rose-800 shadow-2xs">
-                <Sparkles className="size-3 text-gold-600" />
-                <span>{isHi ? "HerrGlow Elite Partner Network" : "HerrGlow Elite Partner Network"}</span>
-              </div>
-              <h1 className="font-serif text-2xl lg:text-[1.95rem] xl:text-[2.25rem] font-bold text-plum-950 leading-[1.24] tracking-tight max-w-md">
-                {isHi ? (
-                  <>HerrGlow ke saath apna <span className="text-rose-700">beauty &amp; makeup</span> business badhaiye</>
-                ) : (
-                  <>Grow your <span className="text-rose-700">beauty &amp; makeup</span> business with HerrGlow</>
-                )}
-              </h1>
-              <p className="text-xs sm:text-sm text-ink-soft leading-relaxed max-w-md">
-                {isHi
-                  ? "Delhi NCR ke sabse trusted luxury doorstep beauty brand se judiye. Achhi kamai, bina kisi joining fee ke, aur poori azaadi."
-                  : "Join Delhi NCR's most trusted luxury doorstep beauty network. High-paying clients, zero upfront fee, and complete schedule freedom."}
+        {/* ───────── FULL-WIDTH FAQS (Rendered for all viewports) ───────── */}
+        <div className="mt-12 sm:mt-16 rounded-3xl border border-line bg-white p-6 sm:p-8 lg:p-10 space-y-6 shadow-xs">
+          <div className="flex items-center gap-2.5">
+            <span className="grid size-9 place-items-center rounded-xl bg-rose-100 text-rose-800 shadow-2xs">
+              <HelpCircle className="size-5" />
+            </span>
+            <div>
+              <h2 className="font-serif text-lg sm:text-2xl font-bold text-plum-950">
+                {isHi ? "Aam Taur Par Puchhe Jane Wale Sawal (FAQs)" : "Frequently Asked Questions"}
+              </h2>
+              <p className="text-xs sm:text-sm text-ink-soft">
+                {isHi ? "Earnings, joining process aur terms se jude jawab" : "Everything you need to know about earnings, safety, and schedules"}
               </p>
             </div>
-
-            {/* Quick 2x2 High-Impact Metrics */}
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="rounded-xl border border-blush-200 bg-white p-2.5 shadow-xs">
-                <div className="flex items-center gap-2 font-bold text-plum-950">
-                  <span className="grid size-6 place-items-center rounded-lg bg-emerald-100 text-emerald-800 text-xs">₹</span>
-                  <span>75%–80%</span>
-                </div>
-                <p className="mt-1 text-[11px] text-ink-soft">{isHi ? "Seedha UPI Payout" : "Direct UPI Payout"}</p>
-              </div>
-              <div className="rounded-xl border border-blush-200 bg-white p-2.5 shadow-xs">
-                <div className="flex items-center gap-2 font-bold text-plum-950">
-                  <span className="grid size-6 place-items-center rounded-lg bg-rose-100 text-rose-800 text-xs">📍</span>
-                  <span>{isHi ? "Local Sectors" : "Your Sectors"}</span>
-                </div>
-                <p className="mt-1 text-[11px] text-ink-soft">{isHi ? "Aapke chune hue areas" : "Hyperlocal bookings"}</p>
-              </div>
-              <div className="rounded-xl border border-blush-200 bg-white p-2.5 shadow-xs">
-                <div className="flex items-center gap-2 font-bold text-plum-950">
-                  <span className="grid size-6 place-items-center rounded-lg bg-gold-100 text-gold-800 text-xs">🛡️</span>
-                  <span>100% Female</span>
-                </div>
-                <p className="mt-1 text-[11px] text-ink-soft">{isHi ? "Surakshit ghar & log" : "Verified households"}</p>
-              </div>
-              <div className="rounded-xl border border-blush-200 bg-white p-2.5 shadow-xs">
-                <div className="flex items-center gap-2 font-bold text-plum-950">
-                  <span className="grid size-6 place-items-center rounded-lg bg-plum-100 text-plum-800 text-xs">⏰</span>
-                  <span>{isHi ? "Azaad Samay" : "Own Hours"}</span>
-                </div>
-                <p className="mt-1 text-[11px] text-ink-soft">{isHi ? "Zero penalty policy" : "Zero penalty policy"}</p>
-              </div>
-            </div>
-
-            {/* Advance Deposit & Earnings Guarantee Callout Card */}
-            <div className="rounded-2xl border border-gold-300/70 bg-gradient-to-br from-gold-50/80 via-white to-blush-50/50 p-4 shadow-xs">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-rose-700 mb-1.5">
-                <Sparkles className="size-3.5 text-gold-500" />
-                <span>{isHi ? "Aapke Samay & Kamai ki Suraksha" : "Artist Time & Income Protection"}</span>
-              </div>
-              <p className="text-xs text-plum-950 font-medium leading-relaxed">
-                {isHi
-                  ? "Clients 10% advance deposit dete hain taaki last moment cancellation na ho. Baaki 90% payment service ke turant baad milti hai. Zero joining fee, zero hidden cuts."
-                  : "Clients pay a 10% advance deposit to reserve your time, preventing fake cancellations. Balance 90% is settled right after service. Zero upfront deposit or hidden cuts."}
-              </p>
-            </div>
-
-            {/* 4 Luxury Benefit Items */}
-            <ul className="space-y-2.5">
-              {points.map((p) => (
-                <li key={p.title} className="flex gap-3 rounded-2xl border border-line/60 bg-white/80 p-3 shadow-xs hover:border-plum-300 transition">
-                  <span aria-hidden className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-lg bg-gold-100 text-gold-700 text-xs font-bold">
-                    ✦
-                  </span>
-                  <div>
-                    <h2 className="text-xs font-semibold text-plum-950">{p.title}</h2>
-                    <p className="text-ink-soft text-[11px] leading-relaxed mt-0.5">{p.desc}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-
-            {/* Verified Artist Spotlight Card */}
-            <div className="rounded-2xl border border-blush-200 bg-white p-4 shadow-xs space-y-3">
-              <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-rose-700">
-                <Sparkles className="size-3 text-gold-500" />
-                <span>{isHi ? "Verified Partner Story" : "Verified Partner Story"}</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="relative size-12 shrink-0 overflow-hidden rounded-xl border border-gold-300/60 shadow-xs">
-                  <Image
-                    src="/images/pros/sunita-rawat.jpg"
-                    alt="Sunita Rawat"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-0.5 text-gold-500 text-xs mb-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="size-3 fill-gold-400 text-gold-400" />
-                    ))}
-                    <span className="ml-1 text-[11px] font-bold text-plum-950">5.0</span>
-                  </div>
-                  <h4 className="text-xs font-bold text-plum-950 truncate">Sunita Rawat</h4>
-                  <p className="text-[11px] text-ink-soft">Senior Aesthetician · Noida</p>
-                </div>
-              </div>
-              <p className="text-[11px] text-ink-soft italic leading-relaxed border-t border-line/60 pt-2.5">
-                {isHi
-                  ? "“HerrGlow ke saath kaam karke monthly ₹45,000+ kamai ho jaati hai mere hi Noida sectors mein. Direct UPI se payment samay par aati hai.”"
-                  : "“I earn ₹45,000+ monthly in my own Noida sectors. Clients are respectful and verified, with direct UPI settlements right on time.”"}
-              </p>
-            </div>
-
-            {/* WhatsApp Fast-Track Card */}
-            {waUrl && (
-              <div className="rounded-2xl border border-emerald-200/90 bg-gradient-to-br from-emerald-50 via-white to-emerald-50/60 p-4 shadow-soft">
-                <div className="flex items-center gap-3">
-                  <span className="grid size-9 place-items-center rounded-xl bg-emerald-600 text-white shadow-sm">
-                    <MessageCircle className="size-5" />
-                  </span>
-                  <div>
-                    <h3 className="text-sm font-semibold text-emerald-950">
-                      {isHi ? "WhatsApp par seedhi Onboarding" : "Fast-Track WhatsApp Onboarding"}
-                    </h3>
-                    <p className="text-[0.72rem] text-emerald-800">
-                      {isHi ? "Turant registration & same-day check" : "Instant registration & same-day document review"}
-                    </p>
-                  </div>
-                </div>
-                <p className="mt-2 text-xs leading-relaxed text-ink-soft">
-                  {isHi
-                    ? "Form bharne ke badle WhatsApp pasand hai? Hamari Hiring Coordinator ko seedhe WhatsApp karein."
-                    : "Prefer WhatsApp over filling online forms? Message our Artist Hiring Coordinator directly."}
-                </p>
-                <a
-                  href={waUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#1f8f4e] py-2.5 text-xs font-semibold text-white shadow-soft transition hover:bg-[#187a41] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
-                >
-                  <MessageCircle className="size-4" />{" "}
-                  {isHi ? "Hiring Manager ko WhatsApp Karein" : "Message Hiring Manager on WhatsApp"}
-                </a>
-              </div>
-            )}
           </div>
-
-          {/* Right Column: Clean, Spacious Application Form */}
-          <div className="w-full min-w-0">
-            <ApplyForm
-              categories={categories}
-              areas={areas}
-              whatsappNumber={whatsappNumber}
-              lang={lang}
-              onLangChange={handleLangChange}
-              hideLangToggle={true}
-              hideWhatsAppCard={true}
-            />
+          <div className="divide-y divide-line/60">
+            {faqs.map((f, idx) => (
+              <div key={idx} className="py-3.5 sm:py-4">
+                <button
+                  type="button"
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  className="flex w-full items-center justify-between gap-3 text-left font-medium text-xs sm:text-base text-plum-950 hover:text-rose-700 transition cursor-pointer"
+                >
+                  <span>{f.q}</span>
+                  <ChevronDown className={cn("size-4 shrink-0 transition-transform text-ink-soft", openFaq === idx && "rotate-180")} />
+                </button>
+                {openFaq === idx && (
+                  <p className="mt-2.5 text-xs sm:text-sm text-ink-soft leading-relaxed pr-6">
+                    {f.a}
+                  </p>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </Container>

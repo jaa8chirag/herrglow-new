@@ -127,6 +127,8 @@ export function ApplyForm({
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [selectedRadius, setSelectedRadius] = useState<number>(10);
   const [geoError, setGeoError] = useState("");
+  const [flatValue, setFlatValue] = useState("");
+  const [societyValue, setSocietyValue] = useState("");
   const [areaValue, setAreaValue] = useState("");
 
   // Helper for bilingual strings
@@ -177,7 +179,7 @@ export function ApplyForm({
     if (!msg) return undefined;
     if (lang === "hi") {
       if (k === "name") return "Kripya apna poora naam daalein";
-      if (k === "phone") return "Sahi 10-digit mobile number daalein (jaise 9876543210)";
+      if (k === "phone") return "Sahi 10-digit mobile number daalein (jaise 9319260069)";
       if (k === "email") return "Sahi email ID daalein ya ise khali chhod dein";
       if (k === "area" || k === "city") return "Kripya apna area ya locality chunein";
       if (k === "operatingAreas") return "Kripya kam se kam ek operating area chunein";
@@ -481,20 +483,23 @@ export function ApplyForm({
             {err("email") && <span className="text-xs text-rose-700">{err("email")}</span>}
           </label>
 
-          <div className="grid gap-1.5 sm:col-span-2 min-w-0">
+          {/* Beautician Actual Home Address (Flat No., Society, Locality, GPS) */}
+          <div className="grid gap-3.5 sm:col-span-2 min-w-0 border-t border-b border-line/60 py-4 my-1">
             <div className="flex flex-wrap items-center justify-between gap-2 min-w-0">
-              <label htmlFor="apply-area-input" className="text-sm font-medium text-plum-900">
-                {t("Your home area / locality", "Aap kahan rehti hain? (Ghar ka area)")}{" "}
-                <span className="font-normal text-ink-soft">
-                  ({t("where you live", "aapki society ya sector")})
-                </span>
-              </label>
+              <div>
+                <h4 className="text-sm font-semibold text-plum-950">
+                  {t("Your Home Address (Where you live)", "Aapka Ghar ka Address (Jahan aap rehti hain)")}
+                </h4>
+                <p className="text-xs text-ink-soft">
+                  {t("For artist verification and assigning clients near your home", "Verification aur paas ke orders dene ke liye zaroori hai")}
+                </p>
+              </div>
               <button
                 type="button"
                 onClick={detectLocation}
                 disabled={geoStatus === "detecting"}
                 className={cn(
-                  "inline-flex max-w-full items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 cursor-pointer shrink-0",
+                  "inline-flex max-w-full items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 cursor-pointer shrink-0 shadow-2xs",
                   coords
                     ? "border-emerald-300 bg-emerald-50 text-emerald-800"
                     : "border-rose-200 bg-rose-50/70 text-rose-800 hover:bg-rose-100"
@@ -503,13 +508,13 @@ export function ApplyForm({
                 {geoStatus === "detecting" ? (
                   <>
                     <Loader2 className="size-3 animate-spin shrink-0" />{" "}
-                    <span className="truncate">{t("Detecting Live GPS…", "GPS Location dhundh rahe hain…")}</span>
+                    <span className="truncate">{t("Detecting GPS…", "GPS dhundh rahe hain…")}</span>
                   </>
                 ) : coords ? (
                   <>
                     <CheckCircle2 className="size-3 text-emerald-600 shrink-0" />{" "}
                     <span className="truncate">
-                      {t("GPS Pin Captured", "GPS Location mil gayi")} ({coords.lat.toFixed(4)}, {coords.lng.toFixed(4)})
+                      {t("GPS Attached", "GPS save ho gaya")} ({coords.lat.toFixed(4)}, {coords.lng.toFixed(4)})
                     </span>
                   </>
                 ) : (
@@ -521,45 +526,80 @@ export function ApplyForm({
               </button>
             </div>
 
-            <input
-              id="apply-area-input"
-              name="area"
-              required
-              value={areaValue}
-              onChange={(e) => setAreaValue(e.target.value)}
-              list="apply-areas"
-              className={cn(fieldCls, (err("area") || err("city")) && "border-rose-600")}
-              placeholder={t("e.g. Indirapuram, Sector 62, Dwarka", "Jaise: Indirapuram, Sector 62, Dwarka")}
-            />
-            <datalist id="apply-areas">
-              {areaSuggestions.map((a) => (
-                <option key={a} value={a} />
-              ))}
-            </datalist>
+            {/* Row 1: Flat/House No. & Society/Apartment */}
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="grid gap-1.5 text-xs font-semibold uppercase tracking-wider text-plum-900 min-w-0">
+                <span>{t("Flat / House No. & Floor", "Flat / Makaan No. aur Floor")} <span className="text-rose-700">*</span></span>
+                <input
+                  required
+                  value={flatValue}
+                  onChange={(e) => setFlatValue(e.target.value)}
+                  className={fieldCls}
+                  placeholder={t("e.g. Flat 204, 2nd Floor / House #12", "Jaise: Flat 204, 2nd Floor / House #12")}
+                />
+              </label>
 
-            {coords && (
-              <p className="flex items-center gap-1.5 rounded-xl border border-emerald-200/80 bg-emerald-50 px-3 py-1.5 text-xs text-emerald-900 min-w-0">
-                <CheckCircle2 className="size-3.5 shrink-0 text-emerald-600" />
-                <span className="min-w-0">
-                  {t(
-                    "Live GPS coordinates attached. Clients near your location will be matched directly to you.",
-                    "Aapki live GPS location save ho gayi hai. Aapke paas ke clients ke bookings direct aapko milenge."
-                  )}
-                </span>
-              </p>
-            )}
+              <label className="grid gap-1.5 text-xs font-semibold uppercase tracking-wider text-plum-900 min-w-0">
+                <span>{t("Society / Building / Colony", "Society / Apartment / Colony")} <span className="text-rose-700">*</span></span>
+                <input
+                  required
+                  value={societyValue}
+                  onChange={(e) => setSocietyValue(e.target.value)}
+                  className={fieldCls}
+                  placeholder={t("e.g. Cleo County / Gaur City / Stellar", "Jaise: Cleo County / Gaur City / Stellar")}
+                />
+              </label>
+            </div>
 
-            {geoError && (
-              <p className="rounded-lg bg-amber-50 px-2.5 py-1 text-xs text-amber-800">
-                {geoError}
-              </p>
-            )}
+            {/* Row 2: Locality / Sector */}
+            <div className="grid gap-1.5 min-w-0">
+              <label htmlFor="apply-area-input" className="text-xs font-semibold uppercase tracking-wider text-plum-900">
+                {t("Locality / Sector (City)", "Area / Sector / Shahar")} <span className="text-rose-700">*</span>
+              </label>
+              <input
+                id="apply-area-input"
+                required
+                value={areaValue}
+                onChange={(e) => setAreaValue(e.target.value)}
+                list="apply-areas"
+                className={cn(fieldCls, (err("area") || err("city")) && "border-rose-600")}
+                placeholder={t("e.g. Sector 62, Indirapuram, Dwarka", "Jaise: Sector 62, Indirapuram, Dwarka")}
+              />
+              <datalist id="apply-areas">
+                {areaSuggestions.map((a) => (
+                  <option key={a} value={a} />
+                ))}
+              </datalist>
 
-            {(err("area") || err("city")) && <span className="text-xs text-rose-700">{err("area") || err("city")}</span>}
+              {coords && (
+                <p className="flex items-center gap-1.5 rounded-xl border border-emerald-200/80 bg-emerald-50 px-3 py-1.5 text-xs text-emerald-900 min-w-0">
+                  <CheckCircle2 className="size-3.5 shrink-0 text-emerald-600" />
+                  <span className="min-w-0">
+                    {t(
+                      "Live GPS coordinates attached. Nearby client orders will be matched directly to your doorstep.",
+                      "Aapki live GPS location save ho gayi hai. Aapke paas ke clients ke bookings direct aapko milenge."
+                    )}
+                  </span>
+                </p>
+              )}
 
-            {/* Hidden GPS inputs sent with form submission */}
-            <input type="hidden" name="latitude" value={coords ? coords.lat : ""} />
-            <input type="hidden" name="longitude" value={coords ? coords.lng : ""} />
+              {geoError && (
+                <p className="rounded-lg bg-amber-50 px-2.5 py-1 text-xs text-amber-800">
+                  {geoError}
+                </p>
+              )}
+
+              {(err("area") || err("city")) && <span className="text-xs text-rose-700">{err("area") || err("city")}</span>}
+
+              {/* Combined full address for backend */}
+              <input
+                type="hidden"
+                name="area"
+                value={[flatValue, societyValue, areaValue].filter(Boolean).join(", ") || areaValue}
+              />
+              <input type="hidden" name="latitude" value={coords ? coords.lat : ""} />
+              <input type="hidden" name="longitude" value={coords ? coords.lng : ""} />
+            </div>
           </div>
 
           <div className="grid gap-2 sm:col-span-2 min-w-0" ref={dropdownRef}>
@@ -586,7 +626,7 @@ export function ApplyForm({
               <div className="flex flex-wrap items-center justify-between gap-2 min-w-0">
                 <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-rose-700 min-w-0">
                   <Sparkles className="size-3.5 text-gold-500 shrink-0" />
-                  <span className="truncate">{t(`Recommended for your location (${detectedRegion})`, `Aapke area ke paas ke sectors (${detectedRegion})`)}</span>
+                  <span className="truncate">{t(`Quick-Select Sectors in ${detectedRegion}`, `Aapke paas ke sectors (${detectedRegion})`)}</span>
                 </span>
                 <button
                   type="button"

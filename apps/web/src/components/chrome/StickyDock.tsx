@@ -1,9 +1,17 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { MessageCircle, Phone, ShieldCheck } from "lucide-react";
 import { telLink, whatsappLink } from "@/lib/whatsapp";
 import { BookLink } from "./BookLink";
 
-/** Mobile floating dock: Book Now always; WhatsApp / Call only when a number is configured. */
+/** Mobile floating dock: Book Now always; WhatsApp / Call only when a number is configured. Suppressed on join-as-beautician & admin. */
 export function StickyDock({ whatsapp, phone, waText }: { whatsapp: string | null; phone: string | null; waText?: string | null }) {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/join-as-beautician") || pathname?.startsWith("/admin")) {
+    return null;
+  }
+
   const wa = whatsappLink(whatsapp, waText ?? undefined), tel = telLink(phone);
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex flex-col items-center px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden">

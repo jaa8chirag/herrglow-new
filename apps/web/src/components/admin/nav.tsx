@@ -22,6 +22,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@herrglow/ui";
+import { Logo } from "@/components/brand/Logo";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   dashboard: LayoutDashboard,
@@ -68,16 +69,9 @@ export function AdminSidebarNav({
         {/* Brand Header */}
         <div className="mb-6 flex items-center justify-between border-b border-white/10 pb-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-rose-500 font-serif text-sm font-bold text-white shadow-sm">
-                H
-              </span>
-              <span className="font-serif text-xl font-bold tracking-tight text-ivory">
-                HerrGlow
-              </span>
-            </div>
-            <p className="mt-0.5 text-[11px] font-medium tracking-wide text-blush-300">
-              SALON & ARTIST PORTAL
+            <Logo variant="dark" size="sm" withLink={false} showSubtitle={false} />
+            <p className="mt-1 text-[10px] font-semibold tracking-wider uppercase text-gold-300/80 pl-0.5">
+              Operations &amp; Dispatch
             </p>
           </div>
           <Link
