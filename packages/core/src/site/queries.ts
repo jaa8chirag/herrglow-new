@@ -47,6 +47,14 @@ export async function getLiveCities() {
   return prisma.city.findMany({ where: { slug: { in: slugs }, isActive: true }, orderBy: { name: "asc" }, select: { slug: true, name: true } });
 }
 
+export async function getLiveAreas() {
+  return prisma.area.findMany({
+    where: { status: "ACTIVE" },
+    orderBy: { name: "asc" },
+    select: { name: true, slug: true, citySlug: true },
+  });
+}
+
 export async function getServicePage(slug: string) {
   const svc = await prisma.service.findFirst({
     where: { slug, ...liveService },

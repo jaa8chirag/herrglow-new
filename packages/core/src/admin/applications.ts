@@ -38,7 +38,7 @@ export async function approveApplication(id: string, adminEmail: string): Promis
       data: {
         slug, name: a.name, status: "INACTIVE", providerType: "BOTH", photo: a.photoKey, experienceYears: a.experienceYears,
         specialization: [...cats.map((c) => c.name), a.servicesText].filter(Boolean).join(", ").slice(0, 200) || null,
-        private: { create: { phone: a.phone, email: a.email } },
+        private: { create: { phone: a.phone, email: a.email, serviceAreasText: a.city, latitude: a.latitude, longitude: a.longitude, travelRadius: a.travelRadius } },
       },
     });
     await tx.proApplication.update({ where: { id }, data: { status: "APPROVED", proId: pro.id, handledBy: adminEmail } });

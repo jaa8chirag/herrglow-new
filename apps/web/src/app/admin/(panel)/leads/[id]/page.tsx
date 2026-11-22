@@ -30,6 +30,18 @@ export default async function LeadDetail(props: PageProps<"/admin/leads/[id]">) 
     leadData.package?.title ??
     (leadData.services?.map((s) => s.service.title).join(", ") || "General Enquiry");
 
+  const dispatchMsg = [
+    `✨ New HerrGlow Booking Assignment ✨`,
+    `Booking ID: #${lead.bookingRef ?? lead.id.slice(0, 8)}`,
+    `Service: ${serviceOrPackageTitle}`,
+    lead.eventDate ? `Date: ${lead.eventDate.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" })}` : null,
+    lead.timeSlot ? `Slot: ${lead.timeSlot}` : null,
+    `Area: ${lead.address || lead.locationText || "Delhi NCR"}`,
+    `Total Amount: ₹${lead.finalAmount ?? lead.amount ?? "As per service"}`,
+    `\nPlease confirm acceptance.`,
+  ].filter(Boolean).join("\n");
+  const dispatchWaUrl = `https://wa.me/?text=${encodeURIComponent(dispatchMsg)}`;
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -46,7 +58,17 @@ export default async function LeadDetail(props: PageProps<"/admin/leads/[id]">) 
           </div>
         }
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <a
+              href={dispatchWaUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-plum-900 px-3.5 py-2 text-xs font-semibold text-ivory shadow-soft hover:bg-plum-800 transition"
+              title="Share formatted appointment details with an artist on WhatsApp"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-gold-400" />
+              <span>Dispatch to Artist</span>
+            </a>
             {tel && (
               <a
                 href={tel}

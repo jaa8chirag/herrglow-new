@@ -268,6 +268,9 @@ model ProPrivate {
   landmark     String?
   pincode      String?
   serviceAreasText String?
+  latitude     Decimal? @db.Decimal(10, 7)
+  longitude    Decimal? @db.Decimal(10, 7)
+  travelRadius Int?     @default(10)
   referralCode String? @unique
   referredById String?
 }
@@ -487,6 +490,10 @@ model ProApplication {
   experienceYears Int?
   portfolioUrl   String?
   photoKey       String?
+  idProofKey     String?
+  latitude       Decimal?          @db.Decimal(10, 7)
+  longitude      Decimal?          @db.Decimal(10, 7)
+  travelRadius   Int?              @default(10)
   message        String?
   status         ApplicationStatus @default(NEW)
   proId          String?

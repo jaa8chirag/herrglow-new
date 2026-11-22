@@ -178,16 +178,31 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
   };
 
   const next = () => {
-    if (step === 1 && !v.city) {
-      if (v.area) {
-        const found = ALL_POPULAR_AREAS.find((a) => a.area.toLowerCase() === v.area.trim().toLowerCase());
-        if (found) {
-          set("city", found.city);
-          go(step + 1);
-          return;
-        }
+    if (step === 1) {
+      if (!v.area && !v.city) {
+        return setStepErr("Please select or enter your area above");
       }
-      return setStepErr("Please select your city or tap a popular area above");
+      if (!v.city && v.area) {
+        const lower = v.area.toLowerCase();
+        const found = ALL_POPULAR_AREAS.find(
+          (a) => lower.includes(a.area.toLowerCase()) || a.area.toLowerCase().includes(lower)
+        );
+        const inferredCity = found
+          ? found.city
+          : lower.includes("gurgaon") || lower.includes("gurugram") || lower.includes("dlf")
+            ? "gurgaon"
+            : lower.includes("ghaziabad") || lower.includes("indirapuram") || lower.includes("vaishali") || lower.includes("vasundhara")
+              ? "ghaziabad"
+              : lower.includes("greater noida") || lower.includes("gaur city")
+                ? "greater-noida"
+                : lower.includes("delhi") || lower.includes("dwarka") || lower.includes("saket") || lower.includes("rohini")
+                  ? "delhi"
+                  : "noida";
+        setV((prev) => ({ ...prev, city: inferredCity }));
+        setStepErr("");
+        go(step + 1);
+        return;
+      }
     }
     go(step + 1);
   };
@@ -470,29 +485,31 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
 
                             {step === 1 && panel(<>
                               <div className="grid gap-1.5">
-                                <label htmlFor="booking-city" className="text-sm font-medium text-plum-900">City</label>
-                                <select
-                                  id="booking-city"
-                                  value={v.city}
-                                  onChange={(e) => { set("city", e.target.value); setStepErr(""); }}
-                                  className={cn(fieldCls, (stepErr || err("city")) && "border-rose-600 focus:border-rose-600 focus:ring-rose-600/20")}
-                                  aria-invalid={!!(stepErr || err("city"))}
-                                >
-                                  <option value="" disabled>Select your city</option>
-                                  {cities.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
-                                  <option value="other">Other city</option>
-                                </select>
+                                <label htmlFor="booking-area" className="text-sm font-medium text-plum-900">
+                                  Your area / locality / society <span className="font-normal text-ink-soft">(in Delhi NCR)</span>
+                                </label>
+                                <input
+                                  id="booking-area"
+                                  value={v.area}
+                                  onChange={(e) => {
+                                    set("area", e.target.value);
+                                    setStepErr("");
+                                  }}
+                                  autoComplete="street-address"
+                                  className={cn(fieldCls, (stepErr || err("area")) && "border-rose-600 focus:border-rose-600 focus:ring-rose-600/20")}
+                                  placeholder="e.g. Indirapuram, Sector 62, Gaur City 1, Dwarka Sector 10"
+                                />
                               </div>
 
                               <div className="rounded-2xl border border-blush-200/60 bg-blush-50/60 p-3.5">
                                 <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-rose-700">
-                                  {v.city && cityName ? `Popular areas in ${cityName}` : "Popular areas in Delhi NCR (tap to auto-select)"}
+                                  Popular areas in Delhi NCR (tap to auto-select)
                                 </p>
                                 <div className="flex flex-wrap gap-1.5" role="group" aria-label="Popular area suggestions">
-                                  {(v.city && POPULAR_AREAS[v.city] ? POPULAR_AREAS[v.city] : ALL_POPULAR_AREAS).map((item) => {
-                                    const areaName = typeof item === "string" ? item : item.area;
-                                    const itemCity = typeof item === "string" ? v.city : item.city;
-                                    const itemCityName = typeof item === "string" ? "" : item.cityName;
+                                  {ALL_POPULAR_AREAS.map((item) => {
+                                    const areaName = item.area;
+                                    const itemCity = item.city;
+                                    const itemCityName = item.cityName;
                                     const isSelected = v.area === areaName;
                                     return (
                                       <button
@@ -511,7 +528,7 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
                                         )}
                                       >
                                         <span>{areaName}</span>
-                                        {itemCityName && !v.city && (
+                                        {itemCityName && (
                                           <span className={cn("text-[0.65rem] opacity-75 font-normal", isSelected ? "text-blush-100" : "text-ink-soft")}>
                                             · {itemCityName}
                                           </span>
@@ -522,18 +539,23 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
                                 </div>
                               </div>
 
-                              <div className="grid gap-1.5">
-                                <label htmlFor="booking-area" className="text-sm font-medium text-plum-900">
-                                  Area / society / apartment / flat no. <span className="font-normal text-ink-soft">(or choose above)</span>
-                                </label>
-                                <input
-                                  id="booking-area"
-                                  value={v.area}
-                                  onChange={(e) => set("area", e.target.value)}
-                                  autoComplete="street-address"
-                                  className={fieldCls}
-                                  placeholder="e.g. Sector 62, Gaur City 1, Flat 402"
-                                />
+                              <div className="flex items-center justify-between text-xs text-ink-soft pt-1">
+                                <span>City region: <strong className="text-plum-900 capitalize">{cityName || v.city || "Auto-detected"}</strong></span>
+                                <details className="cursor-pointer">
+                                  <summary className="text-rose-700 underline">Change region</summary>
+                                  <div className="mt-2">
+                                    <select
+                                      id="booking-city"
+                                      value={v.city}
+                                      onChange={(e) => { set("city", e.target.value); setStepErr(""); }}
+                                      className={cn(fieldCls, "text-xs py-1.5 min-h-9")}
+                                    >
+                                      <option value="" disabled>Select region</option>
+                                      {cities.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
+                                      <option value="other">Outside Delhi NCR</option>
+                                    </select>
+                                  </div>
+                                </details>
                               </div>
 
                             {v.city === "other" && (

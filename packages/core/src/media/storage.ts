@@ -6,7 +6,7 @@ import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client
  * Media storage. Production: Cloudflare R2 (S3 API). Development fallback: local disk under apps/web/public/media,
  * served at /media (set NEXT_PUBLIC_MEDIA_BASE=/media).
  */
-export const ALLOWED_MIME: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/avif": "avif" };
+export const ALLOWED_MIME: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/avif": "avif", "application/pdf": "pdf" };
 export const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
 
 const env = () => ({ acct: process.env.R2_ACCOUNT_ID, id: process.env.R2_ACCESS_KEY_ID, secret: process.env.R2_SECRET_ACCESS_KEY, bucket: process.env.R2_BUCKET });
@@ -42,6 +42,8 @@ export async function removeObject(key: string, localRoot: string) {
 
 /** Cheap magic-byte check so a renamed .exe can't be uploaded as an image. */
 export function sniffMime(b: Buffer): string | null {
+  if (b.length < 4) return null;
+  if (b.subarray(0, 4).toString() === "%PDF") return "application/pdf";
   if (b.length < 12) return null;
   if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return "image/jpeg";
   if (b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return "image/png";

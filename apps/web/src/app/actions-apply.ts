@@ -22,9 +22,29 @@ export async function submitApplication(_prev: ApplyState, fd: FormData): Promis
   const s = (k: string) => (fd.get(k) as string | null) ?? undefined;
   const file = fd.get("photo");
   const photo = file instanceof File && file.size > 0 ? { body: Buffer.from(await file.arrayBuffer()), filename: file.name } : null;
+  const idFile = fd.get("idProof");
+  const idProof = idFile instanceof File && idFile.size > 0 ? { body: Buffer.from(await idFile.arrayBuffer()), filename: idFile.name } : null;
   const res = await createApplication(
-    { name: s("name") ?? "", phone: s("phone") ?? "", email: s("email"), city: s("city") ?? "", categories: fd.getAll("categories").map(String), servicesText: s("servicesText"), experienceYears: s("experienceYears"), portfolioUrl: s("portfolioUrl"), message: s("message"), website: s("website") },
-    photo, path.join(process.cwd(), "public", "media"),
+    {
+      name: s("name") ?? "",
+      phone: s("phone") ?? "",
+      email: s("email"),
+      area: s("area") ?? s("city") ?? "",
+      operatingAreas: s("operatingAreas") ?? "",
+      city: s("area") ?? s("city") ?? "",
+      latitude: s("latitude") ? Number(s("latitude")) : undefined,
+      longitude: s("longitude") ? Number(s("longitude")) : undefined,
+      travelRadius: s("travelRadius") ? Number(s("travelRadius")) : 10,
+      categories: fd.getAll("categories").map(String),
+      servicesText: s("servicesText"),
+      experienceYears: s("experienceYears"),
+      portfolioUrl: s("portfolioUrl"),
+      message: s("message"),
+      website: s("website"),
+    },
+    photo,
+    idProof,
+    path.join(process.cwd(), "public", "media"),
   );
   return res.ok ? { status: "done" } : { status: "error", errors: res.errors };
 }

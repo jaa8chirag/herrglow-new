@@ -14,6 +14,8 @@ export default async function ApplicationDetail(props: PageProps<"/admin/applica
   const a = await getApplication(id);
   if (!a) notFound();
   const photo = mediaUrl(a.photoKey);
+  const idProof = mediaUrl(a.idProofKey);
+  const isPdf = a.idProofKey?.endsWith(".pdf");
   const err = Array.isArray(sp.err) ? sp.err[0] : sp.err;
   return (
     <>
@@ -24,7 +26,27 @@ export default async function ApplicationDetail(props: PageProps<"/admin/applica
           <dl className="grid grid-cols-[130px_1fr] gap-y-2 text-sm">
             <dt className="text-ink-soft">Phone</dt><dd>{a.phone}</dd>
             <dt className="text-ink-soft">Email</dt><dd>{a.email ?? "—"}</dd>
-            <dt className="text-ink-soft">City</dt><dd>{a.city}</dd>
+            <dt className="text-ink-soft">Area &amp; Coverage</dt><dd className="font-medium text-plum-950">{a.city}</dd>
+            {a.latitude != null && a.longitude != null && (
+              <>
+                <dt className="text-ink-soft">Live GPS Pin</dt>
+                <dd>
+                  <span className="font-mono text-xs">{Number(a.latitude).toFixed(4)}°, {Number(a.longitude).toFixed(4)}°</span>
+                  <a
+                    href={`https://www.google.com/maps?q=${a.latitude},${a.longitude}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-2.5 inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-800 border border-emerald-200/80 hover:bg-emerald-100 transition"
+                  >
+                    📍 View on Google Maps ↗
+                  </a>
+                </dd>
+              </>
+            )}
+            <dt className="text-ink-soft">Travel Radius</dt>
+            <dd className="font-medium text-plum-900">
+              {a.travelRadius ? (a.travelRadius >= 40 ? "Anywhere in Delhi NCR (Bridal / VIP)" : `Up to ${a.travelRadius} km`) : "Standard (10 km)"}
+            </dd>
             <dt className="text-ink-soft">Offers</dt><dd>{a.categories.join(", ") || "—"}</dd>
             <dt className="text-ink-soft">Specialities</dt><dd>{a.servicesText ?? "—"}</dd>
             <dt className="text-ink-soft">Experience</dt><dd>{a.experienceYears != null ? `${a.experienceYears} years` : "—"}</dd>
@@ -35,6 +57,24 @@ export default async function ApplicationDetail(props: PageProps<"/admin/applica
             {a.rejectReason && (<><dt className="text-ink-soft">Reject reason</dt><dd>{a.rejectReason}</dd></>)}
           </dl>
           {a.photoKey && <div className="mt-5">{photo ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={photo} alt={`${a.name}`} className="size-40 rounded-xl object-cover" /> : <p className="text-sm text-ink-soft">Photo stored ({a.photoKey}) but media delivery is not configured here.</p>}</div>}
+          {a.idProofKey && (
+            <div className="mt-5 border-t border-line/60 pt-4">
+              <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-plum-900">Government ID Proof (Verification)</h4>
+              {isPdf ? (
+                <a href={idProof ?? "#"} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-blush-100 px-4 py-2.5 text-xs font-semibold text-plum-950 transition hover:bg-blush-200">
+                  📄 View / Download ID Proof Document (PDF)
+                </a>
+              ) : idProof ? (
+                <a href={idProof} target="_blank" rel="noopener noreferrer" className="block max-w-sm">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={idProof} alt={`${a.name} ID proof`} className="max-h-52 w-auto rounded-xl border border-line object-contain shadow-sm transition hover:opacity-90" />
+                  <span className="mt-1 block text-xs font-medium text-rose-700 underline">Click to view full resolution</span>
+                </a>
+              ) : (
+                <p className="text-xs text-ink-soft">ID proof stored ({a.idProofKey}).</p>
+              )}
+            </div>
+          )}
         </Panel>
         {a.status === "NEW" && (
           <div className="grid content-start gap-4">

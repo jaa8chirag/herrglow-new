@@ -5,6 +5,7 @@ import * as core from "@herrglow/core";
 export const getSettings = cache(core.getSettings);
 export const getCategories = cache(core.getCategories);
 export const getLiveCities = cache(core.getLiveCities);
+export const getLiveAreas = cache(core.getLiveAreas);
 export const getServicePage = cache(core.getServicePage);
 export const getCategoryPage = cache(core.getCategoryPage);
 export const getCityHub = cache(core.getCityHub);
