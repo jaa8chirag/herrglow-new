@@ -52,7 +52,7 @@ const DEFAULT_FAQS = [
   },
   {
     question: "When and how do I make payment?",
-    answer: "You do NOT pay anything in advance. You pay directly after the service is completed to your 100% satisfaction via Google Pay, PhonePe, Paytm, Debit/Credit Card, or Cash.",
+    answer: "We charge only a nominal 10% advance deposit to reserve your artist's travel slot and prevent last-minute schedule conflicts. The remaining 90% is paid directly after the service is completed to your 100% satisfaction via Google Pay, PhonePe, Paytm, Card, or Cash. If our beautician fails to reach your location on time, 100% of your advance deposit is refunded immediately.",
   },
   {
     question: "Can I book for multiple people (e.g., bride + mother/sister/friends)?",

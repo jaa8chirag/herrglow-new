@@ -30,8 +30,8 @@ export function TrustBadges() {
     },
     {
       icon: Wallet,
-      title: "Zero Advance · Pay After Service",
-      desc: "No advance payment required. Pay via UPI, Card, or Cash only when 100% satisfied with your look.",
+      title: "10% Advance · 100% Refund Guarantee",
+      desc: "Just 10% advance to lock your artist's slot (90% after service). 100% instant refund if the beautician does not reach you.",
     },
   ];
 

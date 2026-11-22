@@ -233,11 +233,21 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
               <span className="text-xs font-semibold uppercase tracking-wider text-rose-700">Booking Reference</span>
               <p className="mt-1 font-mono text-2xl font-bold tracking-wider text-plum-900">{state.ref}</p>
               {state.finalAmount ? (
-                <p className="mt-1.5 text-sm font-semibold text-emerald-800">
-                  Estimated Total: ₹{Math.round(state.finalAmount).toLocaleString("en-IN")} · Pay After Service
-                </p>
+                <div className="mt-2 space-y-1 text-center">
+                  <p className="text-sm font-semibold text-plum-900">
+                    Estimated Total: ₹{Math.round(state.finalAmount).toLocaleString("en-IN")}
+                  </p>
+                  <p className="text-xs font-semibold text-emerald-800">
+                    10% Advance Deposit: ₹{Math.round(state.finalAmount * 0.1).toLocaleString("en-IN")} · Balance ₹{(Math.round(state.finalAmount) - Math.round(state.finalAmount * 0.1)).toLocaleString("en-IN")} after service
+                  </p>
+                  <p className="text-[0.72rem] text-ink-soft">
+                    10% advance deposit to reserve your slot. 100% full refund guarantee if the beautician does not reach you.
+                  </p>
+                </div>
               ) : (
-                <p className="mt-1 text-xs text-ink-soft">No advance payment required. Pay only after your service.</p>
+                <p className="mt-1 text-xs text-ink-soft">
+                  Only 10% advance deposit to lock slot · Remaining 90% after service. 100% refund guarantee if artist does not reach you.
+                </p>
               )}
             </div>
 
@@ -254,7 +264,7 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="grid size-5 shrink-0 place-items-center rounded-full bg-plum-700 text-[0.7rem] font-bold text-white">3</span>
-                  <span><strong>Doorstep Service &amp; Pay Later:</strong> Enjoy your service with a single-use sanitized kit. Pay via UPI, Card, or Cash only after you are completely satisfied.</span>
+                  <span><strong>Doorstep Service &amp; Final Payment:</strong> Pay a nominal 10% advance to confirm your slot. Enjoy your service with a single-use sealed kit and pay the remaining 90% only after completion. 100% refund if the beautician does not reach you.</span>
                 </li>
               </ol>
             </div>
@@ -751,9 +761,9 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
                                 </p>
                                 <div className="grid gap-1 sm:grid-cols-2 text-emerald-800">
                                   <span className="flex items-center gap-1.5"><Check className="size-3.5 text-emerald-600 shrink-0" /> 100% Background-Verified Female Beauticians</span>
-                                  <span className="flex items-center gap-1.5"><Check className="size-3.5 text-emerald-600 shrink-0" /> Pay after service (UPI / Cash / Card)</span>
-                                  <span className="flex items-center gap-1.5"><Check className="size-3.5 text-emerald-600 shrink-0" /> Zero advance deposit required</span>
-                                  <span className="flex items-center gap-1.5"><Check className="size-3.5 text-emerald-600 shrink-0" /> Free cancellation anytime before visit</span>
+                                  <span className="flex items-center gap-1.5"><Check className="size-3.5 text-emerald-600 shrink-0" /> Only 10% Advance (Balance 90% after service)</span>
+                                  <span className="flex items-center gap-1.5"><Check className="size-3.5 text-emerald-600 shrink-0" /> 100% Refund Guarantee if beautician does not reach</span>
+                                  <span className="flex items-center gap-1.5"><Check className="size-3.5 text-emerald-600 shrink-0" /> Free cancellation anytime up to 2 hrs before visit</span>
                                 </div>
                               </div>
 

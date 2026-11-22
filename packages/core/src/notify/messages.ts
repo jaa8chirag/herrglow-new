@@ -63,7 +63,7 @@ export function customerEmail(l: LeadView, siteName = "HerrGlow") {
         `Thank you for booking with ${siteName}! We have received your appointment request for ${serviceLabel}.`,
         "",
         l.bookingRef ? `Booking ID: ${l.bookingRef}` : "",
-        l.amount ? `Estimated Total: ₹${Math.round(l.amount).toLocaleString("en-IN")} (Pay after service)` : "",
+        l.amount ? `Estimated Total: ₹${Math.round(l.amount).toLocaleString("en-IN")} (10% advance deposit to reserve slot · Balance 90% after service · 100% refund guarantee if artist does not reach)` : "",
         day(l.eventDate) ? `Requested date: ${day(l.eventDate)}` : "",
         l.locationText ? `Location: ${l.locationText}` : "",
       ].filter((x) => x !== undefined);

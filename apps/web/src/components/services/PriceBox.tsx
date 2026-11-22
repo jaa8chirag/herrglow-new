@@ -93,7 +93,8 @@ export function PriceBox({
         <div className="mt-5 space-y-2 rounded-2xl border border-blush-200/80 bg-blush-50/70 p-4 text-xs text-plum-900">
           <p className="flex items-center gap-2 font-medium text-emerald-800"><ShieldCheck className="size-4 shrink-0 text-emerald-600" />100% Female Background-Verified Artist</p>
           <p className="flex items-center gap-2 text-ink-soft"><Sparkles className="size-4 shrink-0 text-gold-500" />Single-use sealed disposable kit included</p>
-          <p className="flex items-center gap-2 font-medium text-plum-900"><Wallet className="size-4 shrink-0 text-emerald-600" />Pay after service · Zero advance required</p>
+          <p className="flex items-center gap-2 font-medium text-plum-900"><Wallet className="size-4 shrink-0 text-emerald-600" />10% Advance to reserve slot · 90% after service</p>
+          <p className="flex items-center gap-2 text-ink-soft"><Check className="size-4 shrink-0 text-emerald-600" />100% instant refund if artist does not reach you</p>
           <p className="flex items-center gap-2 text-ink-soft"><Check className="size-4 shrink-0 text-emerald-600" />No hidden travel or setup fees</p>
         </div>
       </div>
@@ -112,7 +113,7 @@ export function PriceBox({
             {body}
             <div className="mt-4 space-y-1.5 rounded-2xl border border-blush-200/60 bg-blush-50/80 p-3 text-xs text-plum-900">
               <p className="flex items-center gap-2 font-medium text-emerald-800"><ShieldCheck className="size-4 shrink-0 text-emerald-600" />100% Female Verified Artist · Single-Use Kit</p>
-              <p className="flex items-center gap-2 font-medium text-plum-900"><Wallet className="size-4 shrink-0 text-emerald-600" />Pay after service · Zero advance needed</p>
+              <p className="flex items-center gap-2 font-medium text-plum-900"><Wallet className="size-4 shrink-0 text-emerald-600" />10% Advance · 90% After Service · 100% Refund Guarantee</p>
             </div>
             <button type="button" onClick={() => { setOpen(false); setTimeout(toForm, 350); }} className={cn(buttonStyles({ variant: "shimmer", size: "lg" }), "mt-5 w-full")}>Continue to booking</button>
             {wa && (

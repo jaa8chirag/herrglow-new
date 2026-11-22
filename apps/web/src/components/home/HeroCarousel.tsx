@@ -219,7 +219,7 @@ export function HeroCarousel({ slides = DEFAULT_SLIDES }: { slides?: HeroSlide[]
       {/* Trust pill below carousel */}
       <div className="mt-3.5 flex items-center justify-center gap-2 text-center text-xs text-ink-soft">
         <Sparkles className="size-3.5 text-gold-500" />
-        <span>100% Real Transformations · Verified Female Artists · No Advance Payment</span>
+        <span>100% Real Transformations · Verified Female Artists · 10% Advance (100% Refund Guarantee)</span>
       </div>
     </div>
   );

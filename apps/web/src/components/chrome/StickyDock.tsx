@@ -12,7 +12,7 @@ export function StickyDock({ whatsapp, phone, waText }: { whatsapp: string | nul
         <ShieldCheck className="size-3 text-gold-400" />
         <span>100% Female Verified</span>
         <span>·</span>
-        <span>Pay After Service</span>
+        <span>10% Advance · 100% Refund Guarantee</span>
       </div>
 
       <div className="pointer-events-auto flex w-full max-w-md items-center gap-2 rounded-full border border-line/80 bg-ivory/95 p-2 shadow-lift backdrop-blur-xl">

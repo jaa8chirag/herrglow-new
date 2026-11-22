@@ -43,7 +43,7 @@ interface HeroProps {
             <Rise delay={0.22} className="mt-6 grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:items-center sm:gap-x-5 sm:gap-y-2 text-xs font-semibold text-plum-900">
               <span className="flex items-center gap-1.5 rounded-lg bg-white/70 p-1.5 sm:p-0"><ShieldCheck className="size-4 text-emerald-600 shrink-0" /> 100% Female Verified</span>
               <span className="flex items-center gap-1.5 rounded-lg bg-white/70 p-1.5 sm:p-0"><Sparkles className="size-4 text-gold-600 shrink-0" /> Sealed Single-Use Kits</span>
-              <span className="flex items-center gap-1.5 rounded-lg bg-white/70 p-1.5 sm:p-0"><Wallet className="size-4 text-emerald-600 shrink-0" /> Pay After Service</span>
+              <span className="flex items-center gap-1.5 rounded-lg bg-white/70 p-1.5 sm:p-0"><Wallet className="size-4 text-emerald-600 shrink-0" /> 10% Advance (100% Refund Guarantee)</span>
               <span className="flex items-center gap-1.5 rounded-lg bg-white/70 p-1.5 sm:p-0"><ShieldCheck className="size-4 text-plum-600 shrink-0" /> Zero Hidden Charges</span>
             </Rise>
             <Rise delay={0.26} className="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-sm text-ink-soft">

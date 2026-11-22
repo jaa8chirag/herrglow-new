@@ -98,7 +98,7 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
                 <div className="gold-rule mx-5" />
                 <div className="mx-5 my-3 flex items-center gap-2 rounded-xl border border-emerald-300/60 bg-emerald-50/70 p-2.5 text-xs text-emerald-900 font-medium">
                   <ShieldCheck className="size-4 text-emerald-600 shrink-0" />
-                  <span>100% Female Verified · Pay After Service</span>
+                  <span>100% Female Verified · 10% Advance · 100% Refund Guarantee</span>
                 </div>
                 <nav className="flex-1 space-y-1 p-5" aria-label="Mobile">
                   <Drawer.Close asChild><Link href="/" className="flex items-center min-h-[48px] rounded-xl px-3 py-3 font-serif text-2xl text-plum-800">Home</Link></Drawer.Close>
