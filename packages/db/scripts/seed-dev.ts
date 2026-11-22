@@ -743,7 +743,7 @@ async function main() {
           authorName: b.authorName,
           image: b.image,
           imageAlt: b.imageAlt,
-          status: "PUBLISHED",
+          status: "ACTIVE",
         },
         create: {
           slug: b.slug,
@@ -755,7 +755,7 @@ async function main() {
           authorName: b.authorName,
           image: b.image,
           imageAlt: b.imageAlt,
-          status: "PUBLISHED",
+          status: "ACTIVE",
           publishedAt: new Date(),
         },
       });
@@ -763,6 +763,14 @@ async function main() {
     console.log("✓ Premium SEO blogs seeded successfully!");
   } catch (err) {
     console.warn("Notice: Could not seed premium blogs in seed-dev:", err);
+  }
+
+  // 11. Sub-categories (Service Variants) & Area-Specific Pricing
+  try {
+    await import("./seed-subcategories-and-area-pricing.js").catch(() => import("./seed-subcategories-and-area-pricing.ts"));
+    console.log("✓ Sub-categories and area-specific pricing seeded successfully!");
+  } catch (err) {
+    console.warn("Notice: Subcategories already seeded or skipped:", err);
   }
 
   console.log("✓ Pre-launch seeding with watermarked images completed successfully!");

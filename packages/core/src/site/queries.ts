@@ -246,7 +246,7 @@ export async function getAllServicesForExplorer() {
       leadCount: true,
       isPackage: true,
       category: { select: { slug: true, name: true, sort: true } },
-      variants: { select: { price: true, offerPrice: true } },
+      variants: { select: { name: true, price: true, offerPrice: true } },
     },
   });
 }

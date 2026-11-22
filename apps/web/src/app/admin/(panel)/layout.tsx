@@ -66,8 +66,11 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="grid min-h-dvh lg:grid-cols-[260px_1fr] bg-ivory">
-      <aside className="border-b border-line bg-plum-950 p-5 text-blush-100 lg:border-b-0 lg:border-r lg:min-h-screen">
+    <div className="grid min-h-dvh lg:grid-cols-[265px_1fr] bg-[#fbf7f4]">
+      <aside
+        className="border-b border-[#2b0f24] bg-[#190618] p-5 text-[#f6e3e1] shadow-2xl lg:min-h-screen lg:border-b-0 lg:border-r"
+        style={{ backgroundColor: "#190618" }}
+      >
         <AdminSidebarNav
           groups={filteredGroups}
           user={{ email: me.email, name: me.name, role: me.role }}

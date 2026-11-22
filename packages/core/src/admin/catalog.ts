@@ -11,7 +11,21 @@ const PAGE = 40;
 /* ───────────── Services ───────────── */
 export interface ServiceFilter { q?: string; categoryId?: string; status?: Status; page?: number; needsPhoto?: boolean }
 const sWhere = (f: ServiceFilter, keys: string[] = []) => ({
-  ...(f.needsPhoto ? { OR: [{ image: null }, { image: { notIn: keys } }] } : {}),
+  ...(f.needsPhoto
+    ? {
+        OR: [
+          { image: null },
+          { image: "" },
+          {
+            AND: [
+              { image: { not: { startsWith: "/" } } },
+              { image: { not: { startsWith: "http" } } },
+              { image: { notIn: keys } },
+            ],
+          },
+        ],
+      }
+    : {}),
   mergedIntoId: null,
   ...(f.status ? { status: f.status } : {}),
   ...(f.categoryId ? { categoryId: f.categoryId } : {}),
@@ -31,7 +45,19 @@ export async function listServicesAdmin(f: ServiceFilter) {
     prisma.service.count({ where: { ...sWhere({ status: "ACTIVE", needsPhoto: true }, keyList) } }),
   ]);
   const have = new Set(keyList);
-  return { total, page, pages: Math.max(1, Math.ceil(total / PAGE)), categories, needsPhotoCount, items: rows.map((r) => ({ ...r, hasPhoto: !!r.image && have.has(r.image), words: wordCount(r.description), price: r.offerPrice ?? r.price })) };
+  return {
+    total,
+    page,
+    pages: Math.max(1, Math.ceil(total / PAGE)),
+    categories,
+    needsPhotoCount,
+    items: rows.map((r) => ({
+      ...r,
+      hasPhoto: Boolean(r.image && (r.image.startsWith("/") || r.image.startsWith("http") || have.has(r.image))),
+      words: wordCount(r.description),
+      price: r.offerPrice ?? r.price,
+    })),
+  };
 }
 
 export async function getServiceAdmin(id: string) {
