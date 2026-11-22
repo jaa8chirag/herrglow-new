@@ -773,6 +773,14 @@ async function main() {
     console.warn("Notice: Subcategories already seeded or skipped:", err);
   }
 
+  // 12. Deduplicate services and apply 301 redirects
+  try {
+    await import("./clean-duplicate-services.js").catch(() => import("./clean-duplicate-services.ts"));
+    console.log("✓ Services deduplication & 301 redirects applied successfully!");
+  } catch (err) {
+    console.warn("Notice: Deduplication already applied or skipped:", err);
+  }
+
   console.log("✓ Pre-launch seeding with watermarked images completed successfully!");
 }
 

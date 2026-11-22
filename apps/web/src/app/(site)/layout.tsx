@@ -15,14 +15,22 @@ export const dynamic = "force-dynamic";
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const [categories, cities, s, mega, popular, keys] = await Promise.all([getCategories(), getLiveCities(), getSettings(), getMegaMenu(), getPopularServices(6), getMediaKeys()]);
 
-  // menu order: Makeup, Bridal (virtual group of bridal services), then the remaining categories
-  const toCat = (slug: string, name: string, href: string, svcs: typeof mega.bridal): MenuCat => ({
-    slug, name, href, services: svcs.slice(0, 5).map((x) => ({ slug: x.slug, title: x.title })),
-    featured: svcs[0] ? { slug: svcs[0].slug, title: svcs[0].title, image: realImage(keys, svcs[0].image) } : null,
+  // Category items for mega-menu
+  const toCat = (
+    slug: string,
+    name: string,
+    href: string,
+    svcs: { slug: string; title: string; image: string | null }[]
+  ): MenuCat => ({
+    slug,
+    name,
+    href,
+    services: svcs.slice(0, 5).map((x) => ({ slug: x.slug, title: x.title })),
+    featured: svcs[0]
+      ? { slug: svcs[0].slug, title: svcs[0].title, image: realImage(keys, svcs[0].image) }
+      : null,
   });
-  const cats = mega.categories.map((c) => toCat(c.slug, c.name, `/${c.slug}`, c.services));
-  const makeup = cats.find((c) => c.slug === "makeup");
-  const menu = [...(makeup ? [makeup] : []), ...(mega.bridal.length ? [toCat("bridal", "Bridal", "/makeup", mega.bridal)] : []), ...cats.filter((c) => c.slug !== "makeup")];
+  const menu = mega.categories.map((c) => toCat(c.slug, c.name, `/${c.slug}`, c.services));
 
   // Luxury trust tagline banner (shown by default or replaced by custom offer from admin settings)
   const strip =

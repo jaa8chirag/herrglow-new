@@ -74,11 +74,17 @@ export function PriceBox({
 
   return (
     <>
-      {/* desktop */}
-      <div className="hidden rounded-[1.75rem] border border-line bg-white p-6 shadow-lift lg:block">
+      {/* In-page Rate Card (Visible on desktop & mobile in content) */}
+      <div className="rounded-[1.75rem] border border-line bg-white p-5 sm:p-6 shadow-lift">
         <h2 className="mb-4 !text-xl">Book {title}</h2>
         {body}
-        <button type="button" onClick={toForm} className={cn(buttonStyles({ variant: "shimmer", size: "lg" }), "mt-6 w-full")}>Book this service</button>
+        <button
+          type="button"
+          onClick={toForm}
+          className={cn(buttonStyles({ variant: "shimmer", size: "lg" }), "mt-6 w-full")}
+        >
+          Book this service
+        </button>
         {wa && (
           <a
             href={wa}
@@ -91,42 +97,121 @@ export function PriceBox({
           </a>
         )}
         <div className="mt-5 space-y-2 rounded-2xl border border-blush-200/80 bg-blush-50/70 p-4 text-xs text-plum-900">
-          <p className="flex items-center gap-2 font-medium text-emerald-800"><ShieldCheck className="size-4 shrink-0 text-emerald-600" />100% Female Background-Verified Artist</p>
-          <p className="flex items-center gap-2 text-ink-soft"><Sparkles className="size-4 shrink-0 text-gold-500" />Single-use sealed disposable kit included</p>
-          <p className="flex items-center gap-2 font-medium text-plum-900"><Wallet className="size-4 shrink-0 text-emerald-600" />10% Advance to reserve slot · 90% after service</p>
-          <p className="flex items-center gap-2 text-ink-soft"><Check className="size-4 shrink-0 text-emerald-600" />100% instant refund if artist does not reach you</p>
-          <p className="flex items-center gap-2 text-ink-soft"><Check className="size-4 shrink-0 text-emerald-600" />No hidden travel or setup fees</p>
+          <p className="flex items-center gap-2 font-medium text-emerald-800">
+            <ShieldCheck className="size-4 shrink-0 text-emerald-600" />
+            100% Female Background-Verified Artist
+          </p>
+          <p className="flex items-center gap-2 text-ink-soft">
+            <Sparkles className="size-4 shrink-0 text-gold-500" />
+            Single-use sealed disposable kit included
+          </p>
+          <p className="flex items-center gap-2 font-medium text-plum-900">
+            <Wallet className="size-4 shrink-0 text-emerald-600" />
+            10% Advance to reserve slot · 90% after service
+          </p>
+          <p className="flex items-center gap-2 text-ink-soft">
+            <Check className="size-4 shrink-0 text-emerald-600" />
+            100% instant refund if artist does not reach you
+          </p>
+          <p className="flex items-center gap-2 text-ink-soft">
+            <Check className="size-4 shrink-0 text-emerald-600" />
+            No hidden travel or setup fees
+          </p>
         </div>
       </div>
 
-      {/* mobile: bar + bottom sheet */}
+      {/* Mobile Unified Floating Bottom Action Dock (Clean, Single Dock, No Overlapping) */}
       <Drawer.Root open={open} onOpenChange={setOpen}>
-        <div className="fixed inset-x-0 bottom-[5.25rem] z-20 px-4 lg:hidden">
-          <button type="button" onClick={() => setOpen(true)} className="mx-auto flex w-full max-w-md items-center justify-between gap-3 rounded-2xl border border-line bg-white/95 px-4 py-3 text-left shadow-lift backdrop-blur-xl">
-            <span><span className="block text-xs text-ink-soft">{options.length > 1 ? `${sel || "Options"}` : "Price"}</span><Price price={shownPrice.price} offerPrice={shownPrice.offer} /></span>
-            <span className="rounded-full bg-blush-100 px-4 py-2 text-sm font-medium text-plum-800">{options.length > 1 ? "Choose option" : "Details"}</span>
-          </button>
-        </div>
-        <DrawerShell title={`Options for ${title}`} direction="bottom">
-          <div className="overflow-y-auto p-5 pb-7">
-            <div className="mb-4 flex items-start justify-between gap-3"><h2 className="!text-xl">{title}</h2><Drawer.Close asChild><button type="button" aria-label="Close" className="grid size-10 place-items-center rounded-full border border-line"><X className="size-4" /></button></Drawer.Close></div>
-            {body}
-            <div className="mt-4 space-y-1.5 rounded-2xl border border-blush-200/60 bg-blush-50/80 p-3 text-xs text-plum-900">
-              <p className="flex items-center gap-2 font-medium text-emerald-800"><ShieldCheck className="size-4 shrink-0 text-emerald-600" />100% Female Verified Artist · Single-Use Kit</p>
-              <p className="flex items-center gap-2 font-medium text-plum-900"><Wallet className="size-4 shrink-0 text-emerald-600" />10% Advance · 90% After Service · 100% Refund Guarantee</p>
-            </div>
-            <button type="button" onClick={() => { setOpen(false); setTimeout(toForm, 350); }} className={cn(buttonStyles({ variant: "shimmer", size: "lg" }), "mt-5 w-full")}>Continue to booking</button>
+        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex flex-col items-center px-3 pb-[max(0.6rem,env(safe-area-inset-bottom))] lg:hidden">
+          {/* Micro Luxury Trust Indicator */}
+          <div
+            className="pointer-events-auto mb-1.5 flex max-w-[94vw] items-center justify-center gap-1.5 rounded-full border border-gold-400/40 bg-[#190618] px-3.5 py-1 text-[10px] font-semibold tracking-wide text-[#F5E9C9] shadow-soft backdrop-blur-md"
+            style={{ backgroundColor: "#190618", color: "#F5E9C9" }}
+          >
+            <ShieldCheck className="size-3 shrink-0 text-gold-400" />
+            <span className="truncate">100% Female Verified · 10% Advance · 100% Refund</span>
+          </div>
+
+          {/* Unified Action Dock */}
+          <div className="pointer-events-auto flex w-full max-w-md items-center gap-2 rounded-2xl border border-line/80 bg-ivory/95 p-2 shadow-lift backdrop-blur-xl">
+            {/* Price & Option selector: Tapping opens option picker sheet if variants exist */}
+            <button
+              type="button"
+              onClick={() => (options.length > 1 ? setOpen(true) : toForm())}
+              className="flex flex-1 min-w-0 flex-col text-left pl-2 cursor-pointer select-none"
+            >
+              <div className="flex items-center gap-1 text-[11px] font-medium text-rose-700 truncate">
+                <span className="truncate">{sel || title}</span>
+                {options.length > 1 && (
+                  <span className="text-[10px] text-ink-soft shrink-0 underline decoration-rose-300">Change ▾</span>
+                )}
+              </div>
+              <Price price={shownPrice.price} offerPrice={shownPrice.offer} className="[&>span:nth-child(2)]:text-base font-bold text-plum-950" />
+            </button>
+
+            {/* Book Now Button */}
+            <button
+              type="button"
+              onClick={toForm}
+              className={cn(buttonStyles({ variant: "shimmer", size: "sm" }), "h-11 px-4 text-xs font-bold shrink-0")}
+            >
+              Book Now
+            </button>
+
+            {/* WhatsApp Direct Chat */}
             {wa && (
               <a
                 href={wa}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-900 transition hover:bg-emerald-100"
+                aria-label="Chat with Beauty Expert on WhatsApp"
+                className="grid size-11 shrink-0 place-items-center rounded-full bg-[#25D366] text-white shadow-soft transition hover:bg-[#1f8f4e] active:scale-95"
               >
-                <MessageCircle className="size-4 text-emerald-600" />
-                Ask on WhatsApp
+                <MessageCircle className="size-5" />
               </a>
             )}
+          </div>
+        </div>
+
+        {/* Bottom Drawer for Variant Selection */}
+        <DrawerShell title={`Select Option: ${title}`} direction="bottom">
+          <div className="overflow-y-auto p-5 pb-7">
+            <div className="mb-4 flex items-start justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-rose-700">Customize Service</p>
+                <h2 className="!text-xl font-serif text-plum-950 mt-0.5">{title}</h2>
+              </div>
+              <Drawer.Close asChild>
+                <button
+                  type="button"
+                  aria-label="Close"
+                  className="grid size-10 place-items-center rounded-full border border-line text-ink-soft hover:bg-blush-50"
+                >
+                  <X className="size-4" />
+                </button>
+              </Drawer.Close>
+            </div>
+            {options.length > 0 && <Options options={options} selected={sel} onSelect={choose} />}
+            <div className="mt-4 space-y-1.5 rounded-2xl border border-blush-200/60 bg-blush-50/80 p-3 text-xs text-plum-900">
+              <p className="flex items-center gap-2 font-medium text-emerald-800">
+                <ShieldCheck className="size-4 shrink-0 text-emerald-600" />
+                100% Female Verified Artist · Single-Use Kit
+              </p>
+              <p className="flex items-center gap-2 font-medium text-plum-900">
+                <Wallet className="size-4 shrink-0 text-emerald-600" />
+                10% Advance · 90% After Service · 100% Refund Guarantee
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                setTimeout(toForm, 350);
+              }}
+              className={cn(buttonStyles({ variant: "shimmer", size: "lg" }), "mt-5 w-full")}
+            >
+              Continue to Booking ({finalPriceStr})
+            </button>
           </div>
         </DrawerShell>
       </Drawer.Root>

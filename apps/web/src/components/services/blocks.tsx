@@ -2,14 +2,36 @@ import { Check, ClipboardCheck, Home, ShieldCheck, Sparkles, UserCheck } from "l
 import { BlurFade, Container, Section, SectionHeading } from "@herrglow/ui";
 import { BRANDS } from "@/components/home/brands";
 
-/** "What is included": checklist with icons (from the service's own feature lines). */
+/** "What is included": high-trust checklist with icons (from the service's own feature lines). */
 export function Included({ items }: { items: string[] }) {
   if (!items.length) return null;
   return (
-    <div>
-      <h2 className="mb-4 !text-2xl sm:!text-3xl">What is included</h2>
+    <div className="rounded-3xl border border-line/80 bg-white p-6 sm:p-8 shadow-soft">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-line/60 pb-5">
+        <div>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/80 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald-800">
+            <ShieldCheck className="size-3.5 text-emerald-700" /> Complete Transparency
+          </span>
+          <h2 className="mt-2.5 font-serif text-2xl sm:text-3xl font-bold text-plum-950">
+            What is Included in This Service
+          </h2>
+          <p className="mt-1 text-sm text-ink-soft">
+            100% authentic products, single-use sterilized hygiene kits &amp; verified senior artist.
+          </p>
+        </div>
+      </div>
       <ul className="grid gap-3 sm:grid-cols-2">
-        {items.map((f) => <li key={f} className="flex items-start gap-3 rounded-2xl border border-line bg-white/80 p-4 text-ink-soft"><span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-700"><Check className="size-3.5" /></span>{f}</li>)}
+        {items.map((f, i) => (
+          <li
+            key={i}
+            className="flex items-start gap-3 rounded-2xl border border-line/60 bg-blush-50/50 p-4 transition-all hover:bg-white hover:border-gold-300 hover:shadow-xs"
+          >
+            <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-emerald-600 text-white shadow-xs">
+              <Check className="size-3.5 stroke-[2.5]" />
+            </span>
+            <span className="text-sm font-medium text-plum-950 leading-relaxed">{f}</span>
+          </li>
+        ))}
       </ul>
     </div>
   );
