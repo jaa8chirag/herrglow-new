@@ -7,6 +7,13 @@ export interface MatchedBeautician {
   slug: string;
   photo: string | null;
   phone: string;
+  email: string | null;
+  bio: string | null;
+  landmark: string | null;
+  pincode: string | null;
+  travelRadius: number | null;
+  basePrice: number | null;
+  providerType: string | null;
   specialization: string | null;
   experienceYears: number | null;
   baseAddress: string | null;
@@ -386,6 +393,13 @@ export async function findMatchingBeauticiansForLead(
       slug: p.slug,
       photo: p.photo,
       phone: proPhone,
+      email: p.private?.email || null,
+      bio: p.bio,
+      landmark: p.private?.landmark || null,
+      pincode: p.private?.pincode || null,
+      travelRadius: p.private?.travelRadius || 10,
+      basePrice: p.basePrice ? Number(p.basePrice) : null,
+      providerType: p.providerType,
       specialization: p.specialization,
       experienceYears: p.experienceYears,
       baseAddress: p.private?.addressLine || null,

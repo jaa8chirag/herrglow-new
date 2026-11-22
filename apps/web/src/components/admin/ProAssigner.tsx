@@ -1,24 +1,29 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Image from "next/image";
 import {
   AlertTriangle,
+  Briefcase,
   Calendar,
   Check,
   CheckCircle2,
   Clock,
   Compass,
   ExternalLink,
+  Mail,
   MapPin,
   MessageCircle,
   Phone,
   RefreshCw,
   Search,
+  ShieldCheck,
   Sparkles,
   Star,
+  User,
   UserCheck,
   UserX,
+  X,
   Zap,
 } from "lucide-react";
 import { cn } from "@herrglow/ui";
@@ -43,17 +48,30 @@ export function ProAssigner({
   currentAssignedId,
 }: ProAssignerProps) {
   const [assignedId, setAssignedId] = useState<string | null>(currentAssignedId);
+  const [selectedPro, setSelectedPro] = useState<MatchedBeautician | null>(null);
   const [isPending, startTransition] = useTransition();
   const [showAll, setShowAll] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const currentlyAssigned = matches.find((m) => m.id === assignedId);
 
+  // Close modal on ESC key
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedPro(null);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
   const handleAssign = (proId: string) => {
     startTransition(async () => {
       try {
         await assignNearestPro(leadId, proId);
         setAssignedId(proId);
+        if (selectedPro && selectedPro.id === proId) {
+          setSelectedPro((prev) => (prev ? { ...prev, isAssigned: true } : null));
+        }
       } catch (err) {
         console.error("Failed to assign beautician:", err);
       }
@@ -66,6 +84,9 @@ export function ProAssigner({
       try {
         await unassignPro(leadId);
         setAssignedId(null);
+        if (selectedPro) {
+          setSelectedPro((prev) => (prev ? { ...prev, isAssigned: false } : null));
+        }
       } catch (err) {
         console.error("Failed to unassign beautician:", err);
       }
@@ -100,13 +121,21 @@ export function ProAssigner({
             <div className="flex items-center gap-2">
               <button
                 type="button"
+                onClick={() => setSelectedPro(currentlyAssigned)}
+                className="text-xs font-semibold text-rose-800 hover:text-rose-950 hover:underline cursor-pointer"
+              >
+                View Full Details
+              </button>
+              <span className="text-line text-xs">·</span>
+              <button
+                type="button"
                 onClick={() => setShowAll(!showAll)}
                 disabled={isPending}
                 className="text-xs font-semibold text-rose-800 hover:text-rose-950 hover:underline cursor-pointer"
               >
                 {showAll ? "Hide other beauticians" : "Change beautician"}
               </button>
-              <span className="text-line text-xs">|</span>
+              <span className="text-line text-xs">·</span>
               <button
                 type="button"
                 onClick={handleUnassign}
@@ -120,7 +149,13 @@ export function ProAssigner({
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5 min-w-0">
-              <div className="relative size-14 shrink-0 overflow-hidden rounded-2xl border-2 border-emerald-300 shadow-sm bg-plum-100">
+              {/* Clickable Avatar */}
+              <button
+                type="button"
+                onClick={() => setSelectedPro(currentlyAssigned)}
+                className="relative size-14 shrink-0 overflow-hidden rounded-2xl border-2 border-emerald-300 shadow-sm bg-plum-100 cursor-pointer hover:ring-2 hover:ring-emerald-400 transition"
+                title={`Click to view ${currentlyAssigned.name}'s full profile card`}
+              >
                 {currentlyAssigned.photo ? (
                   <Image
                     src={currentlyAssigned.photo}
@@ -133,12 +168,23 @@ export function ProAssigner({
                     {currentlyAssigned.name[0]}
                   </div>
                 )}
-              </div>
+              </button>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-bold text-base text-plum-950 truncate">
-                    {currentlyAssigned.name}
-                  </h3>
+                  {/* Clickable Name */}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPro(currentlyAssigned)}
+                    className="text-left group cursor-pointer inline-flex items-center gap-1.5"
+                    title={`Click to view ${currentlyAssigned.name}'s full profile card`}
+                  >
+                    <h3 className="font-bold text-base text-plum-950 group-hover:text-rose-700 group-hover:underline truncate">
+                      {currentlyAssigned.name}
+                    </h3>
+                    <span className="text-[10px] font-semibold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded-md border border-rose-200">
+                      View Card ↗
+                    </span>
+                  </button>
                   <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
                     <UserCheck className="size-3" />
                     <span>Locked</span>
@@ -188,7 +234,7 @@ export function ProAssigner({
                 Action Required: Assign Nearest Beautician
               </h4>
               <p className="text-xs text-amber-900/80">
-                This customer booking is waiting for an artist assignment. Choose from recommended nearest professionals below.
+                This customer booking is waiting for an artist assignment. Choose from recommended nearest professionals below. Click any beautician's name to view their full credentials, skills, and coverage areas.
               </p>
             </div>
           </div>
@@ -207,7 +253,7 @@ export function ProAssigner({
                 </h3>
               </div>
               <p className="text-xs text-ink-soft mt-0.5">
-                Automatically ranked by GPS proximity, sector coverage, service capability, and calendar availability.
+                Automatically ranked by GPS proximity, sector coverage, and calendar availability. Click any name to open their full details card.
               </p>
             </div>
 
@@ -249,7 +295,13 @@ export function ProAssigner({
                   >
                     {/* Left: Avatar & Profile */}
                     <div className="flex items-start sm:items-center gap-3.5 min-w-0">
-                      <div className="relative size-12 shrink-0 overflow-hidden rounded-xl border border-line shadow-2xs bg-plum-100">
+                      {/* Clickable Avatar */}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPro(m)}
+                        className="relative size-12 shrink-0 overflow-hidden rounded-xl border border-line shadow-2xs bg-plum-100 cursor-pointer hover:ring-2 hover:ring-rose-400 transition"
+                        title={`Click to view ${m.name}'s profile details`}
+                      >
                         {m.photo ? (
                           <Image
                             src={m.photo}
@@ -262,13 +314,22 @@ export function ProAssigner({
                             {m.name[0]}
                           </div>
                         )}
-                      </div>
+                      </button>
 
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-1.5">
-                          <h4 className="font-bold text-sm text-plum-950 truncate">
-                            {m.name}
-                          </h4>
+                          {/* Clickable Name with Badge */}
+                          <button
+                            type="button"
+                            onClick={() => setSelectedPro(m)}
+                            className="font-bold text-sm text-plum-950 hover:text-rose-700 hover:underline text-left cursor-pointer inline-flex items-center gap-1.5"
+                            title={`Click to view ${m.name}'s full profile card`}
+                          >
+                            <span>{m.name}</span>
+                            <span className="text-[10px] font-medium text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">
+                              Details ↗
+                            </span>
+                          </button>
                           {isTop && (
                             <span className="rounded-md bg-gold-100 px-1.5 py-0.5 text-[10px] font-bold text-gold-900 border border-gold-300/70">
                               ⭐ Best Match ({m.matchScore}%)
@@ -340,6 +401,14 @@ export function ProAssigner({
 
                     {/* Right: 1-Click Assign & Action */}
                     <div className="flex items-center gap-2 shrink-0 md:self-center">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPro(m)}
+                        className="rounded-xl border border-line bg-white px-3 py-2 text-xs font-semibold text-plum-900 hover:bg-blush-50 transition"
+                      >
+                        Profile
+                      </button>
+
                       <a
                         href={m.dispatchWhatsAppUrl}
                         target="_blank"
@@ -384,6 +453,401 @@ export function ProAssigner({
                 );
               })
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ───────── 4. BEAUTICIAN FULL DETAIL MODAL / POPUP CARD ───────── */}
+      {selectedPro && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="beautician-modal-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-plum-950/70 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedPro(null);
+          }}
+        >
+          <div className="relative flex flex-col w-full max-w-2xl max-h-[92vh] overflow-hidden rounded-3xl border border-gold-400/40 bg-white shadow-2xl animate-in zoom-in-95 duration-200">
+            {/* Modal Luxury Header */}
+            <div className="relative bg-gradient-to-r from-plum-950 via-plum-900 to-plum-950 p-5 sm:p-6 text-ivory">
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setSelectedPro(null)}
+                aria-label="Close details"
+                className="absolute top-4 right-4 grid size-9 place-items-center rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition cursor-pointer"
+              >
+                <X className="size-5" />
+              </button>
+
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pr-8">
+                {/* Avatar with gold border */}
+                <div className="relative size-18 sm:size-20 shrink-0 overflow-hidden rounded-2xl border-2 border-gold-400/80 shadow-md bg-plum-800">
+                  {selectedPro.photo ? (
+                    <Image
+                      src={selectedPro.photo}
+                      alt={selectedPro.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="grid h-full place-items-center font-bold text-ivory text-2xl">
+                      {selectedPro.name[0]}
+                    </div>
+                  )}
+                </div>
+
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h2 id="beautician-modal-title" className="font-serif text-xl sm:text-2xl font-bold text-white truncate">
+                      {selectedPro.name}
+                    </h2>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-gold-400/20 border border-gold-400/50 px-2.5 py-0.5 text-xs font-semibold text-gold-300">
+                      <ShieldCheck className="size-3.5 text-gold-400" />
+                      <span>100% Female Verified</span>
+                    </span>
+                    {selectedPro.id === assignedId && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/25 border border-emerald-400/70 px-2.5 py-0.5 text-xs font-bold text-emerald-300">
+                        <Check className="size-3.5" />
+                        <span>Currently Assigned</span>
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-blush-200 mt-1 font-medium">
+                    {selectedPro.specialization || "Senior Doorstep Beauty Specialist"}
+                    {selectedPro.experienceYears ? ` · ${selectedPro.experienceYears} Years Experience` : ""}
+                  </p>
+
+                  {/* Direct Contact Bar */}
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <a
+                      href={`tel:${selectedPro.phone}`}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 px-3.5 py-1 text-xs font-medium text-white transition"
+                    >
+                      <Phone className="size-3.5 text-gold-400" />
+                      <span>{selectedPro.phone}</span>
+                    </a>
+                    <a
+                      href={selectedPro.dispatchWhatsAppUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366] hover:bg-[#1f8f4e] px-3.5 py-1 text-xs font-bold text-white transition shadow-xs"
+                    >
+                      <MessageCircle className="size-3.5" />
+                      <span>WhatsApp Beautician</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Body (Scrollable) */}
+            <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 text-sm text-plum-950">
+              {/* 1. Quick Stats Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="rounded-2xl border border-line bg-ivory-deep/40 p-3 text-center">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-ink-soft block">
+                    Proximity
+                  </span>
+                  <div className="mt-1 flex items-center justify-center gap-1 font-bold text-sm text-rose-800">
+                    <MapPin className="size-3.5 text-rose-700" />
+                    <span>{selectedPro.distanceLabel}</span>
+                  </div>
+                  <span className="text-[10px] text-ink-soft">
+                    {selectedPro.isHyperlocal ? "Hyperlocal Match" : "Commute Radius"}
+                  </span>
+                </div>
+
+                <div className="rounded-2xl border border-line bg-ivory-deep/40 p-3 text-center">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-ink-soft block">
+                    Match Score
+                  </span>
+                  <div className="mt-1 flex items-center justify-center gap-1 font-bold text-sm text-gold-800">
+                    <Star className="size-3.5 text-gold-500 fill-gold-500" />
+                    <span>{selectedPro.matchScore}%</span>
+                  </div>
+                  <span className="text-[10px] text-ink-soft">AI Match Algorithm</span>
+                </div>
+
+                <div className="rounded-2xl border border-line bg-ivory-deep/40 p-3 text-center">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-ink-soft block">
+                    Experience
+                  </span>
+                  <div className="mt-1 flex items-center justify-center gap-1 font-bold text-sm text-plum-900">
+                    <Briefcase className="size-3.5 text-plum-700" />
+                    <span>{selectedPro.experienceYears ?? 5} Years</span>
+                  </div>
+                  <span className="text-[10px] text-ink-soft">Luxury Doorstep Salon</span>
+                </div>
+
+                <div className="rounded-2xl border border-line bg-ivory-deep/40 p-3 text-center">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-ink-soft block">
+                    Date Status
+                  </span>
+                  <div className="mt-1 flex items-center justify-center gap-1 font-bold text-sm">
+                    {selectedPro.hasConflict ? (
+                      <span className="text-red-700 flex items-center gap-1">
+                        <Clock className="size-3.5" /> Conflict
+                      </span>
+                    ) : (
+                      <span className="text-emerald-700 flex items-center gap-1">
+                        <CheckCircle2 className="size-3.5" /> Free
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-[10px] text-ink-soft">
+                    {selectedPro.existingBookingCountOnDate > 0
+                      ? `${selectedPro.existingBookingCountOnDate} booking on date`
+                      : "Slot fully open"}
+                  </span>
+                </div>
+              </div>
+
+              {/* 2. Match Analysis for this Lead */}
+              <div className="rounded-2xl border border-gold-300/80 bg-gradient-to-br from-gold-50/50 via-white to-blush-50/30 p-4">
+                <div className="flex items-center gap-2 font-bold text-sm text-plum-950 mb-2">
+                  <Sparkles className="size-4 text-gold-600" />
+                  <span>Matching Analysis for Booking: {serviceTitle}</span>
+                </div>
+                <div className="space-y-1.5 text-xs">
+                  <p className="text-ink-soft">
+                    Client Location: <strong className="text-plum-950">{leadLocation}</strong>
+                  </p>
+                  {selectedPro.matchReasons && selectedPro.matchReasons.length > 0 && (
+                    <ul className="mt-2 space-y-1">
+                      {selectedPro.matchReasons.map((reason, idx) => (
+                        <li key={idx} className="flex items-center gap-2 text-emerald-900 font-medium">
+                          <Check className="size-3.5 text-emerald-600 shrink-0" />
+                          <span>{reason}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {selectedPro.hasConflict && selectedPro.conflictDetails && (
+                    <p className="mt-2 flex items-center gap-2 text-xs font-semibold text-red-800 bg-red-50 p-2 rounded-xl border border-red-200">
+                      <Clock className="size-4 shrink-0 text-red-600" />
+                      <span>{selectedPro.conflictDetails}</span>
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* 3. Base Location & Contact Details */}
+              <div className="rounded-2xl border border-line bg-white p-4 space-y-3">
+                <h4 className="font-bold text-xs uppercase tracking-wider text-ink-soft">
+                  Base Location &amp; Contact Information
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div className="flex items-start gap-2.5">
+                    <MapPin className="size-4 text-rose-700 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-ink-soft block font-medium">Base Station / Address:</span>
+                      <span className="font-semibold text-plum-950">
+                        {selectedPro.baseAddress || "Delhi NCR Registered Hub"}
+                        {selectedPro.landmark ? `, Near ${selectedPro.landmark}` : ""}
+                        {selectedPro.pincode ? ` (${selectedPro.pincode})` : ""}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2.5">
+                    <Compass className="size-4 text-gold-600 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-ink-soft block font-medium">Service Radius:</span>
+                      <span className="font-semibold text-plum-950">
+                        Up to {selectedPro.travelRadius ?? 10} km from home base
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2.5">
+                    <Phone className="size-4 text-emerald-700 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-ink-soft block font-medium">Direct Phone:</span>
+                      <span className="font-semibold text-plum-950 font-mono">
+                        {selectedPro.phone}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2.5">
+                    <Mail className="size-4 text-purple-700 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-ink-soft block font-medium">Staff Email:</span>
+                      <span className="font-semibold text-plum-950">
+                        {selectedPro.email || "partner@herrglow.com"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. Professional Bio */}
+              {selectedPro.bio && (
+                <div className="rounded-2xl border border-line bg-white p-4 space-y-2">
+                  <h4 className="font-bold text-xs uppercase tracking-wider text-ink-soft">
+                    Professional Background &amp; Bio
+                  </h4>
+                  <p className="text-xs leading-relaxed text-plum-950">
+                    {selectedPro.bio}
+                  </p>
+                </div>
+              )}
+
+              {/* 5. Offered Services & Matching Skills */}
+              <div className="rounded-2xl border border-line bg-white p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-xs uppercase tracking-wider text-ink-soft">
+                    Services &amp; Specializations ({selectedPro.allServiceTitles.length})
+                  </h4>
+                  {selectedPro.serviceMatch && (
+                    <span className="text-[10px] font-bold text-purple-800 bg-purple-100 rounded-full px-2 py-0.5">
+                      ✓ Skills Match Lead
+                    </span>
+                  )}
+                </div>
+
+                {selectedPro.matchingServiceTitles && selectedPro.matchingServiceTitles.length > 0 && (
+                  <div className="rounded-xl border border-emerald-300/70 bg-emerald-50/60 p-2.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-900 block mb-1.5">
+                      Direct Matches for this Booking:
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {selectedPro.matchingServiceTitles.map((title) => (
+                        <span
+                          key={title}
+                          className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 text-white text-xs font-semibold px-2.5 py-1 shadow-2xs"
+                        >
+                          <Check className="size-3" />
+                          <span>{title}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <span className="text-[10px] font-semibold text-ink-soft block mb-1.5">
+                    All Qualified Salon &amp; Bridal Capabilities:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pr-1">
+                    {selectedPro.allServiceTitles.map((title) => {
+                      const isMatching = selectedPro.matchingServiceTitles.includes(title);
+                      return (
+                        <span
+                          key={title}
+                          className={cn(
+                            "rounded-lg px-2.5 py-1 text-xs font-medium border",
+                            isMatching
+                              ? "bg-emerald-100 text-emerald-950 border-emerald-300 font-semibold"
+                              : "bg-blush-50 text-plum-900 border-line"
+                          )}
+                        >
+                          {title}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* 6. Coverage Areas */}
+              <div className="rounded-2xl border border-line bg-white p-4 space-y-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-xs uppercase tracking-wider text-ink-soft">
+                    Covered Sectors &amp; Localities ({selectedPro.coverageAreas.length})
+                  </h4>
+                  {selectedPro.coversAreaDirectly && (
+                    <span className="text-[10px] font-bold text-rose-800 bg-rose-100 rounded-full px-2 py-0.5">
+                      ✓ Direct Sector Coverage
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto pr-1">
+                  {selectedPro.coverageAreas.map((area) => {
+                    const isDirect =
+                      leadLocation.toLowerCase().includes(area.toLowerCase()) ||
+                      area.toLowerCase().includes(leadLocation.toLowerCase());
+                    return (
+                      <span
+                        key={area}
+                        className={cn(
+                          "rounded-lg px-2 py-0.5 text-xs border",
+                          isDirect
+                            ? "bg-rose-100 text-rose-900 border-rose-300 font-bold"
+                            : "bg-ivory-deep text-ink-soft border-line"
+                        )}
+                      >
+                        {area}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Sticky Footer */}
+            <div className="border-t border-line bg-ivory/95 p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <a
+                  href={selectedPro.dispatchWhatsAppUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#25D366] hover:bg-[#1f8f4e] px-4 py-2 text-xs font-bold text-white transition shadow-soft"
+                >
+                  <MessageCircle className="size-4" />
+                  <span>Send WhatsApp Brief</span>
+                </a>
+                <a
+                  href={`tel:${selectedPro.phone}`}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-line bg-white hover:bg-blush-50 px-3.5 py-2 text-xs font-semibold text-plum-900 transition shadow-2xs"
+                >
+                  <Phone className="size-3.5 text-ink-soft" />
+                  <span>Call Pro</span>
+                </a>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {selectedPro.id === assignedId ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleUnassign();
+                    }}
+                    disabled={isPending}
+                    className="rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-red-800 px-4 py-2 text-xs font-bold transition cursor-pointer"
+                  >
+                    Unassign from Booking
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleAssign(selectedPro.id);
+                    }}
+                    disabled={isPending}
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-plum-800 hover:bg-plum-950 text-white px-5 py-2 text-xs font-bold transition shadow-soft cursor-pointer active:scale-95"
+                  >
+                    {isPending ? (
+                      <RefreshCw className="size-3.5 animate-spin" />
+                    ) : (
+                      <Zap className="size-3.5 text-gold-400 fill-gold-400" />
+                    )}
+                    <span>Assign {selectedPro.name}</span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedPro(null)}
+                  className="rounded-xl border border-line bg-white hover:bg-blush-50 px-4 py-2 text-xs font-semibold text-ink-soft transition cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
