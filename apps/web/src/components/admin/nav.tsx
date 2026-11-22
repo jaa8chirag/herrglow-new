@@ -19,6 +19,7 @@ import {
   ExternalLink,
   LogOut,
   KeyRound,
+  CalendarDays,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@herrglow/ui";
@@ -27,6 +28,7 @@ import { Logo } from "@/components/brand/Logo";
 const ICON_MAP: Record<string, LucideIcon> = {
   dashboard: LayoutDashboard,
   leads: CalendarCheck2,
+  calendar: CalendarDays,
   applications: UserPlus,
   pros: Users,
   services: Scissors,

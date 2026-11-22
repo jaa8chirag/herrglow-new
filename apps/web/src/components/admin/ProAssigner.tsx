@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   AlertTriangle,
   Briefcase,
@@ -52,8 +53,16 @@ export function ProAssigner({
   const [isPending, startTransition] = useTransition();
   const [showAll, setShowAll] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [filterChip, setFilterChip] = useState<"all" | "free" | "nearby" | "skill" | "top" | "coverage">("all");
 
   const currentlyAssigned = matches.find((m) => m.id === assignedId);
+
+  // Filter count statistics
+  const freeCount = matches.filter((m) => m.isAvailable && !m.hasConflict).length;
+  const nearbyCount = matches.filter((m) => m.distanceKm != null && m.distanceKm <= 7).length;
+  const skillCount = matches.filter((m) => m.serviceMatch).length;
+  const topCount = matches.filter((m) => m.matchScore >= 75).length;
+  const coverageCount = matches.filter((m) => m.coversAreaDirectly).length;
 
   // Close modal on ESC key
   useEffect(() => {
@@ -94,6 +103,14 @@ export function ProAssigner({
   };
 
   const filteredMatches = matches.filter((m) => {
+    // 1. Quick Filter Chip
+    if (filterChip === "free" && (!m.isAvailable || m.hasConflict)) return false;
+    if (filterChip === "nearby" && (m.distanceKm == null || m.distanceKm > 7)) return false;
+    if (filterChip === "skill" && !m.serviceMatch) return false;
+    if (filterChip === "top" && m.matchScore < 75) return false;
+    if (filterChip === "coverage" && !m.coversAreaDirectly) return false;
+
+    // 2. Text Search Query
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
     return (
@@ -268,6 +285,35 @@ export function ProAssigner({
                 className="w-full rounded-xl border border-line bg-ivory-deep/50 pl-8 pr-3 py-1.5 text-xs text-plum-950 placeholder:text-ink-soft/70 focus:border-rose-600 focus:outline-none"
               />
             </div>
+          </div>
+
+          {/* Quick Filter Chips (Option B) */}
+          <div className="flex flex-wrap items-center gap-1.5 pt-1 border-b border-line pb-3">
+            <span className="text-[11px] font-semibold text-ink-soft mr-1">Quick Filters:</span>
+            {(
+              [
+                { id: "all", label: `All Staff (${matches.length})` },
+                { id: "free", label: `⚡ Free on Date (${freeCount})` },
+                { id: "nearby", label: `📍 Near <7km (${nearbyCount})` },
+                { id: "skill", label: `✨ Skill Match (${skillCount})` },
+                { id: "top", label: `⭐ Top Match (${topCount})` },
+                { id: "coverage", label: `🛡️ Covers Client Area (${coverageCount})` },
+              ] as const
+            ).map((chip) => (
+              <button
+                key={chip.id}
+                type="button"
+                onClick={() => setFilterChip(chip.id)}
+                className={cn(
+                  "rounded-full px-3 py-1 text-xs font-semibold transition cursor-pointer select-none",
+                  filterChip === chip.id
+                    ? "bg-plum-800 text-ivory shadow-xs ring-2 ring-plum-300"
+                    : "bg-ivory-deep/80 text-plum-900 hover:bg-blush-100 border border-line"
+                )}
+              >
+                {chip.label}
+              </button>
+            ))}
           </div>
 
           <div className="grid gap-3">
@@ -634,7 +680,74 @@ export function ProAssigner({
                 </div>
               </div>
 
-              {/* 3. Base Location & Contact Details */}
+              {/* 3. Schedule & Busy Calendar for this Date */}
+              <div className="rounded-2xl border border-line bg-white p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="size-4 text-rose-700" />
+                    <h4 className="font-bold text-xs uppercase tracking-wider text-plum-950">
+                      Schedule &amp; Bookings on Appointment Date
+                    </h4>
+                  </div>
+                  <Link
+                    href="/admin/calendar"
+                    target="_blank"
+                    className="text-[11px] font-semibold text-rose-700 hover:underline flex items-center gap-1"
+                  >
+                    <span>Full Salon Roster</span>
+                    <ExternalLink className="size-3" />
+                  </Link>
+                </div>
+
+                {selectedPro.existingBookings && selectedPro.existingBookings.length > 0 ? (
+                  <div className="space-y-2">
+                    <div className="rounded-xl border border-amber-300 bg-amber-50/70 p-3 text-xs text-amber-950">
+                      <p className="font-bold flex items-center gap-1.5">
+                        <Clock className="size-4 text-amber-600" />
+                        <span>This beautician has {selectedPro.existingBookings.length} booking(s) scheduled on this date:</span>
+                      </p>
+                    </div>
+                    <div className="grid gap-2">
+                      {selectedPro.existingBookings.map((eb) => (
+                        <div
+                          key={eb.id}
+                          className="flex items-center justify-between rounded-xl border border-purple-200 bg-purple-50/60 p-2.5 text-xs"
+                        >
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-plum-950">{eb.clientName}</span>
+                              {eb.bookingRef && (
+                                <span className="font-mono text-[10px] text-ink-soft">#{eb.bookingRef}</span>
+                              )}
+                            </div>
+                            <p className="text-ink-soft mt-0.5">
+                              ⏰ {eb.timeSlot || "Slot TBC"} · 💆‍♀️ {eb.serviceTitle} · 📍 {eb.location || "Delhi NCR"}
+                            </p>
+                          </div>
+                          <Link
+                            href={`/admin/leads/${eb.id}`}
+                            className="rounded-lg bg-white border border-purple-200 px-2.5 py-1 font-semibold text-purple-900 hover:bg-purple-100 transition shrink-0"
+                          >
+                            View Lead →
+                          </Link>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-xl border border-emerald-300 bg-emerald-50/60 p-3 text-xs text-emerald-950 flex items-center gap-2">
+                    <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                    <div>
+                      <span className="font-bold block">100% Free &amp; Available on this Date</span>
+                      <span className="text-[11px] text-emerald-800">
+                        Zero conflicting appointments. Morning, afternoon, and evening slots are all open.
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* 4. Base Location & Contact Details */}
               <div className="rounded-2xl border border-line bg-white p-4 space-y-3">
                 <h4 className="font-bold text-xs uppercase tracking-wider text-ink-soft">
                   Base Location &amp; Contact Information

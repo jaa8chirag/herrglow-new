@@ -35,6 +35,14 @@ export interface MatchedBeautician {
   hasConflict: boolean;
   conflictDetails: string | null;
   existingBookingCountOnDate: number;
+  existingBookings: {
+    id: string;
+    bookingRef: string | null;
+    clientName: string;
+    timeSlot: string | null;
+    serviceTitle: string;
+    location: string | null;
+  }[];
 
   // Score & Status
   matchScore: number;
@@ -219,7 +227,17 @@ export async function findMatchingBeauticiansForLead(
           status: { in: ["BOOKED", "COMPLETED", "QUOTED"] },
           id: { not: lead.id },
         },
-        select: { id: true, bookingRef: true, timeSlot: true, eventDate: true },
+        select: {
+          id: true,
+          bookingRef: true,
+          timeSlot: true,
+          eventDate: true,
+          name: true,
+          locationText: true,
+          address: true,
+          services: { select: { service: { select: { title: true } } } },
+          package: { select: { title: true } },
+        },
       },
     },
   });
@@ -415,6 +433,14 @@ export async function findMatchingBeauticiansForLead(
       hasConflict,
       conflictDetails,
       existingBookingCountOnDate: sameDayBookings.length,
+      existingBookings: sameDayBookings.map((b) => ({
+        id: b.id,
+        bookingRef: b.bookingRef,
+        clientName: b.name,
+        timeSlot: b.timeSlot,
+        serviceTitle: b.package?.title || b.services.map((s) => s.service.title).join(", ") || "Doorstep Service",
+        location: b.address || b.locationText || null,
+      })),
       matchScore: score,
       matchReasons,
       badge: "AVAILABLE",
