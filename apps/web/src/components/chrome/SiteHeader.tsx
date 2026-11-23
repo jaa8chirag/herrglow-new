@@ -11,7 +11,14 @@ import { Logo } from "@/components/brand/Logo";
 export interface MenuCat { slug: string; name: string; href: string; services: { slug: string; title: string }[]; featured: { slug: string; title: string; image: string | null } | null }
 export interface HeaderProps { siteName: string; logo: string | null; menu: MenuCat[]; cities: { slug: string; name: string }[] }
 
-const NAV = [{ href: "/", label: "Home" }, { href: "/packages", label: "Packages" }, { href: "/blog", label: "Blogs" }, { href: "/about", label: "About" }, { href: "/contact", label: "Contact" }];
+const NAV = [
+  { href: "/", label: "Home" },
+  { href: "/packages", label: "Packages" },
+  { href: "/custom-combo", label: "Make a Combo" },
+  { href: "/blog", label: "Blogs" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
 
 /** Scrolls to the on-page booking form when there is one, otherwise goes to the contact page's form. */
 function useBook() {

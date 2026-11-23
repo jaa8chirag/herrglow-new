@@ -351,6 +351,35 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
   const cityName = cities.find((c) => c.slug === v.city)?.name ?? (v.city === "other" ? "Other city" : "");
   const serviceTitle = packageItem?.title ?? service?.title ?? options.find((o) => o.slug === v.serviceSlug)?.title ?? "";
 
+  const currentBasePrice = useMemo(() => {
+    if (packageItem?.price) return Number(packageItem.price);
+    if (service?.variants?.length && v.variant) {
+      const match = service.variants.find((vr) => vr.name === v.variant);
+      if (match?.price) return match.price;
+    }
+    if (service?.variants?.[0]?.price) return service.variants[0].price;
+    return null;
+  }, [packageItem, service, v.variant]);
+
+  const addonsTotal = useMemo(() => {
+    let sum = 0;
+    const ADDON_PRICES: Record<string, number> = {
+      "Saree / Lehenga Draping": 999,
+      "Designer Hair Styling & Setting": 1499,
+      "Express Clean-Up & Anti-Tan Pack": 799,
+      "Eyebrow & Upper Lip Threading": 99,
+    };
+    for (const add of v.addons) {
+      if (ADDON_PRICES[add]) sum += ADDON_PRICES[add];
+      const matchFromService = service?.addons?.find((a) => a.name === add);
+      if (matchFromService?.price) sum += matchFromService.price;
+    }
+    return sum;
+  }, [v.addons, service]);
+
+  const currentCartTotal = (currentBasePrice || 0) + addonsTotal;
+  const isBelowMinOrder = currentBasePrice !== null && currentCartTotal > 0 && currentCartTotal < 499;
+
   const go = (to: number) => {
     setDir(to > step ? 1 : -1);
     setStep(to);
@@ -359,6 +388,9 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
   };
 
   const next = () => {
+    if (step === 0 && isBelowMinOrder) {
+      return setStepErr(`Minimum doorstep visit is ₹499. Please select add-on treatments (+₹${499 - currentCartTotal} more) to continue.`);
+    }
     if (step === 1) {
       if (!v.area.trim()) {
         return setStepErr("Please select or enter your locality / sector (e.g. Sector 62, Indirapuram)");
@@ -692,6 +724,28 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
                                 })}
                               </div>
                             </div>
+
+                            {/* Minimum Order Value Alert if < 499 */}
+                            {isBelowMinOrder && (
+                              <div className="rounded-2xl border border-amber-300 bg-amber-50/90 p-4 text-xs text-amber-950 space-y-2">
+                                <div className="flex items-center justify-between font-bold text-amber-950">
+                                  <span className="flex items-center gap-1.5">
+                                    <Sparkles className="size-4 text-amber-600" />
+                                    Minimum Doorstep Booking: ₹499
+                                  </span>
+                                  <span className="font-mono text-xs">₹{currentCartTotal} / ₹499</span>
+                                </div>
+                                <div className="h-2 w-full rounded-full bg-amber-200 overflow-hidden">
+                                  <div
+                                    className="h-full bg-gradient-to-r from-amber-500 to-amber-600 rounded-full transition-all duration-300"
+                                    style={{ width: `${Math.min(100, Math.round((currentCartTotal / 499) * 100))}%` }}
+                                  />
+                                </div>
+                                <p className="text-[11px] text-amber-900 leading-relaxed">
+                                  To cover travelling beautician visit, minimum booking is ₹499. Add <strong>₹{499 - currentCartTotal}</strong> more from the add-on options above to unlock your booking with 100% Free Doorstep Travel!
+                                </p>
+                              </div>
+                            )}
                           </>)}
 
                             {step === 1 && panel(<>
@@ -1140,8 +1194,14 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
                   <span />
                 )}
                 {step < 3 ? (
-                  <Button type="button" variant="shimmer" onClick={next}>
-                    Continue<ArrowRight className="size-4" />
+                  <Button
+                    type="button"
+                    variant={step === 0 && isBelowMinOrder ? "outline" : "shimmer"}
+                    onClick={next}
+                    className={step === 0 && isBelowMinOrder ? "border-amber-400 bg-amber-50 text-amber-950 font-bold hover:bg-amber-100" : undefined}
+                  >
+                    {step === 0 && isBelowMinOrder ? `Add ₹${499 - currentCartTotal} to Continue` : "Continue"}
+                    <ArrowRight className="size-4" />
                   </Button>
                 ) : (
                   <Button type="submit" variant="shimmer" size="lg" disabled={pending}>

@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getPackagesData } from "@herrglow/core";
@@ -54,6 +54,27 @@ export default async function PackagesPage() {
       <PageHero crumbs={[{ name: "Packages", path: "/packages" }]} eyebrow="Packages" title="Everything in one booking" intro="Bundles for the big days: one artist team, clear inclusions, one price. Compare what is included and book." />
       <Section className="pt-8">
         <Container>
+          {/* Custom Combo Callout Banner */}
+          <div className="mb-10 rounded-3xl border border-gold-400/60 bg-gradient-to-r from-plum-950 via-plum-900 to-plum-950 p-6 sm:p-8 text-ivory shadow-lift flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="space-y-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-gold-400/20 border border-gold-400/40 px-3 py-1 text-xs font-bold text-gold-300">
+                <Sparkles className="size-3.5 text-gold-400" /> Want a Custom Bundle?
+              </span>
+              <h3 className="font-serif text-2xl sm:text-3xl text-white font-normal">
+                Make Your Own Custom Combo
+              </h3>
+              <p className="text-xs sm:text-sm text-blush-100/90 max-w-xl leading-relaxed">
+                Pick your own mix of waxing, facial cleanups, threading, and mani-pedi treatments. Reach <strong>₹499</strong> to unlock 100% Free Doorstep Travel, plus get an extra <strong>10% OFF</strong> on combos ₹999+.
+              </p>
+            </div>
+            <Link
+              href="/custom-combo"
+              className={cn(buttonStyles({ variant: "shimmer", size: "lg" }), "shrink-0 font-bold text-sm w-full md:w-auto")}
+            >
+              Build Custom Combo →
+            </Link>
+          </div>
+
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {cards.map((p, i) => (
               <BlurFade key={p.key} delay={(i % 3) * 0.07} className="h-full">
