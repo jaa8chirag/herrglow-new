@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { asFaqs, findPage, getCategoryExtras, urls, type Faq } from "@herrglow/core";
 import { Carousel, Container, Section, SectionHeading } from "@herrglow/ui";
@@ -22,6 +22,10 @@ export const revalidate = 600;
  * if there is no Page row the URL does not exist (404). Types: CATEGORY, CITY, AREA, SERVICE_CITY.
  */
 async function resolve(slug: string) {
+  const cat = await getCategoryPage(slug);
+  if (cat) {
+    redirect(`/services/${slug}`);
+  }
   const page = await findPage(`/${slug}`);
   if (!page) return null;
   return page;
@@ -120,7 +124,7 @@ export default async function RootSlugPage(props: PageProps<"/[slug]">) {
               <Html html={row.localContent ?? ""} />
               <p className="mt-6 flex flex-wrap gap-x-5 gap-y-2"><Link className="text-rose-700 underline underline-offset-4" href={urls.service(svc.slug)}>Full details and options for {svc.title}</Link><Link className="text-rose-700 underline underline-offset-4" href={urls.cityHub(row.city.slug)}>All services in {row.city.name}</Link></p>
             </div>
-            <div className="lg:sticky lg:top-28 lg:self-start"><BookingForm cities={cities} defaultCity={row.city.slug} sourcePath={path} service={{ slug: svc.slug, title: svc.title, variants: svc.variants.map((v) => ({ name: v.name, price: Number(v.offerPrice ?? v.price ?? 0) || null })) }} /></div>
+            <div className="lg:sticky lg:top-28 lg:self-start"><BookingForm cities={cities} defaultCity={row.city.slug} sourcePath={path} service={{ slug: svc.slug, title: svc.title, price: Number(svc.offerPrice ?? svc.price ?? 0) || null, variants: svc.variants.map((v) => ({ name: v.name, price: Number(v.offerPrice ?? v.price ?? 0) || null })) }} /></div>
           </Container>
         </Section>
         {pros.length > 0 && <Section tone="blush"><Container><SectionHeading eyebrow="Artists" title={`Artists offering ${svc.title} in ${row.city.name}`} /><Carousel dots label="Artists" itemClassName="basis-[72%] sm:basis-1/3 lg:basis-1/4">{pros.map((p) => <ArtistCard key={p.id} a={{ slug: p.slug, name: p.name, photo: realImage(keys, p.photo), specialization: p.specialization, years: p.experienceYears, city: row.city.name, linked: proPageSlugs.has(p.slug), kind: p.providerType === "MAKEOVER_ARTIST" ? "Makeup artist" : "Beautician" }} />)}</Carousel></Container></Section>}

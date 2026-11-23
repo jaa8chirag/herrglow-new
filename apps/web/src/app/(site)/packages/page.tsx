@@ -54,8 +54,12 @@ export default async function PackagesPage() {
 
   return (
     <>
-      <PageHero crumbs={[{ name: "Packages", path: "/packages" }]} eyebrow="Packages" title="Everything in one booking" intro="Bundles for the big days: one artist team, clear inclusions, one price. Compare what is included and book." />
-      <Section className="pt-8">
+      <PageHero
+        crumbs={[{ name: "Packages", path: "/packages" }]}
+        title="Everything in one booking"
+        intro="Bundles for the big days: one artist team, clear inclusions, one price. Compare what is included and book."
+      />
+      <Section className="py-4 sm:py-6">
         <Container>
           {/* Monthly Routine Package Hero Feature Card */}
           <div className="mb-8 rounded-3xl border-2 border-gold-400/60 bg-gradient-to-br from-plum-950 via-plum-900 to-plum-950 p-6 sm:p-8 text-ivory shadow-lift relative overflow-hidden">
@@ -110,10 +114,10 @@ export default async function PackagesPage() {
 
                 <div className="flex flex-col sm:flex-row gap-2.5 w-full sm:w-auto">
                   <Link
-                    href="/services/waxing/monthly-grooming-essentials-package"
+                    href="/services/salon-at-home"
                     className={cn(buttonStyles({ variant: "shimmer", size: "md" }), "font-bold text-xs sm:text-sm text-center justify-center")}
                   >
-                    Book Package @ ₹999 →
+                    View Salon Services →
                   </Link>
                   <Link
                     href="/custom-combo"

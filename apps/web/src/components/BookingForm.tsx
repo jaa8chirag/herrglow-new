@@ -27,7 +27,13 @@ export interface BookingFormProps {
   cities: { slug: string; name: string }[];
   /** preselected city (on city/area pages) */
   defaultCity?: string;
-  service?: { slug: string; title: string; variants?: { name: string; price: number | null }[]; addons?: { name: string; price: number | null }[] };
+  service?: {
+    slug: string;
+    title: string;
+    price?: number | null;
+    variants?: { name: string; price: number | null }[];
+    addons?: { name: string; price: number | null }[];
+  };
   /** preselected package (on package pages) */
   packageItem?: { slug: string; title: string; price?: number | null };
   proSlug?: string;
@@ -358,6 +364,7 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
       if (match?.price) return match.price;
     }
     if (service?.variants?.[0]?.price) return service.variants[0].price;
+    if (service?.price) return Number(service.price);
     return null;
   }, [packageItem, service, v.variant]);
 
@@ -368,11 +375,18 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
       "Designer Hair Styling & Setting": 1499,
       "Express Clean-Up & Anti-Tan Pack": 799,
       "Eyebrow & Upper Lip Threading": 99,
+      "Saree / Lehenga Draping & Ironing": 999,
+      "Designer Hair Styling & Floral Setting": 1499,
+      "Party Makeup for Mother / Sister": 2499,
+      "Hydrating Deluxe Pedicure": 799,
     };
     for (const add of v.addons) {
-      if (ADDON_PRICES[add]) sum += ADDON_PRICES[add];
-      const matchFromService = service?.addons?.find((a) => a.name === add);
-      if (matchFromService?.price) sum += matchFromService.price;
+      if (ADDON_PRICES[add]) {
+        sum += ADDON_PRICES[add];
+      } else {
+        const matchFromService = service?.addons?.find((a) => a.name === add);
+        if (matchFromService?.price) sum += matchFromService.price;
+      }
     }
     return sum;
   }, [v.addons, service]);
@@ -506,10 +520,59 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
 
   const Summary = (
   <div className="rounded-2xl bg-blush-50 p-4 text-sm" aria-label="Selected appointment summary">
-    <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-rose-700">Your request</p>
-    <dl className="grid grid-cols-[88px_1fr] gap-y-1.5">
-      <dt className="text-ink-soft">Service</dt><dd className="font-medium text-plum-800">{serviceTitle || "Not chosen yet"}{v.variant ? ` · ${v.variant}` : ""}</dd>
-      {v.addons.length > 0 && (<><dt className="text-ink-soft">Add-ons</dt><dd>{v.addons.join(", ")}</dd></>)}
+    <div className="mb-2.5 flex items-center justify-between border-b border-blush-200/60 pb-2">
+      <p className="text-xs font-semibold uppercase tracking-wider text-rose-700">Your request</p>
+      {currentCartTotal > 0 && (
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-0.5 text-xs font-bold text-plum-950 border border-blush-200 shadow-2xs">
+          Total: <span className="text-rose-700 font-extrabold text-sm">₹{currentCartTotal.toLocaleString("en-IN")}</span>
+        </span>
+      )}
+    </div>
+    <dl className="grid grid-cols-[88px_1fr] gap-y-2">
+      <dt className="text-ink-soft">Service</dt>
+      <dd className="font-medium text-plum-900">
+        <div className="flex flex-wrap items-baseline justify-between gap-1">
+          <span>{serviceTitle || "Not chosen yet"}{v.variant ? ` · ${v.variant}` : ""}</span>
+          {currentBasePrice ? (
+            <span className="font-semibold text-plum-950">₹{currentBasePrice.toLocaleString("en-IN")}</span>
+          ) : null}
+        </div>
+      </dd>
+      {v.addons.length > 0 && (
+        <>
+          <dt className="text-ink-soft">Add-ons</dt>
+          <dd className="space-y-1">
+            <div className="flex flex-wrap items-center gap-1.5">
+              {v.addons.map((add) => {
+                const addPrice = {
+                  "Saree / Lehenga Draping": 999,
+                  "Designer Hair Styling & Setting": 1499,
+                  "Express Clean-Up & Anti-Tan Pack": 799,
+                  "Eyebrow & Upper Lip Threading": 99,
+                  "Saree / Lehenga Draping & Ironing": 999,
+                  "Designer Hair Styling & Floral Setting": 1499,
+                  "Party Makeup for Mother / Sister": 2499,
+                  "Hydrating Deluxe Pedicure": 799,
+                }[add] ?? service?.addons?.find((a) => a.name === add)?.price;
+                return (
+                  <span
+                    key={add}
+                    className="inline-flex items-center gap-1 rounded-lg bg-white/90 border border-blush-200 px-2 py-0.5 text-xs text-plum-900"
+                  >
+                    <span>{add}</span>
+                    {addPrice ? <span className="font-semibold text-rose-700">+₹{addPrice.toLocaleString("en-IN")}</span> : null}
+                  </span>
+                );
+              })}
+            </div>
+            {addonsTotal > 0 && (
+              <p className="text-[11px] font-medium text-ink-soft">
+                Add-ons subtotal: <span className="font-bold text-plum-900">+₹{addonsTotal.toLocaleString("en-IN")}</span>
+              </p>
+            )}
+          </dd>
+        </>
+      )}
       {proName && (<><dt className="text-ink-soft">Artist</dt><dd>{proName}</dd></>)}
       <dt className="text-ink-soft">Where</dt>
       <dd className="flex items-center gap-1.5 flex-wrap">
@@ -622,18 +685,29 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
                           <AnimatePresence mode="wait" initial={false}>
                             {step === 0 && panel(<>
                               {service ? (
-                                <div className="rounded-2xl border border-line bg-white px-4 py-3 text-plum-800">
-                                  <span className="text-xs text-ink-soft">Service</span>
-                                  <br />
-                                  <strong className="text-lg">{service.title}</strong>
-                                  {proName ? <span className="text-ink-soft"> · with {proName}</span> : null}
+                                <div className="rounded-2xl border border-line bg-white px-4 py-3.5 text-plum-800 shadow-2xs">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs font-semibold uppercase tracking-wider text-ink-soft">Selected Service</span>
+                                    {currentBasePrice ? (
+                                      <span className="rounded-full bg-blush-100/80 px-2.5 py-0.5 text-sm font-bold text-plum-950">
+                                        ₹{currentBasePrice.toLocaleString("en-IN")}
+                                      </span>
+                                    ) : null}
+                                  </div>
+                                  <strong className="mt-1 block text-lg font-serif text-plum-950">{service.title}</strong>
+                                  {proName ? <p className="text-xs text-ink-soft mt-0.5">With {proName}</p> : null}
                                 </div>
                               ) : packageItem ? (
-                                <div className="rounded-2xl border border-line bg-white px-4 py-3 text-plum-800">
-                                  <span className="text-xs text-ink-soft">Package</span>
-                                  <br />
-                                  <strong className="text-lg">{packageItem.title}</strong>
-                                  {packageItem.price ? <span className="text-sm font-semibold text-emerald-700"> · ₹{Math.round(packageItem.price).toLocaleString("en-IN")}</span> : null}
+                                <div className="rounded-2xl border border-line bg-white px-4 py-3.5 text-plum-800 shadow-2xs">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs font-semibold uppercase tracking-wider text-ink-soft">Selected Package</span>
+                                    {packageItem.price ? (
+                                      <span className="rounded-full bg-emerald-100/80 px-2.5 py-0.5 text-sm font-bold text-emerald-800">
+                                        ₹{Math.round(packageItem.price).toLocaleString("en-IN")}
+                                      </span>
+                                    ) : null}
+                                  </div>
+                                  <strong className="mt-1 block text-lg font-serif text-plum-950">{packageItem.title}</strong>
                                 </div>
                               ) : (
                                 <div className="grid gap-1.5">
@@ -698,7 +772,14 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
 
                             {/* Multi-service visit enhancement */}
                             <div className="rounded-2xl border border-blush-200/70 bg-blush-50/60 p-3.5">
-                              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-rose-700">Add to same visit (Save Time)</p>
+                              <div className="mb-2 flex items-center justify-between">
+                                <p className="text-xs font-semibold uppercase tracking-wider text-rose-700">Add to same visit (Save Time)</p>
+                                {addonsTotal > 0 && (
+                                  <span className="text-xs font-bold text-plum-950">
+                                    Added: +₹{addonsTotal.toLocaleString("en-IN")}
+                                  </span>
+                                )}
+                              </div>
                               <div className="grid gap-2 sm:grid-cols-2">
                                 {[
                                   { name: "Saree / Lehenga Draping", price: 999 },

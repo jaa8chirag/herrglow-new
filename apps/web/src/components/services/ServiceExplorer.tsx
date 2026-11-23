@@ -30,6 +30,7 @@ export interface ExplorerItem {
   image: string | null;
   alt: string;
   price: number | null;
+  maxPrice?: number | null;
   offerPrice: number | null;
   from: boolean;
   duration: string | null;
@@ -95,33 +96,6 @@ const SUB_CATEGORIES_BY_CAT: Record<string, { id: string; label: string; keyword
   ],
 };
 
-const AREA_INFO: Record<string, { label: string; tag: string; discountPct: number; highlight: string }> = {
-  all: {
-    label: "All Delhi NCR",
-    tag: "Delhi NCR Coverage",
-    discountPct: 0,
-    highlight: "Free doorstep artist arrival across Noida, Greater Noida, and Delhi with sanitized tools & setup.",
-  },
-  noida: {
-    label: "Noida (Sectors 18, 50, 62, 76, 137)",
-    tag: "Noida Verified Hub",
-    discountPct: 0,
-    highlight: "Verified senior beauticians available in 60-90 mins across Noida. Zero travel charges.",
-  },
-  "greater-noida": {
-    label: "Greater Noida (Gaur City, Pari Chowk, Sec 1)",
-    tag: "Society Special Rates (-5%)",
-    discountPct: -5,
-    highlight: "Special high-density residential society rates for Gaur City 1 & 2, Pari Chowk, and Greater Noida West.",
-  },
-  delhi: {
-    label: "Delhi (South Delhi, Dwarka, Vasant Kunj)",
-    tag: "Concierge Luxury Hub",
-    discountPct: 5,
-    highlight: "Premium bridal and luxury salon concierge across South Delhi, Vasant Kunj, Dwarka, and Rohini.",
-  },
-};
-
 export function ServiceExplorer({
   items,
   categories,
@@ -133,7 +107,6 @@ export function ServiceExplorer({
 }) {
   const [cat, setCat] = useState("all");
   const [subCat, setSubCat] = useState("all");
-  const [selectedArea, setSelectedArea] = useState("all");
   const [q, setQ] = useState("");
 
   // Sub-categories available for current category selection
@@ -147,8 +120,6 @@ export function ServiceExplorer({
     setCat(newCat);
     setSubCat("all");
   };
-
-  const areaMeta = AREA_INFO[selectedArea] ?? AREA_INFO.all!;
 
   const shown = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -195,22 +166,20 @@ export function ServiceExplorer({
       .filter((g) => g.items.length > 0);
   }, [categories, shown, cat]);
 
-  // Helper to adjust price per area
+  // Helper to format/retrieve price
   const calculateAreaPrice = (basePrice: number | null): number | null => {
     if (!basePrice) return null;
-    if (areaMeta.discountPct === 0) return basePrice;
-    const adjusted = basePrice * (1 + areaMeta.discountPct / 100);
-    return Math.round(adjusted / 10) * 10;
+    return basePrice;
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Sticky Filter & Area Bar */}
-      <div className="sticky top-20 z-30 -mx-5 border-b border-line bg-ivory/95 px-5 py-4 backdrop-blur-xl sm:-mx-8 sm:px-8 shadow-xs">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3.5">
-          {/* Top Row: Search + Area Selector */}
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <label className="relative lg:w-80">
+      <div className="sticky top-20 z-30 -mx-5 border-b border-line bg-ivory/95 px-5 py-3 backdrop-blur-xl sm:-mx-8 sm:px-8 shadow-xs">
+        <div className="mx-auto flex max-w-[1400px] flex-col gap-3.5">
+          {/* Top Row: Search */}
+          <div className="flex flex-col gap-3">
+            <label className="relative w-full max-w-xl">
               <span className="sr-only">Search salon services</span>
               <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
               <input
@@ -221,47 +190,6 @@ export function ServiceExplorer({
                 className="min-h-11 w-full rounded-full border border-line bg-white pl-11 pr-4 text-sm focus:border-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-600/20 shadow-xs"
               />
             </label>
-
-            {/* Area Switcher */}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-plum-900">
-                <MapPin className="size-3.5 text-rose-600" />
-                <span>Your Location:</span>
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {[
-                  { id: "all", label: "All Delhi NCR" },
-                  { id: "noida", label: "Noida" },
-                  { id: "greater-noida", label: "Greater Noida & Gaur City" },
-                  { id: "delhi", label: "Delhi" },
-                ].map((a) => (
-                  <button
-                    key={a.id}
-                    type="button"
-                    onClick={() => setSelectedArea(a.id)}
-                    className={cn(
-                      "rounded-full px-3 py-1.5 text-xs font-medium transition",
-                      selectedArea === a.id
-                        ? "bg-rose-700 text-white shadow-xs"
-                        : "border border-line bg-white text-plum-900 hover:bg-blush-100"
-                    )}
-                  >
-                    {a.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Area Guarantee Reassurance Banner */}
-          <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-rose-200/80 bg-rose-50/70 px-3.5 py-2 text-xs text-plum-900">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
-              <span>
-                <strong>{areaMeta.tag}:</strong> {areaMeta.highlight}
-              </span>
-            </div>
-            <span className="font-semibold text-rose-700">Zero Travel Surcharge</span>
           </div>
 
           {/* Category Tabs */}
@@ -342,7 +270,7 @@ export function ServiceExplorer({
                 {group.name}
               </h2>
               <p className="text-xs text-ink-soft">
-                Verified doorstep treatments for {areaMeta.label} · 100% authentic products
+                Verified doorstep treatments across Delhi NCR · 100% authentic products
               </p>
             </div>
             <span className="rounded-full bg-blush-100 px-3 py-1 text-xs font-semibold text-plum-800">
@@ -352,11 +280,14 @@ export function ServiceExplorer({
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {group.items.map((s) => {
-              const effectivePrice = calculateAreaPrice(s.price);
-              const formattedPrice =
-                effectivePrice != null
-                  ? `₹${effectivePrice.toLocaleString("en-IN")}`
-                  : "Custom Quote";
+              const effectiveLow = calculateAreaPrice(s.price);
+              const effectiveHigh = s.maxPrice != null ? calculateAreaPrice(s.maxPrice) : null;
+              const hasRange = effectiveLow != null && effectiveHigh != null && effectiveHigh > effectiveLow;
+              const formattedPrice = hasRange
+                ? `₹${effectiveLow.toLocaleString("en-IN")} - ₹${effectiveHigh.toLocaleString("en-IN")}`
+                : effectiveLow != null
+                ? `₹${effectiveLow.toLocaleString("en-IN")}`
+                : "Custom Quote";
 
               return (
                 <Card
@@ -418,6 +349,21 @@ export function ServiceExplorer({
                       </p>
                     )}
 
+                    {/* Trust & Inclusions Highlight */}
+                    <div className="mt-2.5 flex items-center gap-1.5 text-[11px] font-medium text-emerald-800 bg-emerald-50/80 rounded-md px-2 py-1 border border-emerald-200/60">
+                      <ShieldCheck className="size-3.5 shrink-0 text-emerald-600" />
+                      <span className="truncate">
+                        {s.categorySlug === "makeup" && "100% Genuine MAC/Huda · Doorstep Artist"}
+                        {s.categorySlug === "salon-at-home" && "Italian Rica Wax · Sanitized Disposables"}
+                        {s.categorySlug === "facial-skincare" && "O3+ Glow Range · Extraction & Massage"}
+                        {s.categorySlug === "hair" && "L'Oreal & Keratin · Advanced Styling"}
+                        {s.categorySlug === "nails" && "Non-Toxic Gel · Cuticle Care & Shine"}
+                        {s.categorySlug === "mehndi" && "100% Herbal Henna · Deep Dark Stain"}
+                        {s.categorySlug === "pre-bridal" && "All-in-One Luxury Routine · High Savings"}
+                        {!["makeup", "salon-at-home", "facial-skincare", "hair", "nails", "mehndi", "pre-bridal"].includes(s.categorySlug) && "100% Verified Female Beautician"}
+                      </span>
+                    </div>
+
                     {/* Sub-Category Options Pills Preview */}
                     {s.variants && s.variants.length > 0 && (
                       <div className="mt-3 space-y-1.5">
@@ -450,9 +396,9 @@ export function ServiceExplorer({
                     <div className="mt-auto pt-4 border-t border-line/60 flex items-center justify-between gap-2">
                       <div>
                         <span className="block text-[10px] font-semibold uppercase tracking-wider text-ink-soft">
-                          Starting in {selectedArea === "all" ? "NCR" : areaMeta.label.split(" ")[0]}
+                          {hasRange ? "Price Range (NCR)" : "Starting Price"}
                         </span>
-                        <span className="font-serif text-lg font-bold text-plum-950">
+                        <span className="font-serif text-base sm:text-lg font-bold text-plum-950">
                           {formattedPrice}
                         </span>
                       </div>

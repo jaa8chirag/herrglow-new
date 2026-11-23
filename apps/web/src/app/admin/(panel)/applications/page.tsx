@@ -23,6 +23,11 @@ export default async function ApplicationsPage(props: PageProps<"/admin/applicat
             <Td className="font-medium">
               <div className="flex items-center gap-1.5">
                 <span>{a.name}</span>
+                {a.artistType === "PARLOUR_OWNER" && (
+                  <span className="inline-flex items-center rounded-full bg-purple-100 px-1.5 py-0.5 text-[0.65rem] font-bold text-purple-900" title={`Parlour: ${a.parlourName ?? ''}`}>
+                    🏬 Parlour
+                  </span>
+                )}
                 {a.latitude != null && a.longitude != null && (
                   <span className="inline-flex items-center rounded-full bg-emerald-100 px-1.5 py-0.5 text-[0.65rem] font-bold text-emerald-800" title={`GPS: ${Number(a.latitude).toFixed(3)}, ${Number(a.longitude).toFixed(3)}`}>
                     📍 GPS

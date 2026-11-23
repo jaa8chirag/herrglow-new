@@ -34,7 +34,7 @@ export function ButtonLink({ variant, size, className, ...p }: AnchorHTMLAttribu
 
 /* ───────── Layout ───────── */
 export function Container({ className, ...p }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("mx-auto w-full max-w-6xl px-5 sm:px-8", className)} {...p} />;
+  return <div className={cn("mx-auto w-full max-w-[1400px] px-5 sm:px-8", className)} {...p} />;
 }
 
 export function Section({ className, tone = "plain", ...p }: HTMLAttributes<HTMLElement> & { tone?: "plain" | "blush" | "deep" }) {

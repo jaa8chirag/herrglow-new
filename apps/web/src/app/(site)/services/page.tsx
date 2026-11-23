@@ -25,7 +25,9 @@ async function ServicesGrid() {
     getLiveCities(),
   ]);
   const items = all.map((s) => {
-    const prices = [s.offerPrice ?? s.price, ...s.variants.map((v) => v.offerPrice ?? v.price)].map((n) => (n == null ? NaN : Number(n))).filter((n) => n > 0);
+    const prices = [s.offerPrice ?? s.price, ...s.variants.map((v) => v.offerPrice ?? v.price)].map((n) => (n == null ? NaN : Number(n))).filter((n) => Number.isFinite(n) && n > 0);
+    const minPrice = prices.length ? Math.min(...prices) : num(s.price);
+    const maxPrice = prices.length > 1 ? Math.max(...prices) : null;
     return {
       slug: s.slug,
       title: s.title,
@@ -34,7 +36,8 @@ async function ServicesGrid() {
       categorySlug: s.category.slug,
       image: realImage(keys, s.image),
       alt: s.imageAlt || s.title,
-      price: prices.length ? Math.min(...prices) : num(s.price),
+      price: minPrice,
+      maxPrice: maxPrice,
       offerPrice: null,
       from: s.variants.length > 1 || s.priceLabel === "Starting at",
       duration: s.duration,
@@ -44,7 +47,7 @@ async function ServicesGrid() {
     };
   });
   return (
-    <Section className="pt-6">
+    <Section className="!py-0">
       <Container>
         <ServiceExplorer
           items={items}
@@ -59,7 +62,11 @@ async function ServicesGrid() {
 export default function ServicesIndex() {
   return (
     <>
-      <PageHero crumbs={[{ name: "Services", path: "/services" }]} eyebrow="Services" title="Everything we offer, at your home" intro="Bridal and party makeup, salon, facials, nails, hair, mehndi and packages. Filter by category or search by name." />
+      <PageHero
+        crumbs={[{ name: "Services", path: "/services" }]}
+        title="Everything we offer, at your home"
+        intro="Bridal and party makeup, salon, facials, nails, hair, mehndi and packages. Filter by category or search by name."
+      />
       <Suspense fallback={<GridSkeleton />}><ServicesGrid /></Suspense>
     </>
   );

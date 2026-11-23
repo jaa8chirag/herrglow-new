@@ -123,6 +123,22 @@ export function ApplyForm({
   const [internalLang, setInternalLang] = useState<"en" | "hi">(initialLang);
   const lang = controlledLang ?? internalLang;
   const [state, action, pending] = useActionState<ApplyState, FormData>(submitApplication, { status: "idle" });
+
+  const handleAction = (formData: FormData) => {
+    if (!coords) {
+      setLocationRequiredErr(
+        t(
+          "Please share your live GPS location by clicking 'Share Live Location (GPS)' above. This is mandatory for artist verification.",
+          "Kripya upar diye gaye 'Share Live Location (GPS)' button par click karein. Artist verification ke liye live GPS zaroori hai."
+        )
+      );
+      detectLocation();
+      const btn = document.getElementById("apply-gps-btn");
+      btn?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    action(formData);
+  };
   const [geoStatus, setGeoStatus] = useState<"idle" | "detecting" | "success" | "error">("idle");
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [selectedRadius, setSelectedRadius] = useState<number>(10);
@@ -181,6 +197,8 @@ export function ApplyForm({
       if (k === "name") return "Kripya apna poora naam daalein";
       if (k === "phone") return "Sahi 10-digit mobile number daalein (jaise 9319260069)";
       if (k === "email") return "Sahi email ID daalein ya ise khali chhod dein";
+      if (k === "parlourName") return "Kripya apne beauty parlour / salon ka naam daalein";
+      if (k === "parlourAddress") return "Kripya apne parlour ka address / location daalein";
       if (k === "area" || k === "city") return "Kripya apna area ya locality chunein";
       if (k === "operatingAreas") return "Kripya kam se kam ek operating area chunein";
       if (k === "experienceYears") return "Experience ke saal number mein daalein (jaise 3 ya 5)";
@@ -191,6 +209,11 @@ export function ApplyForm({
     }
     return msg;
   };
+
+  const [locationRequiredErr, setLocationRequiredErr] = useState("");
+  const [artistType, setArtistType] = useState<"FREELANCER" | "PARLOUR_OWNER">("FREELANCER");
+  const [parlourName, setParlourName] = useState("");
+  const [parlourAddress, setParlourAddress] = useState("");
 
   const detectLocation = () => {
     if (typeof window === "undefined" || !navigator.geolocation) {
@@ -206,6 +229,7 @@ export function ApplyForm({
         const lng = pos.coords.longitude;
         setCoords({ lat, lng });
         setGeoStatus("success");
+        setLocationRequiredErr("");
         // Reverse-geocode via OpenStreetMap for friendly locality name if user hasn't typed one
         try {
           const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`, {
@@ -337,7 +361,10 @@ export function ApplyForm({
       : "Hi HerrGlow! I am a professional beautician / makeup artist and would like to register with HerrGlow. I want to share my work and operating areas."
   );
 
-  const areaSuggestions = areas.length > 0 ? areas : DEFAULT_AREAS;
+  const areaSuggestions = useMemo(() => {
+    const raw = areas.length > 0 ? areas : DEFAULT_AREAS;
+    return Array.from(new Set(raw.map((a) => a.trim()).filter(Boolean)));
+  }, [areas]);
 
   if (state.status === "done")
     return (
@@ -436,7 +463,25 @@ export function ApplyForm({
         </div>
       )}
 
-      <form action={action} className="grid gap-5 min-w-0" noValidate>
+      <form
+        action={handleAction}
+        onSubmit={(e) => {
+          if (!coords) {
+            e.preventDefault();
+            setLocationRequiredErr(
+              t(
+                "Please share your live GPS location by clicking 'Share Live Location (GPS)' above. This is mandatory for artist verification.",
+                "Kripya upar diye gaye 'Share Live Location (GPS)' button par click karein. Artist verification ke liye live GPS zaroori hai."
+              )
+            );
+            detectLocation();
+            const btn = document.getElementById("apply-gps-btn");
+            btn?.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }}
+        className="grid gap-5 min-w-0"
+        noValidate
+      >
         <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
           <label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
         </div>
@@ -483,6 +528,145 @@ export function ApplyForm({
             {err("email") && <span className="text-xs text-rose-700">{err("email")}</span>}
           </label>
 
+          {/* Artist Type: Freelancer vs Beauty Parlour Owner */}
+          <div className="grid gap-3 sm:col-span-2 min-w-0 border-t border-line/60 pt-4">
+            <div>
+              <label className="text-sm font-semibold text-plum-950">
+                {t("What type of beautician are you?", "Aap kis tarah ke beautician hain?")}{" "}
+                <span className="text-rose-700">*</span>
+              </label>
+              <p className="text-xs text-ink-soft">
+                {t(
+                  "Choose whether you work independently (freelancer) or run your own beauty parlour / salon.",
+                  "Chunein ki aap freelance kaam karti hain ya aapka apna beauty parlour / salon hai."
+                )}
+              </p>
+            </div>
+
+            <input type="hidden" name="artistType" value={artistType} />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Freelancer Option */}
+              <button
+                type="button"
+                onClick={() => setArtistType("FREELANCER")}
+                className={cn(
+                  "flex flex-col text-left p-3.5 rounded-2xl border transition-all cursor-pointer",
+                  artistType === "FREELANCER"
+                    ? "border-plum-800 bg-plum-50/70 ring-2 ring-plum-800/20 shadow-xs"
+                    : "border-line/80 bg-white/60 hover:border-plum-300 hover:bg-white"
+                )}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-2 font-semibold text-sm text-plum-950">
+                    <span className="text-lg">💼</span>
+                    {t("Freelance Artist", "Freelance Beautician")}
+                  </span>
+                  <span
+                    className={cn(
+                      "size-4 rounded-full border flex items-center justify-center text-[10px]",
+                      artistType === "FREELANCER"
+                        ? "border-plum-800 bg-plum-800 text-white"
+                        : "border-stone-300"
+                    )}
+                  >
+                    {artistType === "FREELANCER" && "✓"}
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-ink-soft">
+                  {t(
+                    "Independent doorstep beautician (home-to-home client visits)",
+                    "Ghar-ghar jakar doorstep salon & bridal service provide karti hoon"
+                  )}
+                </p>
+              </button>
+
+              {/* Beauty Parlour Owner Option */}
+              <button
+                type="button"
+                onClick={() => setArtistType("PARLOUR_OWNER")}
+                className={cn(
+                  "flex flex-col text-left p-3.5 rounded-2xl border transition-all cursor-pointer",
+                  artistType === "PARLOUR_OWNER"
+                    ? "border-plum-800 bg-plum-50/70 ring-2 ring-plum-800/20 shadow-xs"
+                    : "border-line/80 bg-white/60 hover:border-plum-300 hover:bg-white"
+                )}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-2 font-semibold text-sm text-plum-950">
+                    <span className="text-lg">🏬</span>
+                    {t("Beauty Parlour / Salon Owner", "Mera Apna Beauty Parlour Hai")}
+                  </span>
+                  <span
+                    className={cn(
+                      "size-4 rounded-full border flex items-center justify-center text-[10px]",
+                      artistType === "PARLOUR_OWNER"
+                        ? "border-plum-800 bg-plum-800 text-white"
+                        : "border-stone-300"
+                    )}
+                  >
+                    {artistType === "PARLOUR_OWNER" && "✓"}
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-ink-soft">
+                  {t(
+                    "I run a beauty parlour/salon and want doorstep & salon bookings with HerrGlow",
+                    "Mera physical salon/parlour setup hai aur business badhana chahti hoon"
+                  )}
+                </p>
+              </button>
+            </div>
+
+            {/* Conditional Parlour Details */}
+            {artistType === "PARLOUR_OWNER" && (
+              <div className="mt-1 rounded-2xl border border-plum-200 bg-gradient-to-br from-blush-50/60 to-plum-50/40 p-4 grid gap-3 sm:grid-cols-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="sm:col-span-2">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-plum-900">
+                    {t("Parlour / Salon Details", "Aapke Parlour / Salon Ki Jaankari")}
+                  </p>
+                  <p className="text-xs text-ink-soft">
+                    {t(
+                      "Enter the official name and exact location of your salon or parlour.",
+                      "Apne beauty parlour ka naam aur location/address yahan likhein."
+                    )}
+                  </p>
+                </div>
+
+                <label className="grid gap-1.5 text-xs font-semibold uppercase tracking-wider text-plum-900 min-w-0">
+                  <span>
+                    {t("Beauty Parlour / Salon Name", "Parlour / Salon Ka Naam")}{" "}
+                    <span className="text-rose-700">*</span>
+                  </span>
+                  <input
+                    name="parlourName"
+                    required={artistType === "PARLOUR_OWNER"}
+                    value={parlourName}
+                    onChange={(e) => setParlourName(e.target.value)}
+                    className={cn(fieldCls, err("parlourName") && "border-rose-600")}
+                    placeholder={t("e.g. Priya Beauty Parlour & Makeover", "Jaise: Priya Beauty Parlour & Makeover")}
+                  />
+                  {err("parlourName") && <span className="text-xs text-rose-700 normal-case font-normal">{err("parlourName")}</span>}
+                </label>
+
+                <label className="grid gap-1.5 text-xs font-semibold uppercase tracking-wider text-plum-900 min-w-0">
+                  <span>
+                    {t("Parlour Address / Location", "Parlour Ka Address / Location")}{" "}
+                    <span className="text-rose-700">*</span>
+                  </span>
+                  <input
+                    name="parlourAddress"
+                    required={artistType === "PARLOUR_OWNER"}
+                    value={parlourAddress}
+                    onChange={(e) => setParlourAddress(e.target.value)}
+                    className={cn(fieldCls, err("parlourAddress") && "border-rose-600")}
+                    placeholder={t("e.g. Shop 4, Main Market, Sector 12, Noida", "Jaise: Shop 4, Main Market, Sector 12, Noida")}
+                  />
+                  {err("parlourAddress") && <span className="text-xs text-rose-700 normal-case font-normal">{err("parlourAddress")}</span>}
+                </label>
+              </div>
+            )}
+          </div>
+
           {/* Beautician Actual Home Address (Flat No., Society, Locality, GPS) */}
           <div className="grid gap-3.5 sm:col-span-2 min-w-0 border-t border-b border-line/60 py-4 my-1">
             <div className="flex flex-wrap items-center justify-between gap-2 min-w-0">
@@ -495,36 +679,46 @@ export function ApplyForm({
                 </p>
               </div>
               <button
+                id="apply-gps-btn"
                 type="button"
                 onClick={detectLocation}
                 disabled={geoStatus === "detecting"}
                 className={cn(
-                  "inline-flex max-w-full items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 cursor-pointer shrink-0 shadow-2xs",
+                  "inline-flex max-w-full items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 cursor-pointer shrink-0 shadow-2xs",
                   coords
                     ? "border-emerald-300 bg-emerald-50 text-emerald-800"
-                    : "border-rose-200 bg-rose-50/70 text-rose-800 hover:bg-rose-100"
+                    : locationRequiredErr || err("location")
+                      ? "border-rose-600 bg-rose-100 text-rose-900 ring-2 ring-rose-600/30 animate-pulse"
+                      : "border-rose-300 bg-rose-50 text-rose-900 hover:bg-rose-100"
                 )}
               >
                 {geoStatus === "detecting" ? (
                   <>
-                    <Loader2 className="size-3 animate-spin shrink-0" />{" "}
-                    <span className="truncate">{t("Detecting GPS…", "GPS dhundh rahe hain…")}</span>
+                    <Loader2 className="size-3.5 animate-spin shrink-0" />{" "}
+                    <span className="truncate">{t("Detecting GPS…", "GPS detect ho raha hai…")}</span>
                   </>
                 ) : coords ? (
                   <>
-                    <CheckCircle2 className="size-3 text-emerald-600 shrink-0" />{" "}
+                    <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0" />{" "}
                     <span className="truncate">
-                      {t("GPS Attached", "GPS save ho gaya")} ({coords.lat.toFixed(4)}, {coords.lng.toFixed(4)})
+                      {t("Live GPS Verified", "Live GPS Verified ✓")} ({coords.lat.toFixed(4)}, {coords.lng.toFixed(4)})
                     </span>
                   </>
                 ) : (
                   <>
-                    <MapPin className="size-3 text-rose-600 shrink-0" />{" "}
-                    <span className="truncate">{t("Share Live Location (GPS)", "📍 Live Location Share Karein (GPS)")}</span>
+                    <MapPin className="size-3.5 text-rose-600 shrink-0" />{" "}
+                    <span className="truncate font-bold">{t("Share Live Location (GPS) *", "📍 Live Location Share Karein (Zaroori) *")}</span>
                   </>
                 )}
               </button>
             </div>
+
+            {(locationRequiredErr || err("location")) && (
+              <p className="flex items-center gap-1.5 rounded-xl border border-rose-300 bg-rose-50/90 px-3 py-2 text-xs font-medium text-rose-800" role="alert">
+                <MapPin className="size-4 shrink-0 text-rose-600" />
+                <span>{locationRequiredErr || err("location")}</span>
+              </p>
+            )}
 
             {/* Row 1: Flat/House No. & Society/Apartment */}
             <div className="grid gap-3 sm:grid-cols-2">
@@ -566,8 +760,8 @@ export function ApplyForm({
                 placeholder={t("e.g. Sector 62, Indirapuram, Dwarka", "Jaise: Sector 62, Indirapuram, Dwarka")}
               />
               <datalist id="apply-areas">
-                {areaSuggestions.map((a) => (
-                  <option key={a} value={a} />
+                {areaSuggestions.map((a, idx) => (
+                  <option key={`${a}-${idx}`} value={a} />
                 ))}
               </datalist>
 
@@ -966,7 +1160,26 @@ export function ApplyForm({
 
         {err("form") && <p className="text-sm text-rose-700" role="alert">{err("form")}</p>}
 
-        <Button type="submit" size="lg" disabled={pending} className="w-full sm:w-auto">
+        <Button
+          type="submit"
+          size="lg"
+          disabled={pending}
+          onClick={(e) => {
+            if (!coords) {
+              e.preventDefault();
+              setLocationRequiredErr(
+                t(
+                  "Please share your live GPS location by clicking 'Share Live Location (GPS)' above. This is mandatory for artist verification.",
+                  "Kripya upar diye gaye 'Share Live Location (GPS)' button par click karein. Artist verification ke liye live GPS zaroori hai."
+                )
+              );
+              detectLocation();
+              const btn = document.getElementById("apply-gps-btn");
+              btn?.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+          }}
+          className="w-full sm:w-auto"
+        >
           {pending
             ? t("Submitting application…", "Application jama ho rahi hai…")
             : t("Submit application", "Application Submit Karein")}

@@ -13,14 +13,14 @@ export function PageHero({ crumbs, eyebrow, title, intro, image, children, class
     <section className={cn("relative overflow-hidden bg-gradient-to-b from-blush-100 via-blush-50 to-ivory", className)}>
       <div aria-hidden className="pointer-events-none absolute -right-32 -top-32 size-[28rem] rounded-full bg-gold-300/25 blur-3xl" />
       <div aria-hidden className="grain pointer-events-none absolute inset-0 opacity-[0.15] mix-blend-multiply" />
-      <Container className="relative pb-10 pt-8 sm:pb-14 sm:pt-10">
+      <Container className="relative pb-4 pt-4 sm:pb-5 sm:pt-5">
         <Breadcrumbs items={crumbs} />
-        <div className={cn("grid items-center gap-8", image && "lg:grid-cols-[1.2fr_0.8fr]")}>
-          <div>
-            {eyebrow && <Rise><p className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-rose-700"><span aria-hidden className="h-px w-8 bg-gold-400" />{eyebrow}</p></Rise>}
-            <Rise delay={0.04} soft><h1 className="!text-[clamp(2.25rem,5.5vw,4.25rem)]">{title}</h1></Rise>
-            {intro && <Rise delay={0.1}><p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">{intro}</p></Rise>}
-            {children && <Rise delay={0.16} className="mt-6">{children}</Rise>}
+        <div className={cn("grid items-center gap-4", image && "lg:grid-cols-[1.2fr_0.8fr]")}>
+          <div className="max-w-none">
+            {eyebrow && <Rise><p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-rose-700"><span aria-hidden className="h-px w-8 bg-gold-400" />{eyebrow}</p></Rise>}
+            <Rise delay={0.04} soft><h1 className="!text-[clamp(1.75rem,3.8vw,2.85rem)] text-left !text-wrap-pretty">{title}</h1></Rise>
+            {intro && <Rise delay={0.1}><p className="mt-2 max-w-none text-sm sm:text-base leading-relaxed text-ink-soft">{intro}</p></Rise>}
+            {children && <Rise delay={0.16} className="mt-3">{children}</Rise>}
           </div>
           {image && (
             <Rise delay={0.08} className="hidden lg:block">

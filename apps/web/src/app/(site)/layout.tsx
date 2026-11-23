@@ -30,7 +30,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       ? { slug: svcs[0].slug, title: svcs[0].title, image: realImage(keys, svcs[0].image) }
       : null,
   });
-  const menu = mega.categories.map((c) => toCat(c.slug, c.name, `/${c.slug}`, c.services));
+  const menu = mega.categories.map((c) => toCat(c.slug, c.name, `/services/${c.slug}`, c.services));
 
   // Luxury trust tagline banner (shown by default or replaced by custom offer from admin settings)
   const strip =

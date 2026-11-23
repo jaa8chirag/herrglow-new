@@ -69,7 +69,7 @@ export function SiteFooter({ siteName, categories, cities, popular, whatsapp, ph
             )}
             {socials.length > 0 && <div className="mt-6 flex gap-2">{socials.map((s) => <a key={s.href} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label} className="group"><SocialIcon label={s.label} /></a>)}</div>}
           </div>
-          <FooterList title="Services" items={[...categories.map((c) => ({ href: `/${c.slug}`, label: c.name })), { href: "/packages", label: "Packages" }]} />
+          <FooterList title="Services" items={[...categories.map((c) => ({ href: `/services/${c.slug}`, label: c.name })), { href: "/packages", label: "Packages" }]} />
           <div>
             <FooterList title="Popular" items={popular.map((s) => ({ href: `/services/${s.slug}`, label: s.title }))} />
           </div>

@@ -2,34 +2,34 @@ import { Check, ClipboardCheck, Home, ShieldCheck, Sparkles, UserCheck } from "l
 import { BlurFade, Container, Section, SectionHeading } from "@herrglow/ui";
 import { BRANDS } from "@/components/home/brands";
 
-/** "What is included": high-trust checklist with icons (from the service's own feature lines). */
+/** "What's Included": clean, concise checklist with icons */
 export function Included({ items }: { items: string[] }) {
   if (!items.length) return null;
   return (
-    <div className="rounded-3xl border border-line/80 bg-white p-6 sm:p-8 shadow-soft">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-line/60 pb-5">
+    <div className="rounded-3xl border border-line/80 bg-white p-6 sm:p-7 shadow-soft">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-line/60 pb-4">
         <div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/80 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald-800">
-            <ShieldCheck className="size-3.5 text-emerald-700" /> Complete Transparency
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/80 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-emerald-800">
+            <ShieldCheck className="size-3.5 text-emerald-700" /> Transparency
           </span>
-          <h2 className="mt-2.5 font-serif text-2xl sm:text-3xl font-bold text-plum-950">
-            What is Included in This Service
+          <h2 className="mt-2 font-serif text-2xl font-bold text-plum-950">
+            What&apos;s Included
           </h2>
-          <p className="mt-1 text-sm text-ink-soft">
-            100% authentic products, sanitized equipment &amp; verified senior artist.
+          <p className="mt-1 text-xs sm:text-sm text-ink-soft">
+            100% genuine products, single-use disposables &amp; sanitized tools.
           </p>
         </div>
       </div>
-      <ul className="grid gap-3 sm:grid-cols-2">
+      <ul className="grid gap-2.5 sm:grid-cols-2">
         {items.map((f, i) => (
           <li
             key={i}
-            className="flex items-start gap-3 rounded-2xl border border-line/60 bg-blush-50/50 p-4 transition-all hover:bg-white hover:border-gold-300 hover:shadow-xs"
+            className="flex items-center gap-3 rounded-xl border border-line/50 bg-blush-50/40 px-3.5 py-3 transition-colors hover:bg-white hover:border-gold-300"
           >
-            <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-emerald-600 text-white shadow-xs">
-              <Check className="size-3.5 stroke-[2.5]" />
+            <span className="grid size-5 shrink-0 place-items-center rounded-full bg-emerald-600 text-white shadow-xs">
+              <Check className="size-3 stroke-[2.5]" />
             </span>
-            <span className="text-sm font-medium text-plum-950 leading-relaxed">{f}</span>
+            <span className="text-sm font-medium text-plum-950 leading-snug">{f}</span>
           </li>
         ))}
       </ul>

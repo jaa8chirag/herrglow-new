@@ -180,10 +180,10 @@ export function CustomComboBuilder({
               </p>
             </div>
             <Link
-              href="/services/waxing/monthly-grooming-essentials-package"
+              href="/services/salon-at-home"
               className={cn(buttonStyles({ variant: "shimmer", size: "sm" }), "shrink-0 text-xs font-bold w-full sm:w-auto")}
             >
-              Book Package @ ₹999 →
+              View Salon Services →
             </Link>
           </div>
 
@@ -441,25 +441,18 @@ export function CustomComboBuilder({
             </p>
             <div className="flex flex-col gap-1.5 pt-1">
               <Link
-                href="/services/face-hair-removal/full-face-grooming-glow-combo"
+                href="/services/salon-at-home"
                 className="font-medium text-rose-700 hover:underline flex items-center justify-between"
               >
-                <span>Full Face Grooming &amp; Glow Combo</span>
-                <span className="font-bold">₹499</span>
+                <span>Salon at Home &amp; Waxing Services</span>
+                <span className="font-bold">Explore →</span>
               </Link>
               <Link
-                href="/services/waxing/express-wax-glow-combo"
+                href="/packages"
                 className="font-medium text-rose-700 hover:underline flex items-center justify-between"
               >
-                <span>Express Wax &amp; Glow Essentials</span>
-                <span className="font-bold">₹649</span>
-              </Link>
-              <Link
-                href="/services/manicure-pedicure/head-to-toe-pamper-combo"
-                className="font-medium text-rose-700 hover:underline flex items-center justify-between"
-              >
-                <span>Head-to-Toe Pamper &amp; Glow Combo</span>
-                <span className="font-bold">₹899</span>
+                <span>All Pre-Bridal &amp; Pamper Packages</span>
+                <span className="font-bold">Explore →</span>
               </Link>
             </div>
           </div>

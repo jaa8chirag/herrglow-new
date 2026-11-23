@@ -21,7 +21,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en-IN" className={`${fraunces.variable} ${inter.variable}`} suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} /></head>
-      <body className="min-h-dvh">
+      <body className="min-h-dvh overflow-x-hidden">
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>

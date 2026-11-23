@@ -200,7 +200,7 @@ export default async function AboutPage() {
       {/* Customer Reviews */}
       {reviews.length > 0 && (
         <Section id="reviews" tone="blush" className="scroll-mt-20 py-16 sm:py-24">
-          <Container className="max-w-6xl">
+          <Container>
             <SectionHeading eyebrow="Real Experiences" title="What Delhi NCR Customers Say" align="center" />
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {reviews.map((t, i) => (

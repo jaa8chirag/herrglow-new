@@ -9,22 +9,74 @@ async function main() {
 
   // 1. Categories
   const categories = [
-    { slug: "bridal-makeup", name: "Bridal & Wedding Makeup", sort: 1 },
-    { slug: "engagement-party-makeup", name: "Engagement, Pre-Wedding & Party Makeup", sort: 2 },
-    { slug: "pre-bridal-packages", name: "Pre-Bridal & Combo Packages", sort: 3 },
-    { slug: "draping-eye-mehndi", name: "Draping, Eye Makeup & Mehndi", sort: 4 },
-    { slug: "hair-styling", name: "Hair Styling & Treatments", sort: 5 },
-    { slug: "facial-and-skincare", name: "Facials, Skin & Body Care (Salon at Home)", sort: 6 },
-    { slug: "waxing", name: "Waxing (Salon at Home)", sort: 7 },
-    { slug: "nail-art", name: "Manicure, Pedicure & Nails (Salon at Home)", sort: 8 },
+    {
+      slug: "makeup",
+      name: "Bridal & Party Makeup",
+      sort: 1,
+      shortDescription: "Five-star bridal, engagement, and party glam delivered directly to your doorstep. Choose between camera-ready Ultra-HD and 16-hour sweat-proof Airbrush makeup with 100% genuine MAC, Huda Beauty & NARS products.",
+      seoDescription: "Book professional bridal and party makeup artists at home in Delhi, Noida & Greater Noida. HD & Airbrush packages with sanitized kits.",
+    },
+    {
+      slug: "salon-at-home",
+      name: "Salon at Home & Waxing",
+      sort: 2,
+      shortDescription: "Painless Italian Rica liposoluble waxing, peel-off waxing, threading, manicure-pedicures, and relaxing full-body massages. Sanitized single-use disposables, zero travel surcharges, and verified female beauticians.",
+      seoDescription: "Doorstep salon services at home in Delhi NCR. Painless Rica waxing, full body waxing, cleanups, and threading by verified female beauticians.",
+    },
+    {
+      slug: "facial-skincare",
+      name: "Facials & Skincare",
+      sort: 3,
+      shortDescription: "Revitalize tired, pollution-exposed skin with authentic O3+ brightening facials, deep pore fruit cleanups, and hydrating derma care. Visible instant radiance in the comfort and privacy of your home.",
+      seoDescription: "Book authentic O3+ facials, hydrating cleanups and skincare treatments at home across Delhi, Noida & Greater Noida.",
+    },
+    {
+      slug: "hair",
+      name: "Hair Styling & Treatments",
+      sort: 4,
+      shortDescription: "Advanced bridal hairstyling, floral gajra buns, nourishing L'Oreal keratin spas, and volumizing extensions. Complete heat styling and scalp care without stepping into a crowded salon.",
+      seoDescription: "Doorstep hair spa, bridal hairstyling, keratin treatments and hair extensions delivered at home across Delhi NCR.",
+    },
+    {
+      slug: "nails",
+      name: "Nails & Extensions",
+      sort: 5,
+      shortDescription: "Deluxe manicures, crystal pedicures, and long-lasting gel nail extensions with custom nail art. Hospital-grade sanitized clippers, safe e-files, and non-toxic high-shine gel polishes.",
+      seoDescription: "Professional gel nail extensions, custom nail art, deluxe manicure and pedicure services at home in Delhi, Noida & Greater Noida.",
+    },
+    {
+      slug: "mehndi",
+      name: "Bridal & Party Mehndi",
+      sort: 6,
+      shortDescription: "Intricate North Indian bridal, Arabic, and festive guest mehndi applied by experienced henna artists. 100% organic, chemical-free henna paste with guaranteed deep mahogany stain.",
+      seoDescription: "Book certified bridal mehndi artists and party guest henna specialists at home across Delhi NCR.",
+    },
+    {
+      slug: "pre-bridal",
+      name: "Pre-Bridal & Combo Packages",
+      sort: 7,
+      shortDescription: "All-inclusive pre-bridal pampering packages designed for modern brides. Complete head-to-toe polishing, Rica waxing, signature facials, and hair spas planned across flexible multi-day visits with maximum savings.",
+      seoDescription: "Luxury pre-bridal packages at home in Delhi NCR. Multi-day head-to-toe beauty countdowns with Rica waxing, facials, and hair spas.",
+    },
   ];
 
   const catMap = new Map<string, string>();
   for (const c of categories) {
     const cat = await prisma.category.upsert({
       where: { slug: c.slug },
-      update: { name: c.name, sort: c.sort },
-      create: { slug: c.slug, name: c.name, sort: c.sort },
+      update: {
+        name: c.name,
+        sort: c.sort,
+        shortDescription: c.shortDescription,
+        seoDescription: c.seoDescription,
+      },
+      create: {
+        slug: c.slug,
+        name: c.name,
+        sort: c.sort,
+        shortDescription: c.shortDescription,
+        seoDescription: c.seoDescription,
+      },
     });
     catMap.set(c.slug, cat.id);
   }
@@ -35,7 +87,7 @@ async function main() {
     {
       slug: "complete-bridal-package",
       title: "Complete Bridal Signature Package",
-      categorySlug: "bridal-makeup",
+      categorySlug: "makeup",
       price: 24999,
       offerPrice: 19999,
       duration: "4–5 hours",
@@ -50,7 +102,7 @@ async function main() {
     {
       slug: "pre-bridal-glow-package",
       title: "Pre-Bridal Luxury Glow Package",
-      categorySlug: "salon-at-home",
+      categorySlug: "pre-bridal",
       price: 10999,
       offerPrice: 7999,
       duration: "3.5 hours",
@@ -65,7 +117,7 @@ async function main() {
     {
       slug: "sangeet-family-glam-package",
       title: "Sangeet & Family Glam Bundle",
-      categorySlug: "bridal-makeup",
+      categorySlug: "makeup",
       price: 17999,
       offerPrice: 13999,
       duration: "3 hours",
@@ -82,7 +134,7 @@ async function main() {
     {
       slug: "hd-bridal-makeup",
       title: "HD Bridal Makeup",
-      categorySlug: "bridal-makeup",
+      categorySlug: "makeup",
       price: 15000,
       offerPrice: 12000,
       duration: "3 hours",
@@ -97,7 +149,7 @@ async function main() {
     {
       slug: "airbrush-bridal-makeup",
       title: "Airbrush Bridal Makeup",
-      categorySlug: "bridal-makeup",
+      categorySlug: "makeup",
       price: 18000,
       offerPrice: 15000,
       duration: "3.5 hours",
@@ -112,7 +164,7 @@ async function main() {
     {
       slug: "bridal-makeup-artist",
       title: "Bridal Makeup",
-      categorySlug: "bridal-makeup",
+      categorySlug: "makeup",
       price: 12000,
       offerPrice: 9999,
       duration: "2.5 hours",
@@ -127,7 +179,7 @@ async function main() {
     {
       slug: "party-makeup-and-hair",
       title: "Party Makeup & Hair Styling",
-      categorySlug: "bridal-makeup",
+      categorySlug: "makeup",
       price: 4999,
       offerPrice: 3499,
       duration: "90 mins",
@@ -142,7 +194,7 @@ async function main() {
     {
       slug: "facial-at-home",
       title: "Facial at Home",
-      categorySlug: "facial-and-skincare",
+      categorySlug: "facial-skincare",
       price: 1499,
       offerPrice: 999,
       duration: "60 mins",
@@ -157,7 +209,7 @@ async function main() {
     {
       slug: "full-body-waxing-at-home",
       title: "Full Body Waxing at Home",
-      categorySlug: "waxing",
+      categorySlug: "salon-at-home",
       price: 2499,
       offerPrice: 1899,
       duration: "90 mins",
@@ -172,7 +224,7 @@ async function main() {
     {
       slug: "gel-nail-extensions",
       title: "Gel Nail Extensions & Custom Art",
-      categorySlug: "nail-art",
+      categorySlug: "nails",
       price: 2499,
       offerPrice: 1899,
       duration: "90 mins",
@@ -187,7 +239,7 @@ async function main() {
     {
       slug: "classic-manicure-pedicure",
       title: "Deluxe Manicure & Pedicure at Home",
-      categorySlug: "nail-art",
+      categorySlug: "nails",
       price: 1499,
       offerPrice: 999,
       duration: "60 mins",
@@ -202,7 +254,7 @@ async function main() {
     {
       slug: "bridal-hair-styling",
       title: "Bridal & Festive Hair Styling",
-      categorySlug: "hair-styling",
+      categorySlug: "hair",
       price: 2999,
       offerPrice: 1999,
       duration: "60 mins",
@@ -217,7 +269,7 @@ async function main() {
     {
       slug: "hair-spa-at-home",
       title: "Nourishing Hair Spa & Scalp Massage",
-      categorySlug: "hair-styling",
+      categorySlug: "hair",
       price: 1799,
       offerPrice: 1299,
       duration: "50 mins",

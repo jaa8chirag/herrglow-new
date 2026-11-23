@@ -1,6 +1,6 @@
 import { Clock, MessageCircle, ShieldCheck, Sparkles, AlertCircle } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { asFaqs, findPage, getRelatedBlogs, getReviewsFor, getServiceArtists, urls } from "@herrglow/core";
 import { Badge, Card, Carousel, Container, Section, SectionHeading, buttonStyles, cn } from "@herrglow/ui";
@@ -23,9 +23,21 @@ interface ServicePageParams {
   serviceSlug: string;
 }
 
+const LEGACY_CAT_REDIRECTS: Record<string, string> = {
+  waxing: "salon-at-home",
+  "facial-and-skincare": "facial-skincare",
+  "hair-styling": "hair",
+  "nail-art": "nails",
+  "bridal-makeup": "makeup",
+  "engagement-party-makeup": "makeup",
+  "pre-bridal-packages": "pre-bridal",
+  "draping-eye-mehndi": "mehndi",
+};
+
 export async function generateMetadata({ params }: { params: Promise<ServicePageParams> }): Promise<Metadata> {
   const { categorySlug, serviceSlug } = await params;
-  const data = await getServicePage(serviceSlug, categorySlug);
+  const canonicalCat = LEGACY_CAT_REDIRECTS[categorySlug] || categorySlug;
+  const data = await getServicePage(serviceSlug, canonicalCat);
   if (!data) return {};
   const { svc } = data;
   const page = await findPage(`/services/${svc.category.slug}/${svc.slug}`);
@@ -74,19 +86,30 @@ const DEFAULT_FAQS = [
 
 export default async function ServicePage({ params }: { params: Promise<ServicePageParams> }) {
   const { categorySlug, serviceSlug } = await params;
-  const [data, cities, keys, s] = await Promise.all([
-    getServicePage(serviceSlug, categorySlug),
-    getLiveCities(),
-    getMediaKeys(),
-    getSettings(),
-  ]);
+  const canonicalCat = LEGACY_CAT_REDIRECTS[categorySlug] || categorySlug;
+  let data = await getServicePage(serviceSlug, canonicalCat);
 
-  if (!data) notFound();
+  // Fallback: If service wasn't found under categorySlug, check if serviceSlug exists under any category
+  if (!data) {
+    const fallback = await getServicePage(serviceSlug);
+    if (fallback?.svc?.category?.slug) {
+      redirect(`/services/${fallback.svc.category.slug}/${fallback.svc.slug}`);
+    }
+    notFound();
+  }
+
+  // If URL has a legacy category slug, 301 redirect to canonical category URL
+  if (data?.svc?.category?.slug && data.svc.category.slug !== categorySlug) {
+    redirect(`/services/${data.svc.category.slug}/${data.svc.slug}`);
+  }
   const { svc, related, serviceCities, variantLinks } = data;
-  const [artists, reviews, blogs] = await Promise.all([
+  const [artists, reviews, blogs, cities, keys, s] = await Promise.all([
     getServiceArtists(svc.id),
     getReviewsFor(svc.title),
     getRelatedBlogs(`${svc.title} ${svc.category.name}`, null, 3),
+    getLiveCities(),
+    getMediaKeys(),
+    getSettings(),
   ]);
 
   const faqs = asFaqs(svc.faqs);
@@ -106,7 +129,7 @@ export default async function ServicePage({ params }: { params: Promise<ServiceP
   );
 
   return (
-    <div className="pb-28 lg:pb-0">
+    <div className="pb-28 lg:pb-0 overflow-x-clip">
       <JsonLd
         data={serviceLd({
           name: svc.title,
@@ -129,8 +152,8 @@ export default async function ServicePage({ params }: { params: Promise<ServiceP
               { name: svc.title, path },
             ]}
           />
-          <div className="grid items-start gap-8 lg:grid-cols-[1.35fr_1fr]">
-            <div>
+          <div className="grid items-start gap-8 lg:grid-cols-[1.35fr_1fr] min-w-0">
+            <div className="min-w-0">
               <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] border-4 border-ivory shadow-lift">
                 <Photo
                   src={image}
@@ -168,7 +191,7 @@ export default async function ServicePage({ params }: { params: Promise<ServiceP
               </div>
             </div>
 
-            <aside className="lg:sticky lg:top-28">
+            <aside className="lg:sticky lg:top-28 min-w-0">
               {isP2 ? (
                 <>
                   <div className="rounded-[1.75rem] border border-line bg-white p-6 shadow-lift text-center">
@@ -381,6 +404,7 @@ export default async function ServicePage({ params }: { params: Promise<ServiceP
               service={{
                 slug: svc.slug,
                 title: svc.title,
+                price: num(svc.offerPrice ?? svc.price),
                 variants: svc.variants.map((v) => ({ name: v.name, price: num(v.offerPrice ?? v.price) })),
                 addons: svc.addons.map((a) => ({ name: a.name, price: num(a.price) })),
               }}

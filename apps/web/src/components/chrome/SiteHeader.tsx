@@ -58,7 +58,7 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
 
   return (
     <header className={cn("sticky top-0 z-40 transition-[background,box-shadow,border-color] duration-300", isHome && "-mb-20", solid ? "border-b border-line bg-ivory/85 shadow-soft backdrop-blur-xl" : "border-b border-transparent bg-transparent")} onMouseLeave={closeSoon}>
-      <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
+      <div className="mx-auto flex h-20 w-full max-w-[1400px] items-center justify-between gap-4 px-5 sm:px-8">
         {logo ? (
           <Link href="/" aria-label={`${siteName} home`} className="flex shrink-0 items-center">
             <Image src={logo} alt={siteName} width={180} height={44} className="h-9 sm:h-10 w-auto" priority />
@@ -154,7 +154,7 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
       {/* mega menu (desktop) */}
       {mega && cur && (
         <div className="absolute inset-x-0 top-full hidden border-b border-line bg-ivory shadow-lift lg:block" onMouseEnter={open} role="region" aria-label="Services menu">
-          <div className="mx-auto grid max-w-7xl grid-cols-[260px_1fr_320px] gap-8 px-8 py-8">
+          <div className="mx-auto grid max-w-[1400px] grid-cols-[260px_1fr_320px] gap-8 px-8 py-8">
             <ul className="space-y-1">
               {menu.map((c, i) => {
                 const Icon = categoryIcon(c.slug);

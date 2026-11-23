@@ -10,7 +10,7 @@ export function Breadcrumbs({ items }: { items: { name: string; path: string }[]
   const all = [{ name: "Home", path: "/" }, ...items];
   return (
     <>
-      <nav aria-label="Breadcrumb" className="mb-6 text-sm text-ink-soft">
+      <nav aria-label="Breadcrumb" className="mb-2 text-xs text-ink-soft">
         <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
           {all.map((it, i) => (
             <li key={it.path} className="flex items-center gap-2">
@@ -54,7 +54,8 @@ export async function ServiceCard({ s, fromLabel }: { s: { slug: string; title: 
   const src = realImage(keys, s.image);
   const nums = [s.offerPrice ?? s.price, ...(s.variants ?? []).map((v) => v.offerPrice ?? v.price)].map((n) => (n == null ? NaN : Number(n))).filter((n) => Number.isFinite(n) && n > 0);
   const low = nums.length ? Math.min(...nums) : null;
-  const showFrom = fromLabel || (s.variants?.length ?? 0) > 1 || s.priceLabel === "Starting at";
+  const high = nums.length > 1 ? Math.max(...nums) : null;
+  const hasRange = low != null && high != null && high > low;
   const targetHref = s.category?.slug ? `/services/${s.category.slug}/${s.slug}` : `/services/${s.slug}`;
   return (
     <Link href={targetHref} className="group block h-full">
@@ -64,7 +65,17 @@ export async function ServiceCard({ s, fromLabel }: { s: { slug: string; title: 
           {s.category && <Badge className="self-start">{s.category.name}</Badge>}
           <h3 className="mt-3 group-hover:text-rose-700">{s.title}</h3>
           {s.shortDescription && <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-ink-soft">{s.shortDescription}</p>}
-          <div className="mt-auto pt-4">{low != null && <Price offerPrice={low} label={showFrom ? "From" : undefined} />}</div>
+          <div className="mt-auto pt-4">
+            {low != null && (
+              hasRange ? (
+                <span className="font-serif text-base sm:text-lg font-bold text-plum-950">
+                  ₹{Math.round(low).toLocaleString("en-IN")} - ₹{Math.round(high!).toLocaleString("en-IN")}
+                </span>
+              ) : (
+                <Price offerPrice={low} label={s.priceLabel === "Starting at" ? "From" : undefined} />
+              )
+            )}
+          </div>
         </div>
       </Card>
     </Link>

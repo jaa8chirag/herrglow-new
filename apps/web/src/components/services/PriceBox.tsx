@@ -347,10 +347,10 @@ export function PriceBox({
                 <span>Make Your Own Combo →</span>
               </Link>
               <Link
-                href="/services/face-hair-removal/full-face-grooming-glow-combo"
+                href="/services/salon-at-home"
                 className="inline-flex items-center gap-1 rounded-xl border border-amber-400 bg-white px-3 py-1.5 text-xs font-semibold text-amber-950 hover:bg-amber-100 transition"
               >
-                <span>Full Face Combo @ ₹499</span>
+                <span>Explore Salon at Home</span>
               </Link>
             </div>
           </div>

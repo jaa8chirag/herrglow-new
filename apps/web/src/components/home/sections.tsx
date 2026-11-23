@@ -97,7 +97,7 @@ export function CategoryBento({ cats }: { cats: CatTile[] }) {
             return (
               <BlurFade key={c.slug} delay={i * 0.06} className={cn("min-h-0", BENTO[i])}>
                 <TiltCard className="size-full">
-                  <Link href={`/${c.slug}`} className="group relative block size-full overflow-hidden rounded-[1.5rem] shadow-soft transition-shadow hover:shadow-lift">
+                  <Link href={`/services/${c.slug}`} className="group relative block size-full overflow-hidden rounded-[1.5rem] shadow-soft transition-shadow hover:shadow-lift">
                     <Photo src={c.image} alt={`${c.name} at home`} kind={c.slug} seedKey={c.slug} sizes={i === 0 ? "(min-width: 768px) 50vw, 100vw" : "(min-width: 768px) 25vw, 50vw"} />
                     <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-plum-900/75 via-plum-900/10 to-transparent" />
                     <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-4 sm:p-5">
@@ -221,10 +221,10 @@ export function PackagesBand({ items }: { items: PkgCard[] }) {
 
               <div className="flex flex-col sm:flex-row gap-2.5 w-full sm:w-auto">
                 <Link
-                  href="/services/waxing/monthly-grooming-essentials-package"
+                  href="/services/salon-at-home"
                   className={cn(buttonStyles({ variant: "shimmer", size: "md" }), "font-bold text-xs sm:text-sm text-center justify-center")}
                 >
-                  Book Package @ ₹999 →
+                  View Salon Services →
                 </Link>
                 <Link
                   href="/custom-combo"

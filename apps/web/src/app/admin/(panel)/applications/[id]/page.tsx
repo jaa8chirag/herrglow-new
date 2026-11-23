@@ -26,6 +26,18 @@ export default async function ApplicationDetail(props: PageProps<"/admin/applica
           <dl className="grid grid-cols-[130px_1fr] gap-y-2 text-sm">
             <dt className="text-ink-soft">Phone</dt><dd>{a.phone}</dd>
             <dt className="text-ink-soft">Email</dt><dd>{a.email ?? "—"}</dd>
+            <dt className="text-ink-soft">Artist Type</dt>
+            <dd className="font-medium text-plum-950">
+              {a.artistType === "PARLOUR_OWNER" ? "🏬 Beauty Parlour / Salon Owner" : "💼 Freelancer (Doorstep Artist)"}
+            </dd>
+            {a.artistType === "PARLOUR_OWNER" && (
+              <>
+                <dt className="text-ink-soft">Parlour Name</dt>
+                <dd className="font-semibold text-rose-800">{a.parlourName ?? "—"}</dd>
+                <dt className="text-ink-soft">Parlour Address</dt>
+                <dd className="font-medium text-plum-900">{a.parlourAddress ?? "—"}</dd>
+              </>
+            )}
             <dt className="text-ink-soft">Area &amp; Coverage</dt><dd className="font-medium text-plum-950">{a.city}</dd>
             {a.latitude != null && a.longitude != null && (
               <>

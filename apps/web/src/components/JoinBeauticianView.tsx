@@ -166,7 +166,7 @@ export function JoinBeauticianView({
 
   return (
     <Section className="pt-4 sm:pt-8 pb-16 sm:pb-24">
-      <Container className="max-w-7xl">
+      <Container>
         {/* Single Unified Top Bar: Breadcrumbs + Language Switcher */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6 sm:mb-8 pb-3.5 border-b border-line/60">
           <nav aria-label="Breadcrumb" className="text-xs sm:text-sm text-ink-soft">
@@ -324,6 +324,7 @@ export function JoinBeauticianView({
                       src="/images/pros/sunita-rawat.jpg"
                       alt="Sunita Rawat"
                       fill
+                      sizes="48px"
                       className="object-cover"
                     />
                   </div>
@@ -403,6 +404,7 @@ export function JoinBeauticianView({
                   src="/images/pros/sunita-rawat.jpg"
                   alt="Sunita Rawat"
                   fill
+                  sizes="56px"
                   className="object-cover"
                 />
               </div>

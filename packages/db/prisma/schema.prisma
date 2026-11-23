@@ -549,6 +549,9 @@ model ProApplication {
   phone          String
   email          String?
   city           String
+  artistType     String?           @default("FREELANCER")
+  parlourName    String?
+  parlourAddress String?
   categories     String[]
   servicesText   String?
   experienceYears Int?

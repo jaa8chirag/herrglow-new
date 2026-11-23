@@ -20,6 +20,16 @@ export async function submitApplication(_prev: ApplyState, fd: FormData): Promis
   const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
   if (limited(ip)) return { status: "error", errors: { form: "Too many submissions. Please try again later." } };
   const s = (k: string) => (fd.get(k) as string | null) ?? undefined;
+
+  if (!s("latitude") || !s("longitude")) {
+    return {
+      status: "error",
+      errors: {
+        location: "Live GPS location is mandatory. Please click 'Share Live Location (GPS)' above.",
+      },
+    };
+  }
+
   const file = fd.get("photo");
   const photo = file instanceof File && file.size > 0 ? { body: Buffer.from(await file.arrayBuffer()), filename: file.name } : null;
   const idFile = fd.get("idProof");
@@ -29,6 +39,9 @@ export async function submitApplication(_prev: ApplyState, fd: FormData): Promis
       name: s("name") ?? "",
       phone: s("phone") ?? "",
       email: s("email"),
+      artistType: (s("artistType") === "PARLOUR_OWNER" ? "PARLOUR_OWNER" : "FREELANCER") as "FREELANCER" | "PARLOUR_OWNER",
+      parlourName: s("parlourName"),
+      parlourAddress: s("parlourAddress"),
       area: s("area") ?? s("city") ?? "",
       operatingAreas: s("operatingAreas") ?? "",
       city: s("area") ?? s("city") ?? "",

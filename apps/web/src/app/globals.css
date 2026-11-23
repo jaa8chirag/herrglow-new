@@ -1,3 +1,8 @@
 @import "tailwindcss";
 @import "../../../../packages/ui/src/styles/tokens.css";
 @source "../../../../packages/ui/src";
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}

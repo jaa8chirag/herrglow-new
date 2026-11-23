@@ -10,8 +10,8 @@ export function AnnouncementBar({ text }: { text: string }) {
   useEffect(() => { try { if (localStorage.getItem(key)) setHidden(true); } catch { /* private mode */ } }, [key]);
   if (hidden) return null;
   return (
-    <div className="relative bg-gradient-to-r from-plum-950 via-plum-900 to-plum-950 px-8 py-2 text-center text-xs font-medium text-ivory tracking-wide border-b border-gold-400/20 shadow-xs">
-      <div className="mx-auto flex max-w-7xl items-center justify-center gap-2 truncate sm:whitespace-normal">
+    <div className="relative overflow-hidden bg-gradient-to-r from-plum-950 via-plum-900 to-plum-950 px-8 py-2 text-center text-xs font-medium text-ivory tracking-wide border-b border-gold-400/20 shadow-xs">
+      <div className="mx-auto flex max-w-[1400px] items-center justify-center gap-2 truncate text-ellipsis overflow-hidden">
         <span aria-hidden className="text-gold-400 font-bold">✦</span>
         <span>{text}</span>
       </div>

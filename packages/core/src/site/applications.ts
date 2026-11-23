@@ -20,6 +20,9 @@ export const applicationInput = z
       .optional()
       .or(z.literal(""))
       .transform((v) => v || undefined),
+    artistType: z.enum(["FREELANCER", "PARLOUR_OWNER"]).default("FREELANCER"),
+    parlourName: z.string().trim().max(120).optional().transform((v) => v || undefined),
+    parlourAddress: z.string().trim().max(250).optional().transform((v) => v || undefined),
     area: z.string().trim().max(150).optional(),
     operatingAreas: z.string().trim().max(1000).optional(),
     city: z.string().trim().max(150).optional(),
@@ -75,6 +78,29 @@ export const applicationInput = z
         path: ["operatingAreas"],
       });
     }
+    if (data.artistType === "PARLOUR_OWNER") {
+      if (!data.parlourName) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Please enter your parlour / salon name",
+          path: ["parlourName"],
+        });
+      }
+      if (!data.parlourAddress) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Please enter your parlour address or location",
+          path: ["parlourAddress"],
+        });
+      }
+    }
+    if (data.latitude == null || data.longitude == null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Live GPS location is mandatory. Please click 'Share Live Location (GPS)' above.",
+        path: ["location"],
+      });
+    }
   });
 export type ApplicationInput = z.input<typeof applicationInput>;
 export type ApplicationResult = { ok: true } | { ok: false; errors: Record<string, string> };
@@ -127,6 +153,9 @@ export async function createApplication(
       name: d.name,
       phone: d.phone,
       email: d.email,
+      artistType: d.artistType,
+      parlourName: d.parlourName,
+      parlourAddress: d.parlourAddress,
       city: citySummary,
       latitude: d.latitude,
       longitude: d.longitude,
