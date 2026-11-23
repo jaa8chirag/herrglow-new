@@ -116,8 +116,23 @@ export default async function LeadDetail(props: PageProps<"/admin/leads/[id]">) 
               <ProAssigner
                 leadId={lead.id}
                 leadName={lead.name}
+                leadPhone={lead.phone}
+                bookingRef={lead.bookingRef ?? lead.id.slice(0, 8)}
                 leadLocation={lead.address || lead.locationText || "Delhi NCR"}
                 serviceTitle={serviceOrPackageTitle}
+                eventDateStr={
+                  lead.eventDate
+                    ? lead.eventDate.toLocaleDateString("en-IN", {
+                        weekday: "short",
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : meta.variant || null
+                }
+                timeSlot={lead.timeSlot || null}
+                totalAmount={lead.finalAmount ? Number(lead.finalAmount) : lead.amount ? Number(lead.amount) : null}
+                advanceDeposit={depositAmount}
                 matches={matchData.matches}
                 currentAssignedId={lead.proId}
               />
