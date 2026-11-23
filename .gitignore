@@ -36,3 +36,8 @@ legacy-media/
 
 # second build dir used for Lighthouse runs
 .next-*/
+
+# test artifacts
+test-results/
+playwright-report/
+

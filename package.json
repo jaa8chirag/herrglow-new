@@ -17,12 +17,14 @@
     "typecheck": "pnpm -r run typecheck",
     "build": "pnpm --filter @herrglow/web build",
     "test:seo": "pnpm --filter @herrglow/web test:seo",
+    "test:e2e": "playwright test",
     "import:media": "tsx scripts/import-legacy-media.ts",
     "shots": "tsx scripts/screenshots.ts"
   },
   "devDependencies": {
     "@herrglow/core": "workspace:*",
     "@herrglow/db": "workspace:*",
+    "@playwright/test": "^1.65.1",
     "lighthouse": "^13.6.0",
     "playwright": "^1.65.1",
     "sharp": "^0.35.5",
