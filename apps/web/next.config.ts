@@ -13,7 +13,13 @@ const nextConfig: NextConfig = {
     // public HTML is cacheable at the edge (Cloudflare). Admin, API and Next internals are excluded.
     return [{ source: "/((?!admin|api|_next|design).*)", headers: [{ key: "Cache-Control", value: "public, s-maxage=300, stale-while-revalidate=600" }] }];
   },
-  images: { loader: "custom", loaderFile: "./src/lib/image-loader.ts", deviceSizes: [360, 640, 828, 1080, 1440, 1920], imageSizes: [96, 160, 256, 384] },
+  images: {
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
+    deviceSizes: [360, 640, 828, 1080, 1440, 1920],
+    imageSizes: [96, 160, 256, 384],
+    qualities: [75, 80],
+  },
   turbopack: {
     // Tailwind v4 loader (shipped by the Next.js scaffold)
     rules: {

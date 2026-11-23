@@ -120,7 +120,7 @@ export function HeroCarousel({ slides = DEFAULT_SLIDES }: { slides?: HeroSlide[]
               alt={slide.alt}
               fill
               sizes="(min-width: 1024px) 35vw, 90vw"
-              priority={current === 0}
+              priority={true}
               quality={80}
               className="object-cover object-center"
             />
