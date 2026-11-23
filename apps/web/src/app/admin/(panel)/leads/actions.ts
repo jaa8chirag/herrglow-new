@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { prisma } from "@herrglow/db";
 import { PIPELINE, updateLead } from "@herrglow/core";
 import { log, requireAdmin } from "@/lib/admin";
 
@@ -61,4 +62,37 @@ export async function unassignPro(leadId: string) {
   revalidatePath(`/admin/leads/${leadId}`);
   revalidatePath("/admin");
   return { success: true, lead };
+}
+
+/** Lightweight snapshot of latest incoming lead for real-time admin dispatch radar */
+export async function getLatestLeadSnapshot() {
+  await requireAdmin("leads");
+  const latest = await prisma.lead.findFirst({
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      bookingRef: true,
+      name: true,
+      createdAt: true,
+      phone: true,
+      locationText: true,
+      amount: true,
+      finalAmount: true,
+      status: true,
+    },
+  });
+  const total = await prisma.lead.count();
+  return {
+    latest: latest
+      ? {
+          id: latest.id,
+          bookingRef: latest.bookingRef,
+          name: latest.name,
+          createdAt: latest.createdAt.toISOString(),
+          location: latest.locationText || "Delhi NCR",
+          amount: Number(latest.finalAmount ?? latest.amount) || null,
+        }
+      : null,
+    total,
+  };
 }

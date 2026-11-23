@@ -27,6 +27,7 @@ import {
   Zap,
 } from "lucide-react";
 import { moveLead } from "./actions";
+import { LeadLiveMonitor } from "@/components/admin/LeadLiveMonitor";
 
 type Row = Awaited<ReturnType<typeof listLeads>>["items"][number];
 
@@ -125,6 +126,9 @@ export default async function LeadsPage(props: PageProps<"/admin/leads">) {
           />
         }
       />
+
+      {/* Real-time Dispatch Radar with Chime Alert */}
+      <LeadLiveMonitor initialCount={counts.total} />
 
       {/* Action Notice if unassigned leads exist */}
       {(counts.unassigned ?? 0) > 0 && !unassigned && (

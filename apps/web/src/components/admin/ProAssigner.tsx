@@ -11,6 +11,7 @@ import {
   CheckCircle2,
   Clock,
   Compass,
+  Copy,
   ExternalLink,
   Mail,
   MapPin,
@@ -29,6 +30,7 @@ import {
 } from "lucide-react";
 import { cn } from "@herrglow/ui";
 import type { MatchedBeautician } from "@herrglow/core";
+import { whatsappLink } from "@/lib/whatsapp";
 import { assignNearestPro, unassignPro } from "@/app/admin/(panel)/leads/actions";
 
 export interface ProAssignerProps {
@@ -38,6 +40,12 @@ export interface ProAssignerProps {
   serviceTitle: string;
   matches: MatchedBeautician[];
   currentAssignedId: string | null;
+  leadPhone?: string | null;
+  bookingRef?: string | null;
+  eventDateStr?: string | null;
+  timeSlot?: string | null;
+  totalAmount?: number | null;
+  advanceDeposit?: number | null;
 }
 
 export function ProAssigner({
@@ -47,9 +55,18 @@ export function ProAssigner({
   serviceTitle,
   matches,
   currentAssignedId,
+  leadPhone,
+  bookingRef,
+  eventDateStr,
+  timeSlot,
+  totalAmount,
+  advanceDeposit,
 }: ProAssignerProps) {
   const [assignedId, setAssignedId] = useState<string | null>(currentAssignedId);
   const [selectedPro, setSelectedPro] = useState<MatchedBeautician | null>(null);
+  const [dispatchModalPro, setDispatchModalPro] = useState<MatchedBeautician | null>(null);
+  const [dispatchTab, setDispatchTab] = useState<"pro" | "customer">("pro");
+  const [copiedState, setCopiedState] = useState<"pro" | "customer" | null>(null);
   const [isPending, startTransition] = useTransition();
   const [showAll, setShowAll] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -67,17 +84,87 @@ export function ProAssigner({
   // Close modal on ESC key
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedPro(null);
+      if (e.key === "Escape") {
+        setSelectedPro(null);
+        setDispatchModalPro(null);
+      }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
+
+  const handleCopy = async (target: "pro" | "customer", text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedState(target);
+      setTimeout(() => setCopiedState(null), 2500);
+    } catch {
+      // ignore
+    }
+  };
+
+  const balance =
+    totalAmount != null && advanceDeposit != null ? Math.max(0, totalAmount - advanceDeposit) : null;
+
+  const getProDispatchText = (p: MatchedBeautician) => {
+    return [
+      `*HerrGlow Salon — New Booking Assignment* ✨`,
+      `Hi ${p.name}, an appointment is assigned to you:`,
+      ``,
+      `📋 *Booking Ref:* #${bookingRef || leadId.slice(0, 8)}`,
+      `👤 *Client Name:* ${leadName}`,
+      leadPhone ? `📞 *Client Mobile:* ${leadPhone}` : null,
+      `📍 *Service Address:* ${leadLocation}`,
+      p.distanceKm != null ? `🚗 *Distance:* ~${p.distanceKm} km from your base` : null,
+      `💆‍♀️ *Service:* ${serviceTitle}`,
+      `📅 *Date:* ${eventDateStr || "As confirmed"}`,
+      timeSlot ? `⏰ *Time Slot:* ${timeSlot}` : null,
+      totalAmount ? `💰 *Total Amount:* ₹${totalAmount.toLocaleString("en-IN")}` : null,
+      advanceDeposit ? `🛡️ *10% Advance Deposit:* ₹${advanceDeposit.toLocaleString("en-IN")} (Secured by HerrGlow)` : null,
+      balance != null ? `💵 *Balance to Collect after Service:* ₹${balance.toLocaleString("en-IN")}` : null,
+      ``,
+      `_Standard Hygiene Protocol: Please carry sanitized sealed single-use kits and wear salon apron._`,
+      `Please reply with *CONFIRM* to lock your slot!`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+  };
+
+  const getCustomerDispatchText = (p: MatchedBeautician) => {
+    return [
+      `✨ *Booking Confirmed & Beautician Assigned — HerrGlow* ✨`,
+      ``,
+      `Dear ${leadName},`,
+      ``,
+      `Great news! Your booking #${bookingRef || leadId.slice(0, 8)} has been confirmed and our verified professional beautician has been assigned:`,
+      ``,
+      `👩‍🎨 *Assigned Beautician:* ${p.name} (${p.experienceYears ? `${p.experienceYears} yrs exp · ` : ""}100% Female Background-Verified)`,
+      `📞 *Artist Contact:* ${p.phone}`,
+      `💆‍♀️ *Service:* ${serviceTitle}`,
+      `📅 *Confirmed Date:* ${eventDateStr || "Scheduled Date"}`,
+      timeSlot ? `⏰ *Time Slot:* ${timeSlot}` : null,
+      `📍 *Your Address:* ${leadLocation}`,
+      ``,
+      `💰 *Billing & Payment:*`,
+      totalAmount ? `• Total Service Amount: ₹${totalAmount.toLocaleString("en-IN")}` : null,
+      advanceDeposit ? `• 10% Advance Deposit: ₹${advanceDeposit.toLocaleString("en-IN")} (Secured)` : null,
+      balance != null ? `• Balance Payable: ₹${balance.toLocaleString("en-IN")} (Pay after 100% satisfaction via UPI / Cash)` : null,
+      ``,
+      `Our beautician will arrive on time with hospital-grade single-use kits. Feel free to contact us or reply here for any queries!`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+  };
 
   const handleAssign = (proId: string) => {
     startTransition(async () => {
       try {
         await assignNearestPro(leadId, proId);
         setAssignedId(proId);
+        const assigned = matches.find((m) => m.id === proId);
+        if (assigned) {
+          setDispatchModalPro(assigned);
+        }
         if (selectedPro && selectedPro.id === proId) {
           setSelectedPro((prev) => (prev ? { ...prev, isAssigned: true } : null));
         }
@@ -222,19 +309,18 @@ export function ProAssigner({
               </div>
             </div>
 
-            {/* Direct WhatsApp Dispatch to Assigned Pro */}
+            {/* Direct 1-Click WhatsApp Dispatch Hub to Pro & Client */}
             <div className="w-full sm:w-auto shrink-0 flex flex-col gap-2">
-              <a
-                href={currentlyAssigned.dispatchWhatsAppUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-xs font-bold text-white shadow-soft hover:bg-[#1f8f4e] transition active:scale-[0.98]"
+              <button
+                type="button"
+                onClick={() => setDispatchModalPro(currentlyAssigned)}
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-xs font-bold text-white shadow-soft hover:bg-[#1f8f4e] transition active:scale-[0.98] cursor-pointer"
               >
                 <MessageCircle className="size-4" />
-                <span>Dispatch Booking via WhatsApp</span>
-              </a>
+                <span>1-Click WhatsApp Dispatch Hub</span>
+              </button>
               <p className="text-[10px] text-center text-ink-soft">
-                Sends formatted appointment details directly to {currentlyAssigned.name}
+                Sends instant formatted confirmation to {currentlyAssigned.name} &amp; customer
               </p>
             </div>
           </div>
@@ -960,6 +1046,177 @@ export function ProAssigner({
                   Close
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ───────── 1-CLICK WHATSAPP DISPATCH HUB MODAL ───────── */}
+      {dispatchModalPro && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-plum-950/70 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={() => setDispatchModalPro(null)}
+        >
+          <div
+            className="relative w-full max-w-xl max-h-[90vh] flex flex-col rounded-3xl border border-gold-400/40 bg-ivory shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-line bg-gradient-to-r from-plum-950 via-plum-900 to-plum-950 px-6 py-4 text-ivory">
+              <div className="flex items-center gap-2.5">
+                <span className="grid size-8 place-items-center rounded-xl bg-gold-400 text-plum-950">
+                  <Sparkles className="size-4" />
+                </span>
+                <div>
+                  <h3 className="font-serif text-lg font-bold text-ivory">1-Click WhatsApp Dispatch</h3>
+                  <p className="text-xs text-gold-300">
+                    Assigned to {dispatchModalPro.name} · Ref #{bookingRef || leadId.slice(0, 8)}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDispatchModalPro(null)}
+                className="grid size-8 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 transition cursor-pointer"
+                aria-label="Close dispatch modal"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+
+            {/* Tab Navigation */}
+            <div className="flex border-b border-line bg-white px-6 pt-3 gap-4">
+              <button
+                type="button"
+                onClick={() => setDispatchTab("pro")}
+                className={`pb-2.5 text-xs font-bold border-b-2 transition cursor-pointer flex items-center gap-1.5 ${
+                  dispatchTab === "pro"
+                    ? "border-rose-700 text-rose-700"
+                    : "border-transparent text-ink-soft hover:text-plum-950"
+                }`}
+              >
+                <UserCheck className="size-3.5" />
+                <span>Message Beautician ({dispatchModalPro.name})</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setDispatchTab("customer")}
+                className={`pb-2.5 text-xs font-bold border-b-2 transition cursor-pointer flex items-center gap-1.5 ${
+                  dispatchTab === "customer"
+                    ? "border-rose-700 text-rose-700"
+                    : "border-transparent text-ink-soft hover:text-plum-950"
+                }`}
+              >
+                <MessageCircle className="size-3.5" />
+                <span>Message Customer ({leadName})</span>
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              {dispatchTab === "pro" ? (
+                <div className="space-y-4">
+                  <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-3 text-xs text-emerald-950 flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold">Beautician: {dispatchModalPro.name}</p>
+                      <p className="text-ink-soft">{dispatchModalPro.phone}</p>
+                    </div>
+                    <span className="rounded-full bg-emerald-200/80 px-2.5 py-0.5 text-[10px] font-bold text-emerald-900">
+                      Artist WhatsApp
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-plum-900 mb-1.5 block">
+                      Formatted WhatsApp Dispatch Message
+                    </label>
+                    <textarea
+                      readOnly
+                      rows={9}
+                      value={getProDispatchText(dispatchModalPro)}
+                      className="w-full rounded-2xl border border-line bg-white p-3.5 font-mono text-xs text-plum-950 leading-relaxed resize-none focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-2 pt-2">
+                    <a
+                      href={whatsappLink(dispatchModalPro.phone, getProDispatchText(dispatchModalPro)) ?? "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-5 py-3 text-xs font-bold text-white shadow-soft hover:bg-[#1f8f4e] transition cursor-pointer"
+                    >
+                      <MessageCircle className="size-4" />
+                      <span>Send to {dispatchModalPro.name} on WhatsApp</span>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy("pro", getProDispatchText(dispatchModalPro))}
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-white px-4 py-3 text-xs font-bold text-plum-900 shadow-soft hover:bg-blush-50 transition cursor-pointer"
+                    >
+                      {copiedState === "pro" ? <CheckCircle2 className="size-4 text-emerald-600" /> : <Copy className="size-4" />}
+                      <span>{copiedState === "pro" ? "Copied!" : "Copy Text"}</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="rounded-xl border border-rose-200 bg-rose-50/70 p-3 text-xs text-rose-950 flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold">Customer: {leadName}</p>
+                      <p className="text-ink-soft">{leadPhone || "No phone recorded"}</p>
+                    </div>
+                    <span className="rounded-full bg-rose-200/80 px-2.5 py-0.5 text-[10px] font-bold text-rose-900">
+                      Client WhatsApp
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-plum-900 mb-1.5 block">
+                      Formatted WhatsApp Customer Confirmation
+                    </label>
+                    <textarea
+                      readOnly
+                      rows={9}
+                      value={getCustomerDispatchText(dispatchModalPro)}
+                      className="w-full rounded-2xl border border-line bg-white p-3.5 font-mono text-xs text-plum-950 leading-relaxed resize-none focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-2 pt-2">
+                    <a
+                      href={leadPhone ? (whatsappLink(leadPhone, getCustomerDispatchText(dispatchModalPro)) ?? "#") : "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex-1 inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-xs font-bold text-white shadow-soft transition ${
+                        leadPhone ? "bg-[#25D366] hover:bg-[#1f8f4e] cursor-pointer" : "bg-stone-300 pointer-events-none"
+                      }`}
+                    >
+                      <MessageCircle className="size-4" />
+                      <span>Send to Customer ({leadName})</span>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy("customer", getCustomerDispatchText(dispatchModalPro))}
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-white px-4 py-3 text-xs font-bold text-plum-900 shadow-soft hover:bg-blush-50 transition cursor-pointer"
+                    >
+                      {copiedState === "customer" ? <CheckCircle2 className="size-4 text-emerald-600" /> : <Copy className="size-4" />}
+                      <span>{copiedState === "customer" ? "Copied!" : "Copy Text"}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between border-t border-line bg-blush-50/50 px-6 py-3 text-xs text-ink-soft">
+              <span>Status: Assigned &amp; Slot Locked</span>
+              <button
+                type="button"
+                onClick={() => setDispatchModalPro(null)}
+                className="rounded-xl border border-line bg-white px-4 py-1.5 font-bold text-plum-900 hover:bg-white/80 transition cursor-pointer"
+              >
+                Done
+              </button>
             </div>
           </div>
         </div>
