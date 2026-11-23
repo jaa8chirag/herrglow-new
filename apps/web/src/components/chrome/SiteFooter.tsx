@@ -1,5 +1,6 @@
 import { Mail, MessageCircle, Phone } from "lucide-react";
 import Link from "next/link";
+import { urls } from "@herrglow/core";
 import { Container } from "@herrglow/ui";
 import { Logo } from "@/components/brand/Logo";
 import { NewsletterForm } from "./NewsletterForm";
@@ -73,7 +74,7 @@ export function SiteFooter({ siteName, categories, cities, popular, whatsapp, ph
             <FooterList title="Popular" items={popular.map((s) => ({ href: `/services/${s.slug}`, label: s.title }))} />
           </div>
           <div className="space-y-8">
-            {cities.length > 0 && <FooterList title="Areas we serve" items={cities.map((c) => ({ href: `/makeup-artist-in-${c.slug}`, label: `Makeup artist in ${c.name}` }))} />}
+            {cities.length > 0 && <FooterList title="Areas we serve" items={cities.map((c) => ({ href: urls.cityHub(c.slug), label: `Salon at home in ${c.name}` }))} />}
             <FooterList title="Company" items={[{ href: "/about", label: "About" }, { href: "/blog", label: "Blog" }, { href: "/contact", label: "Contact" }, { href: "/join-as-beautician", label: "Join as an artist" }]} />
           </div>
         </div>

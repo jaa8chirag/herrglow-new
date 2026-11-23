@@ -32,6 +32,9 @@ export const LEGACY_STATIC_REDIRECTS: Record<string, string> = {
   "/testimonials": "/about#reviews",
   "/gallery": "/",
   "/blogs": "/blog",
+  "/makeup-artist-in-delhi": "/salon-at-home-delhi",
+  "/makeup-artist-in-noida": "/salon-at-home-noida",
+  "/makeup-artist-in-greater-noida": "/salon-at-home-greater-noida",
 };
 const GONE_PREFIXES = ["/beauty-pro-card/", "/packages/"]; // a /packages/{slug} that does not exist on the new site
 const GONE_EXACT = new Set(["/beauticians", "/makeover-artists"]);
@@ -42,6 +45,9 @@ export function decideLegacy(rawPath: string, ctx: LegacyContext): LegacyDecisio
   const rule = ctx.redirects.get(path);
   if (rule) return rule.code === "GONE_410" || !rule.to ? { kind: "gone", reason: "redirect rule: gone" } : { kind: "redirect", to: rule.to, code: 301 };
 
+  const stat = LEGACY_STATIC_REDIRECTS[path];
+  if (stat) return { kind: "redirect", to: stat, code: 301 };
+
   // the URL exists on the new site (area pages, city hubs, /services, /join-as-beautician, service×city, …): same URL
   if (ctx.pageUrls.has(path)) return { kind: "pass" };
 
@@ -51,9 +57,6 @@ export function decideLegacy(rawPath: string, ctx: LegacyContext): LegacyDecisio
     const to = ctx.proByLegacySlug.get(artist[1]!);
     return to ? { kind: "redirect", to, code: 301 } : { kind: "gone", reason: "artist has no page on the new site" };
   }
-
-  const stat = LEGACY_STATIC_REDIRECTS[path];
-  if (stat) return { kind: "redirect", to: stat, code: 301 };
 
   const blog = /^\/blogs\/([^/]+)$/.exec(path);
   if (blog) return { kind: "redirect", to: `/blog/${blog[1]}`, code: 301 };

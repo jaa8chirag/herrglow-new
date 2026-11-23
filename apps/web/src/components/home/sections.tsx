@@ -2,6 +2,7 @@ import { ArrowRight, BadgeCheck, CalendarCheck, Check, Clock, DoorOpen, Search, 
 import Link from "next/link";
 import Image from "next/image";
 import { Badge, BentoGrid, BlurFade, BorderBeam, Card, Carousel, Container, InfiniteMovingCards, Marquee, NumberTicker, Price, Section, SectionHeading, Spotlight, TiltCard, buttonStyles, categoryIcon, cn } from "@herrglow/ui";
+import { urls } from "@herrglow/core";
 import { BookingForm } from "@/components/BookingForm";
 import { BookLink } from "@/components/chrome/BookLink";
 import { Photo } from "@/components/Photo";
@@ -406,7 +407,7 @@ export function CityCards({ cities }: { cities: { slug: string; name: string; ar
           {cities.map((c, i) => (
             <BlurFade key={c.slug} delay={i * 0.08}>
               <TiltCard>
-                <Link href={`/makeup-artist-in-${c.slug}`} className="group relative block aspect-[4/5] overflow-hidden rounded-[1.75rem] shadow-soft transition-shadow hover:shadow-lift">
+                <Link href={urls.cityHub(c.slug)} className="group relative block aspect-[4/5] overflow-hidden rounded-[1.75rem] shadow-soft transition-shadow hover:shadow-lift">
                   <Photo src={CITY_CARDS_IMAGES[c.slug] ?? null} alt={c.name} kind="city" seedKey={c.slug} />
                   <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-plum-900/85 via-plum-900/20 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-6">

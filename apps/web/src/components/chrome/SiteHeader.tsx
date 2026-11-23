@@ -8,6 +8,8 @@ import { useEffect, useRef, useState } from "react";
 import { Drawer, DrawerShell, FallbackArt, buttonStyles, categoryIcon, cn } from "@herrglow/ui";
 import { Logo } from "@/components/brand/Logo";
 
+const cityHubUrl = (slug: string) => `/salon-at-home-${slug}`;
+
 export interface MenuCat { slug: string; name: string; href: string; services: { slug: string; title: string }[]; featured: { slug: string; title: string; image: string | null } | null }
 export interface HeaderProps { siteName: string; logo: string | null; menu: MenuCat[]; cities: { slug: string; name: string }[] }
 
@@ -84,7 +86,7 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
               {city && (
                 <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-line bg-ivory p-2 shadow-lift">
                   <p className="px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-wider text-rose-700">Choose your city</p>
-                  {cities.map((c) => <Link key={c.slug} href={`/makeup-artist-in-${c.slug}`} className="flex items-center justify-between rounded-xl px-3 py-2.5 text-ink hover:bg-blush-100">{c.name}<ArrowRight className="size-4 text-rose-600" /></Link>)}
+                  {cities.map((c) => <Link key={c.slug} href={cityHubUrl(c.slug)} className="flex items-center justify-between rounded-xl px-3 py-2.5 text-ink hover:bg-blush-100">{c.name}<ArrowRight className="size-4 text-rose-600" /></Link>)}
                 </div>
               )}
             </div>
@@ -129,7 +131,7 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
                   {NAV.slice(1).map((n) => <Drawer.Close key={n.href} asChild><Link href={n.href} className="flex items-center min-h-[48px] rounded-xl px-3 py-3 font-serif text-2xl text-plum-800">{n.label}</Link></Drawer.Close>)}
                   {cities.length > 0 && (
                     <div className="pt-4"><p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-rose-700">Service Cities</p>
-                      <div className="flex flex-wrap gap-2 px-1">{cities.map((c) => <Drawer.Close key={c.slug} asChild><Link href={`/makeup-artist-in-${c.slug}`} className="flex items-center min-h-[44px] rounded-full border border-line bg-white px-4 py-2 text-sm text-plum-800">{c.name}</Link></Drawer.Close>)}</div></div>
+                      <div className="flex flex-wrap gap-2 px-1">{cities.map((c) => <Drawer.Close key={c.slug} asChild><Link href={cityHubUrl(c.slug)} className="flex items-center min-h-[44px] rounded-full border border-line bg-white px-4 py-2 text-sm text-plum-800">{c.name}</Link></Drawer.Close>)}</div></div>
                   )}
                 </nav>
                 <div className="mx-5 mb-2 rounded-2xl border border-blush-200 bg-blush-50/70 p-3.5 space-y-2 text-xs">

@@ -73,4 +73,77 @@ test.describe("Home Page & Core Navigation", () => {
     await expect(page).toHaveURL(/\/services/);
     await expect(page.locator("h1")).toContainText(/Everything we offer, at your home/i);
   });
+
+  test("city selector dropdown navigates to active city hub without 410 Gone", async ({ page, isMobile }) => {
+    if (isMobile) {
+      // On mobile viewports: Open menu drawer, select Delhi
+      const menuBtn = page.getByRole("button", { name: /Open menu/i });
+      await menuBtn.click();
+      const delhiChip = page.locator('nav[aria-label="Mobile"] a[href="/salon-at-home-delhi"]');
+      await expect(delhiChip).toBeVisible();
+      await delhiChip.click();
+    } else {
+      // On desktop viewports: Click city dropdown trigger and select Delhi
+      const cityBtn = page.locator("[data-city-menu] button");
+      await expect(cityBtn).toBeVisible();
+      await cityBtn.click();
+      const delhiLink = page.locator('[data-city-menu] a[href="/salon-at-home-delhi"]');
+      await expect(delhiLink).toBeVisible();
+      await delhiLink.click();
+    }
+
+    await expect(page).toHaveURL(/\/salon-at-home-delhi$/);
+    const h1 = page.locator("h1");
+    await expect(h1).toBeVisible();
+    await expect(h1).toContainText(/Makeup Artist at Home in Delhi/i);
+
+    // Verify that legacy 410 'Gone' is NEVER displayed
+    const bodyText = await page.locator("body").innerText();
+    expect(bodyText.trim()).not.toBe("Gone");
+    expect(bodyText).toContain("Services available in Delhi");
+  });
+
+  test("mobile drawer displays all service cities with direct working links", async ({ page, isMobile }) => {
+    if (!isMobile) {
+      await page.setViewportSize({ width: 375, height: 667 });
+    }
+    const menuBtn = page.getByRole("button", { name: /Open menu/i });
+    await expect(menuBtn).toBeVisible();
+    await menuBtn.click();
+
+    const noidaChip = page.locator('nav[aria-label="Mobile"] a[href="/salon-at-home-noida"]');
+    await expect(noidaChip).toBeVisible();
+    await noidaChip.click();
+
+    await expect(page).toHaveURL(/\/salon-at-home-noida$/);
+    const h1 = page.locator("h1");
+    await expect(h1).toBeVisible();
+    await expect(h1).toContainText(/Makeup Artist at Home in Noida/i);
+    const bodyText = await page.locator("body").innerText();
+    expect(bodyText.trim()).not.toBe("Gone");
+  });
+
+  test("legacy /makeup-artist-in-{city} URLs seamlessly 301 redirect to /salon-at-home-{city}", async ({ page }) => {
+    for (const city of ["delhi", "noida", "greater-noida"]) {
+      await page.goto(`/makeup-artist-in-${city}`);
+      await expect(page).toHaveURL(new RegExp(`/salon-at-home-${city}$`));
+      const bodyText = await page.locator("body").innerText();
+      expect(bodyText.trim()).not.toBe("Gone");
+      const h1 = page.locator("h1");
+      await expect(h1).toBeVisible();
+      await expect(h1).toContainText(/Makeup Artist at Home in/i);
+    }
+  });
+
+  test("city cards section on homepage links to canonical city hubs", async ({ page }) => {
+    const greaterNoidaCard = page.locator('a[href="/salon-at-home-greater-noida"]').first();
+    await expect(greaterNoidaCard).toBeVisible();
+    await greaterNoidaCard.click();
+    await expect(page).toHaveURL(/\/salon-at-home-greater-noida$/);
+    const h1 = page.locator("h1");
+    await expect(h1).toBeVisible();
+    await expect(h1).toContainText(/Makeup Artist at Home in Greater Noida/i);
+    const bodyText = await page.locator("body").innerText();
+    expect(bodyText.trim()).not.toBe("Gone");
+  });
 });

@@ -68,7 +68,7 @@ import { decideLegacy, type LegacyContext } from "@herrglow/core/src/seo/legacy"
 import { proIsIndexable, proNoindexReason } from "@herrglow/core/src/seo/pros";
 
 const ctx = (over: Partial<LegacyContext> = {}): LegacyContext => ({
-  pageUrls: new Set(["/makeup-artist-in-gaur-city-1", "/hd-bridal-makeup-in-noida", "/services/hd-bridal-makeup", "/makeup-artist-in-noida", "/contact", "/"]),
+  pageUrls: new Set(["/makeup-artist-in-gaur-city-1", "/hd-bridal-makeup-in-noida", "/services/hd-bridal-makeup", "/salon-at-home-noida", "/contact", "/"]),
   redirects: new Map([["/services/hd-engagement-makeup", { to: "/services/engagement-makeup-artist", code: "MOVED_301" as const }]]),
   proByLegacySlug: new Map([["best-makeover-artist-in-gaur-city-pritibha-singh", "/artists/pritibha-singh"]]),
   ...over,
@@ -79,6 +79,11 @@ const gone = (path: string, c = ctx()) => assert.equal(decideLegacy(path, c).kin
 test("legacy /makeup-artist-in-{area}: area page that exists keeps the SAME URL (200)", () => {
   eq("/makeup-artist-in-gaur-city-1", { kind: "pass" });
   eq("/makeup-artist-in-gaur-city-1/", { kind: "pass" });
+});
+test("legacy /makeup-artist-in-{city}: city hub redirect (301) to /salon-at-home-{city}", () => {
+  eq("/makeup-artist-in-delhi", { kind: "redirect", to: "/salon-at-home-delhi", code: 301 });
+  eq("/makeup-artist-in-noida", { kind: "redirect", to: "/salon-at-home-noida", code: 301 });
+  eq("/makeup-artist-in-greater-noida", { kind: "redirect", to: "/salon-at-home-greater-noida", code: 301 });
 });
 test("legacy /makeup-artist-in-{area}: area without a page on the new site → 410", () => gone("/makeup-artist-in-some-textonly-area"));
 test("legacy /bridal-makeup-in-{area} → 410", () => gone("/bridal-makeup-in-gaur-city-1"));
