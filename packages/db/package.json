@@ -10,6 +10,7 @@
     "migrate": "prisma migrate dev",
     "studio": "prisma studio",
     "seed:dev": "tsx scripts/seed-dev.ts",
+    "seed:full": "tsx scripts/seed-full-production.ts",
     "seed:launch": "tsx scripts/seed-dev.ts",
     "import:legacy": "tsx scripts/import-legacy.ts",
     "typecheck": "tsc --noEmit"
