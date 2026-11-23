@@ -207,7 +207,7 @@ export async function getBeauticianSchedule(dateStr?: string): Promise<DaySchedu
           ``
         );
       });
-      dispatchLines.push(`Please carry your sanitized sealed single-use kit and reach 10 mins prior to ETA.`);
+      dispatchLines.push(`Please carry your sanitized tools, clean setup and reach 10 mins prior to ETA.`);
     }
 
     const dayWhatsAppSummaryUrl = whatsappLink(proPhone, dispatchLines.filter(Boolean).join("\n")) || "";

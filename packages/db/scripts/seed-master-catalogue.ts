@@ -878,7 +878,7 @@ async function main() {
         const image = matchingLegacy?.image ?? null;
         const imageAlt = matchingLegacy?.imageAlt ?? `${sDef.title} at home by HerrGlow`;
         const features = matchingLegacy?.features ?? null;
-        const shortDescription = matchingLegacy?.shortDescription ?? `${sDef.title} at home in Delhi, Noida & Greater Noida. 100% verified female professionals with sealed hygienic kits.`;
+        const shortDescription = matchingLegacy?.shortDescription ?? `${sDef.title} at home in Delhi, Noida & Greater Noida. 100% verified female professionals with sanitized tools & authentic products.`;
         const leadCount = matchingLegacy?.leadCount ?? 0;
 
         // Upsert service

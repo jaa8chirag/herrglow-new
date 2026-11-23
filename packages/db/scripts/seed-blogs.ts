@@ -37,7 +37,7 @@ export const PREMIUM_BLOGS = [
       <p>Physical face scrubs with jagged walnut or apricot shells cause microscopic tears that exacerbate pigmentation under camera flash. Instead, introduce mild AHAs (such as 5% Lactic Acid or Mandelic Acid) once or twice weekly to gently dissolve dead keratin layers.</p>
 
       <h3>2. Begin Monthly Professional At-Home Facials</h3>
-      <p>Booking monthly deep-cleansing facials with professional, single-use sealed kits allows your aesthetician to systematically extract blackheads, infuse concentrated vitamin C, and stimulate collagen production. At HerrGlow, our senior beauticians utilize hospital-grade disposables to guarantee zero cross-contamination in the comfort of your bedroom.</p>
+      <p>Booking monthly deep-cleansing facials with professional, sanitized setups allows your aesthetician to systematically extract blackheads, infuse concentrated vitamin C, and stimulate collagen production. At HerrGlow, our senior beauticians utilize strict hygiene protocols to guarantee a pristine experience in the comfort of your bedroom.</p>
 
       <h2>Month 2: Hair Restoration, Trial Sessions &amp; D-Tan Treatments</h2>
       <p>With only 60 days remaining, your calendar will fill with trousseau packing, dance rehearsals, and RSVP follow-ups. Stress levels naturally peak—making at-home pampering essential.</p>
@@ -69,11 +69,11 @@ export const PREMIUM_BLOGS = [
         <li><strong>Day -3 (3 Days Prior): Pre-Bridal Radiance Glow Facial:</strong> Book an oxygen-boosting or Korean glass skin facial to drench the epidermis with hyaluronic moisture.</li>
         <li><strong>Day -2 (2 Days Prior): Bridal Mehendi:</strong> Keep your hands and feet warm to maximize henna stain darkness. Avoid washing with soapy water for the first 18 hours.</li>
         <li><strong>Day -1 (Wedding Eve): Hydration &amp; Early Rest:</strong> Apply a cooling hydrogel eye mask, sip chamomile tea, and sleep on a clean satin pillowcase.</li>
-        <li><strong>Wedding Day: Flawless Artistry:</strong> Cleanse with a mild wash, apply an oil-free moisturizer, and relax as your HerrGlow bridal artist arrives at your doorstep with sanitized, sealed kits to craft your dream look.</li>
+        <li><strong>Wedding Day: Flawless Artistry:</strong> Cleanse with a mild wash, apply an oil-free moisturizer, and relax as your HerrGlow bridal artist arrives at your doorstep with sanitized tools &amp; authentic products to craft your dream look.</li>
       </ul>
 
       <h2>Why Modern Brides Choose At-Home Bridal Pampering</h2>
-      <p>Rushing through Delhi NCR traffic right after a full-body waxing or facial exposes freshly opened pores to road dust, vehicular emissions, and intense UV rays. By booking verified, senior female beauty professionals at home with HerrGlow, you enjoy pristine 5-star salon luxury in your air-conditioned room with 100% single-use sealed kits, transparent pricing, and zero post-treatment commute stress.</p>
+      <p>Rushing through Delhi NCR traffic right after a full-body waxing or facial exposes freshly opened pores to road dust, vehicular emissions, and intense UV rays. By booking verified, senior female beauty professionals at home with HerrGlow, you enjoy pristine 5-star salon luxury in your air-conditioned room with sanitized tools, authentic products, transparent pricing, and zero post-treatment commute stress.</p>
     `,
   },
   {
@@ -148,17 +148,17 @@ export const PREMIUM_BLOGS = [
         <p>"Choose Airbrush Makeup if your wedding is in summer or monsoon, if you tend to sweat easily, or if you desire an air-brushed, velvety, completely transfer-resistant finish. Choose HD Bridal Makeup if your wedding is in winter, if your skin is on the drier side, or if you love a luminous, lit-from-within royal glow."</p>
       </blockquote>
 
-      <h2>The HerrGlow Promise: 100% Authentic Kits at Your Doorstep</h2>
-      <p>Regardless of whether you choose HD or Airbrush artistry, the single most critical factor is product authenticity and hygiene. Unscrupulous parlors often refill empty designer bottles with counterfeit local creams. At HerrGlow, every kit is 100% authentic, sealed, and inspected in front of you. Plus, our verified senior bridal artists travel directly to your home or wedding venue with ring lights, vanity stations, and sanitized brushes—backed by a transparent 10% advance deposit and a 100% refund guarantee.</p>
+      <h2>The HerrGlow Promise: 100% Authentic Products at Your Doorstep</h2>
+      <p>Regardless of whether you choose HD or Airbrush artistry, the single most critical factor is product authenticity and hygiene. Unscrupulous parlors often refill empty designer bottles with counterfeit local creams. At HerrGlow, every product is 100% authentic, brand-certified, and inspected in front of you. Plus, our verified senior bridal artists travel directly to your home or wedding venue with ring lights, vanity stations, and sanitized brushes—backed by a transparent 10% advance deposit and a 100% refund guarantee.</p>
     `,
   },
   {
     slug: "why-at-home-salon-is-better-than-traditional-salons",
     title: "Why At-Home Salon Services Are Better Than Traditional Salons",
     seoTitle: "At-Home Salon vs Traditional Salons: Safety & Cost",
-    seoDescription: "Discover why luxury at-home salon services in Delhi NCR beat crowded parlors. Single-use hospital-grade kits, verified female artists, and zero travel.",
+    seoDescription: "Discover why luxury at-home salon services in Delhi NCR beat crowded parlors. Sanitized equipment, authentic branded products, verified female artists, and zero travel.",
     image: "/hero/doorstep-salon.jpg",
-    imageAlt: "Professional at-home salon setup with single-use sealed kits, disposable towels, and certified female beautician in Delhi NCR",
+    imageAlt: "Professional at-home salon setup with sanitized tools, clean towels, and certified female beautician in Delhi NCR",
     authorName: "Neha Bisht, Head of Hygiene & Standards",
     excerpt: "Tired of salon waiting rooms, traffic jams, and double-dipped wax pots? Here is why thousands of women in Delhi NCR have permanently switched to luxury at-home salon pampering.",
     content: `
@@ -166,13 +166,13 @@ export const PREMIUM_BLOGS = [
 
       <p>Here is an honest, insider look at why professional at-home salon services are consistently superior to traditional brick-and-mortar beauty parlors in hygiene, convenience, safety, and real value.</p>
 
-      <h2>1. The Hygiene Truth: Single-Use Sealed Kits vs. Double-Dipped Parlor Jars</h2>
+      <h2>1. The Hygiene Truth: Sanitized Salon Setup vs. Double-Dipped Parlor Jars</h2>
       <p>In a commercial salon handling 40 to 60 walk-in clients daily, maintaining absolute sterile hygiene between appointments is nearly impossible under time pressure:</p>
       <ul>
         <li><strong>The Wax Pot Hazard:</strong> In many busy salons, wooden spatulas are frequently dipped back into the communal wax pot after touching skin. This "double-dipping" turns hot wax heaters into breeding grounds for bacterial folliculitis and fungal infections.</li>
         <li><strong>Recycled Cloths &amp; Towels:</strong> Even when washed, parlor towels are shared across hundreds of customers and rarely sterilized at medical temperatures.</li>
       </ul>
-      <p>At HerrGlow, we pioneered a strict <strong>Hospital-Grade Hygiene Protocol</strong>. Every at-home service uses a brand-new, single-use sealed kit opened right in front of your eyes. This includes disposable bedsheets, single-use gowns, sterilized wooden spatulas, disposable headbands, and individually portioned product sachets. When your service is complete, the entire disposable kit is packed into waste disposal bags and safely discarded.</p>
+      <p>At HerrGlow, we maintain a strict <strong>Cleanliness &amp; Hygiene Protocol</strong>. Every at-home service uses sanitized tools, clean towels, and authentic branded products. When your service is complete, our beautician tidies up the entire setup, leaving your room completely spotless.</p>
 
       <h2>2. Zero Commute, Zero Smog, Maximum Peace of Mind</h2>
       <p>Delhi NCR's Air Quality Index (AQI) routinely spikes during seasonal transitions. Stepping outside immediately after a deep pore facial or chemical peel undoes half the benefits:</p>
@@ -308,7 +308,7 @@ export const PREMIUM_BLOGS = [
       </ol>
 
       <h2>Experience Luxury Pre-Bridal Care at Home with HerrGlow</h2>
-      <p>At HerrGlow, our pre-bridal packages are fully customizable to your specific wedding schedule and skin type. Every session is carried out by vetted, police-verified female professionals using sealed single-use disposable kits and 100% authentic international products. Reserve your dates with just a 10% advance deposit and enjoy a 100% refund guarantee if your artist does not reach on time.</p>
+      <p>At HerrGlow, our pre-bridal packages are fully customizable to your specific wedding schedule and skin type. Every session is carried out by vetted, police-verified female professionals using sanitized equipment and 100% authentic international products. Reserve your dates with just a 10% advance deposit and enjoy a 100% refund guarantee if your artist does not reach on time.</p>
     `,
   },
 ];

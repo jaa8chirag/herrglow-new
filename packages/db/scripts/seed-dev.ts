@@ -464,7 +464,7 @@ async function main() {
       experienceYears: 6,
       specialization: "Gel Nail Extensions, Nail Art & Mani-Pedi",
       photo: "/images/pros/neha-bisht.jpg",
-      bio: "Certified Nail Artist and hand-care specialist with 6 years of expertise delivering high-fashion gel extensions, 3D embellishments, ombre nail art, and restorative aromatherapy pedicures at home. Uses sterile single-use disposable kits and LED-cured non-toxic formulas for salon-quality results that last for weeks.",
+      bio: "Certified Nail Artist and hand-care specialist with 6 years of expertise delivering high-fashion gel extensions, 3D embellishments, ombre nail art, and restorative aromatherapy pedicures at home. Uses sanitized equipment and LED-cured non-toxic formulas for salon-quality results that last for weeks.",
       basePrice: 1800,
       portfolio: [
         { path: "/images/services/airbrush-bridal-makeup.jpg", alt: "Flawless Airbrush Finish by Neha" },
@@ -624,7 +624,7 @@ async function main() {
       serviceName: "Full Body Waxing & Facial",
       photo: "/images/testimonials/rhea-malhotra.jpg",
       rating: 5,
-      review: "I am extremely particular about hygiene. HerrGlow beauticians used disposable sheets, sealed cartridges and wooden spatulas. 10/10 service quality and punctuality.",
+      review: "I am extremely particular about hygiene. HerrGlow beauticians used clean sheets, sanitized tools and authentic products. 10/10 service quality and punctuality.",
       sort: 5,
     },
     {

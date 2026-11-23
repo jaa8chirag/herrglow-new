@@ -483,7 +483,7 @@ export function BookingForm({ cities, defaultCity, service, packageItem, proSlug
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="grid size-5 shrink-0 place-items-center rounded-full bg-plum-700 text-[0.7rem] font-bold text-white">3</span>
-                  <span><strong>Doorstep Service &amp; Final Payment:</strong> Pay a nominal 10% advance to confirm your slot. Enjoy your service with a single-use sealed kit and pay the remaining 90% only after completion. 100% refund if the beautician does not reach you.</span>
+                  <span><strong>Doorstep Service &amp; Final Payment:</strong> Pay a nominal 10% advance to confirm your slot. Enjoy your relaxing service at home and pay the remaining 90% only after completion. 100% refund if the beautician does not reach you.</span>
                 </li>
               </ol>
             </div>

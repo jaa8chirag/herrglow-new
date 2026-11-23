@@ -36,7 +36,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   const strip =
     s.raw.offer_strip_enabled === "1" && s.raw.offer_strip_text?.trim()
       ? s.raw.offer_strip_text.trim()
-      : "Delhi NCR's Most Trusted Luxury Doorstep Salon & Bridal Artistry · 100% Female Verified · Sealed Kits · 10% Advance (100% Refund Guarantee)";
+      : "Delhi NCR's Most Trusted Luxury Doorstep Salon & Bridal Artistry · 100% Female Verified · 100% Authentic Products · 10% Advance (100% Refund Guarantee)";
   const socials = [["Instagram", s.raw.social_instagram], ["Facebook", s.raw.social_facebook], ["YouTube", s.raw.social_youtube]].filter((x): x is [string, string] => !!x[1]?.trim()).map(([label, href]) => ({ label, href }));
   const logo = realImage(keys, s.raw.site_logo);
 

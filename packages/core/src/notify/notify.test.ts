@@ -82,7 +82,7 @@ test("customer confirmation: only with an email; out-of-area wording differs; Wh
   const oa = await mkLead({ name: "Gita", email: "gita@example.com", tags: ["out_of_area"] });
   delete process.env.WHATSAPP_ENABLED;
   const a = fake(); await processCustomerConfirmation(withMail.id, a.ch);
-  assert.equal(a.calls.email.length, 1); assert.equal(a.calls.email[0]!.to, "esha@example.com"); assert.match(a.calls.email[0]!.text, /we have received your request/i);
+  assert.equal(a.calls.email.length, 1); assert.equal(a.calls.email[0]!.to, "esha@example.com"); assert.match(a.calls.email[0]!.text, /we have received your (appointment )?request/i);
   assert.equal(a.calls.whatsapp.length, 0, "WhatsApp disabled");
   const b = fake(); await processCustomerConfirmation(noMail.id, b.ch);
   assert.equal(b.calls.email.length, 0);

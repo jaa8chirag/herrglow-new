@@ -135,7 +135,7 @@ export function PriceBox({
           </p>
           <p className="flex items-center gap-2 text-ink-soft">
             <Sparkles className="size-4 shrink-0 text-gold-500" />
-            Single-use sealed disposable kit included
+            Hygienic setup &amp; sanitized tools included
           </p>
           <p className="flex items-center gap-2 font-medium text-plum-900">
             <Wallet className="size-4 shrink-0 text-emerald-600" />
@@ -233,7 +233,7 @@ export function PriceBox({
             <div className="mt-4 space-y-1.5 rounded-2xl border border-blush-200/60 bg-blush-50/80 p-3 text-xs text-plum-900">
               <p className="flex items-center gap-2 font-medium text-emerald-800">
                 <ShieldCheck className="size-4 shrink-0 text-emerald-600" />
-                100% Female Verified Artist · Single-Use Kit
+                100% Female Verified Artist · Clean &amp; Safe Setup
               </p>
               <p className="flex items-center gap-2 font-medium text-plum-900">
                 <Wallet className="size-4 shrink-0 text-emerald-600" />

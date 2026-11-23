@@ -16,7 +16,7 @@ export function Included({ items }: { items: string[] }) {
             What is Included in This Service
           </h2>
           <p className="mt-1 text-sm text-ink-soft">
-            100% authentic products, single-use sterilized hygiene kits &amp; verified senior artist.
+            100% authentic products, sanitized equipment &amp; verified senior artist.
           </p>
         </div>
       </div>
@@ -40,7 +40,7 @@ export function Included({ items }: { items: string[] }) {
 const STEPS = [
   { icon: ClipboardCheck, t: "You book", d: "Choose your option and share your area and date." },
   { icon: UserCheck, t: "We confirm", d: "We match an artist who covers your location and confirm the details." },
-  { icon: Home, t: "Artist arrives", d: "They set up at your home with a clean, complete kit." },
+  { icon: Home, t: "Artist arrives", d: "They arrive on time and set up clean, sanitized tools at home." },
   { icon: Sparkles, t: "You glow", d: "Enjoy the result, without travelling anywhere." },
 ];
 export function ProcessSteps() {
@@ -80,8 +80,8 @@ export function SafetyHygienePromise() {
       desc: "Every beautician undergoes police background verification and practical skills testing before home visits.",
     },
     {
-      title: "Sealed Single-Use Kits",
-      desc: "Disposable bedsheets, towels, gowns, wooden spatulas, and sealed wax strips opened right in front of you.",
+      title: "Clean & Sanitized Setup",
+      desc: "Sanitized tools, clean towels, and careful hygiene standards maintained at your home.",
     },
     {
       title: "Sanitized Implements & Brushes",
@@ -89,7 +89,7 @@ export function SafetyHygienePromise() {
     },
     {
       title: "Authentic Luxury Brands",
-      desc: "Zero diluted salon dupes. We use authentic sealed products from MAC, Kryolan, Huda, Rica, and O3+.",
+      desc: "Zero diluted salon dupes. We use authentic branded products from MAC, Kryolan, Huda, Rica, and O3+.",
     },
   ];
 

@@ -13,15 +13,15 @@ export const revalidate = 600;
 
 export const metadata: Metadata = buildMetadata({
   title: "About HerrGlow | Luxury Salon & Makeup Artists at Home in Delhi NCR",
-  description: "Learn how HerrGlow brings certified makeup artists, hospital-grade sealed hygiene kits, and authentic luxury cosmetics directly to your home in Delhi, Noida and Greater Noida.",
+  description: "Learn how HerrGlow brings certified makeup artists, sanitized salon setups, and authentic luxury cosmetics directly to your home in Delhi, Noida and Greater Noida.",
   path: "/about",
 });
 
 const PILLARS = [
   {
     icon: Sparkles,
-    title: "Hospital-Grade Hygiene",
-    desc: "Every appointment uses sealed, single-use disposable kits: fresh bedsheets, sanitized brushes, disposable gowns, and wooden wax spatulas opened in your presence.",
+    title: "Strict Hygiene & Cleanliness",
+    desc: "Every appointment adheres to strict hygiene: sanitized brushes, clean setup, sterilized tools, and authentic premium cosmetics.",
   },
   {
     icon: ShieldCheck,
@@ -100,16 +100,16 @@ export default async function AboutPage() {
                 <div className="relative aspect-[4/3] w-full overflow-hidden">
                   <Image
                     src="/images/about/hygiene-safety-kit.jpg"
-                    alt="HerrGlow sealed single-use hygiene safety kit and sterile mobile beauty station"
+                    alt="HerrGlow clean mobile beauty station and professional sanitized setup"
                     fill
                     sizes="(min-width: 1024px) 500px, 100vw"
                     className="object-cover"
                   />
                   <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-plum-950/85 via-plum-950/20 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-5 text-ivory">
-                    <Badge tone="gold" className="mb-2">Hospital-Grade Cleanliness</Badge>
-                    <p className="font-serif text-lg">Sealed Single-Use Hygiene Kit</p>
-                    <p className="mt-1 text-xs text-blush-100">Sterile pouches, fresh disposable gowns &amp; spatulas opened at your home</p>
+                    <Badge tone="gold" className="mb-2">Strict Hygiene &amp; Care</Badge>
+                    <p className="font-serif text-lg">Sanitized &amp; Clean Setup</p>
+                    <p className="mt-1 text-xs text-blush-100">Disinfected tools, fresh setup &amp; premium branded cosmetics at your home</p>
                   </div>
                 </div>
               </div>

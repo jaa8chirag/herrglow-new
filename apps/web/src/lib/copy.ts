@@ -10,7 +10,7 @@ export const CATEGORY_COPY: Record<string, { h1: string; title: string; descript
     h1: "Salon Services at Home",
     title: "Salon at Home: Waxing, Manicure, Pedicure & More",
     description: "Waxing, manicure, pedicure, massage and body polishing at home by trained beauticians. Hygienic, doorstep and fairly priced.",
-    intro: "Waxing, manicures, pedicures, body polishing and massages, delivered at your doorstep by trained beauticians using fresh, single-use supplies. Choose a service to compare wax types and options.",
+    intro: "Waxing, manicures, pedicures, body polishing and massages, delivered at your doorstep by trained beauticians using sanitized tools and authentic products. Choose a service to compare wax types and options.",
   },
   "facial-skincare": {
     h1: "Facial & Skincare at Home",

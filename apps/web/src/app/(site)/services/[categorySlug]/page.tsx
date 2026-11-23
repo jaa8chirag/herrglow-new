@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<CategoryPag
   }
 
   const title = cat.seoTitle || `${cat.name} at Home in Delhi, Noida & Greater Noida | HerrGlow`;
-  const description = cat.seoDescription || cat.shortDescription || `Explore our premium doorstep ${cat.name.toLowerCase()} services. 100% verified female beauticians, single-use sealed kits, and 10% advance deposit.`;
+  const description = cat.seoDescription || cat.shortDescription || `Explore our premium doorstep ${cat.name.toLowerCase()} services. 100% verified female beauticians, sanitized tools & authentic products, and 10% advance deposit.`;
 
   return buildMetadata({
     title,
@@ -51,7 +51,7 @@ const DEFAULT_CAT_FAQS = [
   },
   {
     question: "Do I need to arrange any equipment or products at home?",
-    answer: "No. Our visiting beauty professional brings everything needed, including sterilized tools, disposable sheets, single-use kits, and authentic salon-grade products. You only need a comfortable chair and access to a normal power outlet.",
+    answer: "No. Our visiting beauty professional brings everything needed, including sterilized tools, clean sheets, and authentic salon-grade products. You only need a comfortable chair and access to a normal power outlet.",
   },
   {
     question: "What are your payment terms and cancellation policies?",
@@ -124,7 +124,7 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
               </span>
               <span className="flex items-center gap-1.5">
                 <Check className="size-4 text-emerald-600 shrink-0" />
-                Single-Use Sealed Disposable Kits
+                Sanitized &amp; Clean Tools
               </span>
               <span className="flex items-center gap-1.5">
                 <Check className="size-4 text-emerald-600 shrink-0" />
@@ -163,7 +163,7 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
                 <div>
                   <h2 className="font-serif text-2xl font-bold text-plum-950">{sub.name}</h2>
                   <p className="text-xs text-ink-soft">
-                    Doorstep treatments for {cat.name} · Sealed kits &amp; verified specialists
+                    Doorstep treatments for {cat.name} · Verified specialists &amp; authentic products
                   </p>
                 </div>
                 <Badge tone="plum">{sub.services.length} {sub.services.length === 1 ? "Option" : "Options"}</Badge>
@@ -322,9 +322,9 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
               <span className="grid size-10 place-items-center rounded-full bg-gold-100 text-gold-700 mb-3">
                 <Sparkles className="size-5" />
               </span>
-              <h3 className="font-serif text-base font-bold text-plum-950">Sealed Disposable Kits</h3>
+              <h3 className="font-serif text-base font-bold text-plum-950">Sanitized Tools &amp; Clean Setup</h3>
               <p className="mt-2 text-xs leading-relaxed text-ink-soft">
-                Every appointment uses fresh single-use sheets, gloves, spatulas, and sanitized tools opened in front of you.
+                Every appointment uses thoroughly sanitized tools, clean towels, and authentic salon-grade products.
               </p>
             </div>
             <div className="rounded-2xl border border-line bg-white p-5 shadow-soft">

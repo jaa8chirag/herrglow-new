@@ -52,7 +52,7 @@ const DEFAULT_SLIDES: HeroSlide[] = [
     tag: "At-Home Salon",
     tagIcon: "shield",
     title: "Doorstep Salon & Pampering",
-    subtitle: "Sanitized single-use kits delivered directly to your living room",
+    subtitle: "Premium salon pampering delivered directly to your living room",
     highlight: "100% Verified Female Beauticians",
     href: "/contact#book",
     buttonText: "Book At-Home Visit",

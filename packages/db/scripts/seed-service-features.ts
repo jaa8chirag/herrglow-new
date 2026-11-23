@@ -323,7 +323,7 @@ const FEATURE_TEMPLATES: Record<string, string[]> = {
     "Cuticle softening, precision trimming & nail filing",
     "Dead skin scrub, heel pumice filing & calloused patch buffing",
     "Relaxing 15-minute hand & foot massage with nourishing cream",
-    "Single-use sanitized disposable tool kit & disposable tub liner",
+    "Sanitized tools, clean setup & disposable tub liner",
   ],
   "gel-nail-extensions": [
     "Nail prep, cuticle care & tip/form sculpting (Gel / Acrylic / Polygel)",
@@ -480,7 +480,7 @@ async function main() {
         items = [
           "Consultation with senior verified beauty professional",
           "100% authentic luxury products & sterilized tools",
-          "Fresh hospital-grade disposable kits provided",
+          "Clean hygienic setup & disinfected equipment provided",
           "Complete post-service cleanup leaving your home spotless",
           "Zero travel charges across Noida, Greater Noida & Delhi",
         ];

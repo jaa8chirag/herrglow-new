@@ -33,7 +33,7 @@ interface HeroProps {
             </Rise>
             <Rise delay={0.12}>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft sm:text-lg">
-                Experience five-star bridal glam and luxury salon pampering in the comfort and privacy of your home. 100% background-verified female beauticians, hospital-grade single-use kits, and transparent prices across {cityNames.length ? cityNames.join(", ") : "Delhi, Noida & Greater Noida"}.
+                Experience five-star bridal glam and luxury salon pampering in the comfort and privacy of your home. 100% background-verified female beauticians, sanitized equipment &amp; authentic products, and transparent prices across {cityNames.length ? cityNames.join(", ") : "Delhi, Noida & Greater Noida"}.
               </p>
             </Rise>
             <Rise delay={0.18} className="mt-8 flex flex-col sm:flex-row gap-3.5">
@@ -42,7 +42,7 @@ interface HeroProps {
             </Rise>
             <Rise delay={0.22} className="mt-6 grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:items-center sm:gap-x-5 sm:gap-y-2 text-xs font-semibold text-plum-900">
               <span className="flex items-center gap-1.5 rounded-lg bg-white/70 p-1.5 sm:p-0"><ShieldCheck className="size-4 text-emerald-600 shrink-0" /> 100% Female Verified</span>
-              <span className="flex items-center gap-1.5 rounded-lg bg-white/70 p-1.5 sm:p-0"><Sparkles className="size-4 text-gold-600 shrink-0" /> Sealed Single-Use Kits</span>
+              <span className="flex items-center gap-1.5 rounded-lg bg-white/70 p-1.5 sm:p-0"><Sparkles className="size-4 text-gold-600 shrink-0" /> 100% Authentic Products</span>
               <span className="flex items-center gap-1.5 rounded-lg bg-white/70 p-1.5 sm:p-0"><Wallet className="size-4 text-emerald-600 shrink-0" /> 10% Advance (100% Refund Guarantee)</span>
               <span className="flex items-center gap-1.5 rounded-lg bg-white/70 p-1.5 sm:p-0"><ShieldCheck className="size-4 text-plum-600 shrink-0" /> Zero Hidden Charges</span>
             </Rise>

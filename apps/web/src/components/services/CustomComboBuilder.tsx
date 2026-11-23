@@ -150,7 +150,7 @@ export function CustomComboBuilder({
             <ShieldCheck className="size-3.5 text-emerald-400" /> 100% Female Verified Beauticians
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1">
-            <Sparkles className="size-3.5 text-gold-400" /> Single-Use Sealed Kit Included
+            <Sparkles className="size-3.5 text-gold-400" /> Professional &amp; Hygienic Setup
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1">
             <Wallet className="size-3.5 text-emerald-400" /> Only 10% Advance Deposit
@@ -375,7 +375,7 @@ export function CustomComboBuilder({
                   </div>
                 )}
                 <div className="flex justify-between text-ink-soft">
-                  <span>Doorstep Travel &amp; Sanitation Kit</span>
+                  <span>Doorstep Travel &amp; Hygienic Setup</span>
                   <span className="text-emerald-700 font-bold uppercase text-[10px]">FREE</span>
                 </div>
                 <div className="flex justify-between border-t border-line/80 pt-2 text-sm font-bold text-plum-950">

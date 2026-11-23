@@ -21,8 +21,8 @@ export function TrustBadges() {
     },
     {
       icon: Sparkles,
-      title: "Hospital-Grade Sealed Kits",
-      desc: "Fresh disposable gowns, bedsheets, wooden spatulas & sealed strips opened in front of you.",
+      title: "Strict Cleanliness & Hygiene",
+      desc: "Sanitized tools, fresh clean setup, and meticulous hygiene protocols for every service.",
     },
     {
       icon: BadgeCheck,
@@ -193,7 +193,7 @@ export function PackagesBand({ items }: { items: PkgCard[] }) {
 const STEPS = [
   { icon: Search, title: "Choose a service", text: "Pick from bridal, party, facial, nails and more, with prices shown upfront." },
   { icon: CalendarCheck, title: "Book your slot", text: "Share your area and date. We confirm an artist covers your location." },
-  { icon: DoorOpen, title: "Artist at your door", text: "A verified artist arrives with a clean, complete kit and sets up at home." },
+  { icon: DoorOpen, title: "Artist at your door", text: "A verified artist arrives with sanitized tools and clean setup at home." },
   { icon: Sparkles, title: "Glow", text: "Step out camera-ready, or simply enjoy the self-care, without the travel." },
 ];
 export function HowItWorks() {

@@ -100,7 +100,7 @@ const AREA_INFO: Record<string, { label: string; tag: string; discountPct: numbe
     label: "All Delhi NCR",
     tag: "Delhi NCR Coverage",
     discountPct: 0,
-    highlight: "Free doorstep artist arrival across Noida, Greater Noida, and Delhi with 100% sanitized kits.",
+    highlight: "Free doorstep artist arrival across Noida, Greater Noida, and Delhi with sanitized tools & setup.",
   },
   noida: {
     label: "Noida (Sectors 18, 50, 62, 76, 137)",
@@ -342,7 +342,7 @@ export function ServiceExplorer({
                 {group.name}
               </h2>
               <p className="text-xs text-ink-soft">
-                Verified doorstep treatments for {areaMeta.label} · 100% single-use sealed kits
+                Verified doorstep treatments for {areaMeta.label} · 100% authentic products
               </p>
             </div>
             <span className="rounded-full bg-blush-100 px-3 py-1 text-xs font-semibold text-plum-800">

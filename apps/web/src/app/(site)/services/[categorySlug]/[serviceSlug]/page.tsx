@@ -52,7 +52,7 @@ const DEFAULT_FAQS = [
   },
   {
     question: "Is there any travel fee or extra hidden charge for my area?",
-    answer: "No. Zero hidden charges. All prices shown on our website include travel, artist fees, and single-use disposable kits across all areas we serve in Noida, Greater Noida, and Delhi.",
+    answer: "No. Zero hidden charges. All prices shown on our website include travel, artist fees, and authentic products across all areas we serve in Noida, Greater Noida, and Delhi.",
   },
   {
     question: "What do I need to keep ready at home before the artist arrives?",
