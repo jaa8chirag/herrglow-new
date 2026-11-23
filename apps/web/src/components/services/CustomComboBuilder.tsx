@@ -40,12 +40,16 @@ const POPULAR_COMBO_SERVICES: ComboItem[] = [
   { id: "ff-thread", slug: "full-face-threading", title: "Full Face Threading", category: "face", categoryLabel: "Face & Grooming", price: 179, duration: "25 min" },
   { id: "ff-wax", slug: "full-face-wax", title: "Full Face Wax (Peel-Off)", category: "face", categoryLabel: "Face & Grooming", price: 279, duration: "30 min" },
 
-  // Waxing
+  // Waxing (Honey Regular & Rica Liposoluble)
   { id: "ua-wax", slug: "underarms-waxing", title: "Underarms Waxing", category: "waxing", categoryLabel: "Waxing", price: 99, duration: "10 min", isAddon: true },
+  { id: "ua-wax-rica", slug: "underarms-waxing", title: "Rica Underarms Waxing", category: "waxing", categoryLabel: "Waxing", price: 149, duration: "10 min", isAddon: true },
   { id: "fa-wax", slug: "full-arms-waxing", title: "Full Arms Waxing (Honey)", category: "waxing", categoryLabel: "Waxing", price: 299, duration: "25 min" },
+  { id: "fa-wax-rica", slug: "full-arms-waxing", title: "Full Arms Waxing (Rica White Chocolate)", category: "waxing", categoryLabel: "Waxing", price: 449, duration: "25 min" },
   { id: "fl-wax", slug: "full-legs-waxing", title: "Full Legs Waxing (Honey)", category: "waxing", categoryLabel: "Waxing", price: 399, duration: "35 min" },
+  { id: "fl-wax-rica", slug: "full-legs-waxing", title: "Full Legs Waxing (Rica White Chocolate)", category: "waxing", categoryLabel: "Waxing", price: 599, duration: "35 min" },
   { id: "hl-wax", slug: "half-legs-waxing", title: "Half Legs Waxing", category: "waxing", categoryLabel: "Waxing", price: 249, duration: "20 min" },
   { id: "fb-wax", slug: "full-body-waxing", title: "Full Body Waxing Combo", category: "waxing", categoryLabel: "Waxing", price: 1199, duration: "75 min" },
+  { id: "fb-wax-rica", slug: "full-body-waxing", title: "Rica Liposoluble Full Body Wax", category: "waxing", categoryLabel: "Waxing", price: 1899, duration: "75 min" },
   { id: "detan-face", slug: "face-neck-detan", title: "Face & Neck Herbal De-Tan Pack", category: "waxing", categoryLabel: "Waxing", price: 299, duration: "20 min" },
 
   // Facials & Cleanup
@@ -162,6 +166,27 @@ export function CustomComboBuilder({
       <div className="grid gap-8 lg:grid-cols-[1.3fr_0.9fr] items-start">
         {/* Left Column: Category Filter & Services Grid */}
         <div className="space-y-6">
+          {/* Bestseller Monthly Package Shortcut Banner */}
+          <div className="rounded-2xl border border-gold-400/60 bg-gradient-to-r from-plum-950 via-plum-900 to-plum-950 p-4 text-ivory shadow-soft flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="space-y-1">
+              <span className="inline-flex items-center gap-1 rounded-md bg-gold-400/20 border border-gold-400/40 px-2 py-0.5 text-[10px] font-bold text-gold-300">
+                <Sparkles className="size-3 text-gold-400" /> Bestseller Pre-Built Combo
+              </span>
+              <h4 className="font-serif text-sm font-bold text-white">
+                Monthly Grooming Essentials Package @ ₹999
+              </h4>
+              <p className="text-[11px] text-blush-100/80 leading-snug">
+                Full Arms + Full Legs + Underarms Waxing, Eyebrow &amp; Upper Lip Threading + Fruit Glow Cleanup.
+              </p>
+            </div>
+            <Link
+              href="/services/waxing/monthly-grooming-essentials-package"
+              className={cn(buttonStyles({ variant: "shimmer", size: "sm" }), "shrink-0 text-xs font-bold w-full sm:w-auto")}
+            >
+              Book Package @ ₹999 →
+            </Link>
+          </div>
+
           {/* Category Tabs */}
           <div className="flex flex-wrap gap-2 pb-2">
             {[

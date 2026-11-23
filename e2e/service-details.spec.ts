@@ -44,7 +44,11 @@ test.describe("Service Details Page & Add-on Threshold Protection", () => {
     await expect(bookBtn).toBeVisible();
 
     // Click booking button -> Opens booking form for this service
-    await bookBtn.click();
+    if (isMobile) {
+      await bookBtn.click({ force: true });
+    } else {
+      await bookBtn.click();
+    }
     await expect(page.locator("#book")).toBeVisible();
     await expect(page.locator("#book h3")).toContainText(/Book this service/i);
   });

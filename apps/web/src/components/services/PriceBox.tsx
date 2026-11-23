@@ -1,27 +1,233 @@
 "use client";
 
-import { Check, Clock, MessageCircle, ShieldCheck, Sparkles, Wallet, X } from "lucide-react";
+import { Check, Clock, HelpCircle, Info, MessageCircle, ShieldCheck, Sparkles, Wallet, X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Drawer, DrawerShell, Price, buttonStyles, cn } from "@herrglow/ui";
 import { whatsappLink } from "@/lib/whatsapp";
 
 export interface PriceOption { name: string; price: number | null; offerPrice: number | null; duration: string | null }
 
-const pick = (name: string) => window.dispatchEvent(new CustomEvent("hg-variant", { detail: name }));
+const pick = (name: string) => {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("hg-variant", { detail: name }));
+  }
+};
+
 const toForm = () => {
   const el = document.getElementById("book");
   el?.scrollIntoView({ behavior: "smooth", block: "start" });
   setTimeout(() => el?.querySelector<HTMLElement>("button,input,select")?.focus({ preventScroll: true }), 600);
 };
 
-function Options({ options, selected, onSelect }: { options: PriceOption[]; selected: string; onSelect: (n: string) => void }) {
+interface WaxInfo {
+  icon: string;
+  badge: string;
+  formula: string;
+  tagTone: string;
+  summary: string;
+}
+
+function getWaxMeta(name: string): WaxInfo | null {
+  const lower = name.toLowerCase();
+  if (lower.includes("rica") || lower.includes("chocolate") || lower.includes("liposoluble")) {
+    return {
+      icon: "🍫",
+      badge: "⭐ Delhi NCR Bestseller",
+      formula: "Italian Liposoluble · Anti-Tan",
+      tagTone: "border-amber-300 bg-amber-100 text-amber-900",
+      summary: "98% Colophony-free Italian formula. Pulls roots smoothly with minimal pain, prevents redness, lifts deep tanning, and leaves zero sticky residue.",
+    };
+  }
+  if (lower.includes("roll-on") || lower.includes("rollon") || lower.includes("cartridge")) {
+    return {
+      icon: "🧴",
+      badge: "Zero-Spill · Fast & Clean",
+      formula: "Single-Client Sealed Roller",
+      tagTone: "border-sky-300 bg-sky-100 text-sky-900",
+      summary: "Pre-heated single-client roller cartridge. Zero wax drips on sheets or clothes, 25% faster service, and 100% untouched hygienic application.",
+    };
+  }
+  if (lower.includes("honey") || lower.includes("regular") || lower.includes("smooth")) {
+    return {
+      icon: "🍯",
+      badge: "Classic Budget Friendly",
+      formula: "Warm Sugar-Honey Wax",
+      tagTone: "border-amber-200 bg-amber-50 text-amber-800",
+      summary: "Warm water-soluble wax enriched with honey and lemon. Ideal for normal skin types and routine monthly maintenance at pocket-friendly pricing.",
+    };
+  }
+  return null;
+}
+
+function WaxOptions({
+  options,
+  selected,
+  onSelect,
+}: {
+  options: PriceOption[];
+  selected: string;
+  onSelect: (n: string) => void;
+}) {
+  const [showComparison, setShowComparison] = useState(false);
+  const selectedMeta = getWaxMeta(selected) ?? getWaxMeta(options[0]?.name ?? "");
+
+  return (
+    <fieldset className="grid gap-3">
+      <div className="flex items-center justify-between">
+        <legend className="text-sm font-bold text-plum-950 flex items-center gap-1.5">
+          <span>Choose Wax Formula</span>
+          <span className="rounded-full border border-rose-300 bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-800">
+            Rica vs Honey
+          </span>
+        </legend>
+        <button
+          type="button"
+          onClick={() => setShowComparison(!showComparison)}
+          className="inline-flex items-center gap-1 text-xs font-semibold text-rose-700 hover:text-rose-900 transition underline underline-offset-2 cursor-pointer"
+        >
+          <HelpCircle className="size-3.5" />
+          <span>{showComparison ? "Hide Guide" : "Compare Formulas"}</span>
+        </button>
+      </div>
+
+      {/* Comparison Drawer / Collapsible Box */}
+      {showComparison && (
+        <div className="rounded-2xl border border-gold-300/80 bg-blush-50/90 p-3.5 text-xs text-plum-950 space-y-2.5 transition animate-in fade-in duration-200">
+          <p className="font-bold text-plum-900 flex items-center gap-1.5">
+            <Sparkles className="size-3.5 text-gold-600" />
+            Which wax is right for your skin?
+          </p>
+          <div className="grid grid-cols-3 gap-2 text-[11px] text-center">
+            <div className="rounded-xl border border-line bg-white p-2">
+              <span className="text-base block">🍯</span>
+              <p className="font-bold text-plum-900 mt-1">Honey</p>
+              <p className="text-[10px] text-ink-soft mt-0.5">Normal skin · Budget routine</p>
+            </div>
+            <div className="rounded-xl border border-amber-300 bg-amber-50/80 p-2">
+              <span className="text-base block">🍫</span>
+              <p className="font-bold text-amber-950 mt-1">Rica Liposoluble</p>
+              <p className="text-[10px] text-amber-800 mt-0.5">Sensitive skin · Anti-tan</p>
+            </div>
+            <div className="rounded-xl border border-sky-300 bg-sky-50/80 p-2">
+              <span className="text-base block">🧴</span>
+              <p className="font-bold text-sky-950 mt-1">Rica Roll-on</p>
+              <p className="text-[10px] text-sky-800 mt-0.5">Zero mess · Quick &amp; clean</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Wax Type Cards */}
+      <div className="grid gap-2">
+        {options.map((o) => {
+          const meta = getWaxMeta(o.name);
+          const isChecked = selected === o.name;
+
+          return (
+            <label
+              key={o.name}
+              className={cn(
+                "group relative flex cursor-pointer items-center justify-between gap-3 rounded-2xl border p-3 sm:p-3.5 transition select-none",
+                isChecked
+                  ? "border-plum-800 bg-blush-50/90 shadow-soft ring-2 ring-plum-700/20"
+                  : "border-line bg-white hover:border-plum-300 hover:bg-blush-50/40"
+              )}
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <input
+                  type="radio"
+                  name="price-option"
+                  checked={isChecked}
+                  onChange={() => onSelect(o.name)}
+                  className="size-4 shrink-0 accent-[var(--color-plum-700)] cursor-pointer"
+                />
+                <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white border border-line text-lg shadow-xs">
+                  {meta?.icon ?? "✨"}
+                </span>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="block font-bold text-sm text-plum-950 truncate">
+                      {o.name}
+                    </span>
+                    {meta?.badge && (
+                      <span className={cn("rounded-md border px-1.5 py-0.5 text-[9px] font-bold shrink-0", meta.tagTone)}>
+                        {meta.badge}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 text-[11px] text-ink-soft mt-0.5">
+                    {meta?.formula && <span>{meta.formula}</span>}
+                    {o.duration && (
+                      <>
+                        <span>•</span>
+                        <span className="flex items-center gap-0.5">
+                          <Clock className="size-3" />
+                          {o.duration}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="shrink-0 text-right pl-2">
+                <Price price={o.price} offerPrice={o.offerPrice} />
+              </div>
+            </label>
+          );
+        })}
+      </div>
+
+      {/* Active Formula Benefit Notice */}
+      {selectedMeta && (
+        <div className="mt-1 rounded-2xl border border-plum-200/60 bg-blush-50/70 p-3 text-xs text-plum-950 space-y-1">
+          <div className="flex items-center gap-1.5 font-bold text-plum-900">
+            <Sparkles className="size-3.5 text-rose-600 shrink-0" />
+            <span>Formula Benefit: {selectedMeta.formula}</span>
+          </div>
+          <p className="text-[11px] leading-relaxed text-ink-soft">
+            {selectedMeta.summary}
+          </p>
+        </div>
+      )}
+    </fieldset>
+  );
+}
+
+function StandardOptions({
+  options,
+  selected,
+  onSelect,
+}: {
+  options: PriceOption[];
+  selected: string;
+  onSelect: (n: string) => void;
+}) {
   return (
     <fieldset className="grid gap-2">
       <legend className="mb-2 text-sm font-medium text-plum-900">Choose an option</legend>
       {options.map((o) => (
-        <label key={o.name} className={cn("flex min-h-14 cursor-pointer items-center justify-between gap-3 rounded-2xl border px-4 py-2 transition", selected === o.name ? "border-plum-700 bg-blush-50 ring-2 ring-blush-200" : "border-line bg-white hover:bg-blush-50/60")}>
-          <span className="flex items-center gap-3"><input type="radio" name="price-option" checked={selected === o.name} onChange={() => onSelect(o.name)} className="size-4 accent-[var(--color-plum-700)]" /><span><span className="block font-medium text-plum-900">{o.name}</span>{o.duration && <span className="text-xs text-ink-soft">{o.duration}</span>}</span></span>
+        <label
+          key={o.name}
+          className={cn(
+            "flex min-h-14 cursor-pointer items-center justify-between gap-3 rounded-2xl border px-4 py-2 transition",
+            selected === o.name ? "border-plum-700 bg-blush-50 ring-2 ring-blush-200" : "border-line bg-white hover:bg-blush-50/60"
+          )}
+        >
+          <span className="flex items-center gap-3">
+            <input
+              type="radio"
+              name="price-option"
+              checked={selected === o.name}
+              onChange={() => onSelect(o.name)}
+              className="size-4 accent-[var(--color-plum-700)] cursor-pointer"
+            />
+            <span>
+              <span className="block font-medium text-plum-900">{o.name}</span>
+              {o.duration && <span className="text-xs text-ink-soft">{o.duration}</span>}
+            </span>
+          </span>
           <Price price={o.price} offerPrice={o.offerPrice} />
         </label>
       ))}
@@ -52,27 +258,67 @@ export function PriceBox({
 }) {
   const [sel, setSel] = useState(options[0]?.name ?? "");
   const [open, setOpen] = useState(false);
+
+  // Dispatch initial variant to booking form on mount
+  useEffect(() => {
+    if (options[0]?.name) {
+      pick(options[0].name);
+    }
+  }, [options]);
+
   const cur = options.find((o) => o.name === sel);
   const shownPrice = cur ? { price: cur.price, offer: cur.offerPrice } : { price, offer: offerPrice };
-  const choose = (n: string) => { setSel(n); pick(n); };
+  const choose = (n: string) => {
+    setSel(n);
+    pick(n);
+  };
+
+  const isWaxCategory =
+    options.some((o) => Boolean(getWaxMeta(o.name))) || /wax/i.test(title);
 
   const currentPrice = Number(shownPrice.offer ?? shownPrice.price ?? 0);
   const isAddonUnderThreshold = currentPrice > 0 && currentPrice < 499;
 
-  const finalPriceStr = shownPrice.offer ? `₹${Math.round(shownPrice.offer).toLocaleString("en-IN")}` : shownPrice.price ? `₹${Math.round(shownPrice.price).toLocaleString("en-IN")}` : "";
+  const finalPriceStr = shownPrice.offer
+    ? `₹${Math.round(shownPrice.offer).toLocaleString("en-IN")}`
+    : shownPrice.price
+    ? `₹${Math.round(shownPrice.price).toLocaleString("en-IN")}`
+    : "";
+
   const wa = whatsappLink(
     whatsappNumber || "9319260069",
     `Hi HerrGlow! I'm interested in booking ${title}${sel ? ` (${sel})` : ""}${finalPriceStr ? ` for ${finalPriceStr}` : ""}. Could you please share artist availability and details?`
   );
 
+  const optionsNode =
+    options.length > 0 ? (
+      isWaxCategory ? (
+        <WaxOptions options={options} selected={sel} onSelect={choose} />
+      ) : (
+        <StandardOptions options={options} selected={sel} onSelect={choose} />
+      )
+    ) : null;
+
   const body = (
     <div className="grid gap-5">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-rose-700">{options.length > 1 ? "Price for your option" : "Price"}</p>
-        <Price price={shownPrice.price} offerPrice={shownPrice.offer} label={options.length > 1 ? undefined : label} className="mt-1 [&>span:nth-child(2)]:text-3xl" />
-        {(cur?.duration ?? duration) && <p className="mt-2 flex items-center gap-1.5 text-sm text-ink-soft"><Clock className="size-4" />{cur?.duration ?? duration}</p>}
+        <p className="text-xs font-semibold uppercase tracking-wider text-rose-700">
+          {options.length > 1 ? "Price for your option" : "Price"}
+        </p>
+        <Price
+          price={shownPrice.price}
+          offerPrice={shownPrice.offer}
+          label={options.length > 1 ? undefined : label}
+          className="mt-1 [&>span:nth-child(2)]:text-3xl"
+        />
+        {(cur?.duration ?? duration) && (
+          <p className="mt-2 flex items-center gap-1.5 text-sm text-ink-soft">
+            <Clock className="size-4" />
+            {cur?.duration ?? duration}
+          </p>
+        )}
       </div>
-      {options.length > 0 && <Options options={options} selected={sel} onSelect={choose} />}
+      {optionsNode}
     </div>
   );
 
@@ -152,9 +398,9 @@ export function PriceBox({
         </div>
       </div>
 
-      {/* Mobile Unified Floating Bottom Action Dock (Clean, Single Cohesive Card, No Loose Badges) */}
+      {/* Mobile Unified Floating Bottom Action Dock */}
       <Drawer.Root open={open} onOpenChange={setOpen}>
-        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex flex-col items-center px-3 pb-[max(0.6rem,env(safe-area-inset-bottom))] lg:hidden">
+        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex flex-col items-center px-3 pb-[max(0.6rem,env(safe-area-inset-bottom))] lg:hidden">
           <div className="pointer-events-auto w-full max-w-md overflow-hidden rounded-2xl border border-gold-400/40 bg-ivory/95 shadow-lift backdrop-blur-xl">
             {/* Integrated Luxury Trust Banner */}
             <div className="flex items-center justify-center gap-1.5 bg-gradient-to-r from-plum-950 via-plum-900 to-plum-950 px-3 py-1 text-[10px] font-semibold tracking-wide text-gold-300">
@@ -164,7 +410,7 @@ export function PriceBox({
 
             {/* Unified Action Dock */}
             <div className="flex items-center gap-2 p-2">
-              {/* Price & Option selector: Tapping opens option picker sheet if variants exist */}
+              {/* Price & Option selector */}
               <button
                 type="button"
                 onClick={() => (options.length > 1 ? setOpen(true) : toForm())}
@@ -190,7 +436,7 @@ export function PriceBox({
               <button
                 type="button"
                 onClick={toForm}
-                className={cn(buttonStyles({ variant: "shimmer", size: "sm" }), "h-11 px-3.5 text-xs font-bold shrink-0")}
+                className={cn(buttonStyles({ variant: "shimmer", size: "sm" }), "pointer-events-auto h-11 px-3.5 text-xs font-bold shrink-0")}
               >
                 {isAddonUnderThreshold ? "Book (Min ₹499)" : "Book Now"}
               </button>
@@ -213,7 +459,7 @@ export function PriceBox({
 
         {/* Bottom Drawer for Variant Selection */}
         <DrawerShell title={`Select Option: ${title}`} direction="bottom">
-          <div className="overflow-y-auto p-5 pb-7">
+          <div className="overflow-y-auto p-5 pb-7 max-h-[80vh]">
             <div className="mb-4 flex items-start justify-between gap-3">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-rose-700">Customize Service</p>
@@ -229,7 +475,7 @@ export function PriceBox({
                 </button>
               </Drawer.Close>
             </div>
-            {options.length > 0 && <Options options={options} selected={sel} onSelect={choose} />}
+            {optionsNode}
             <div className="mt-4 space-y-1.5 rounded-2xl border border-blush-200/60 bg-blush-50/80 p-3 text-xs text-plum-900">
               <p className="flex items-center gap-2 font-medium text-emerald-800">
                 <ShieldCheck className="size-4 shrink-0 text-emerald-600" />

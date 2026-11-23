@@ -239,7 +239,7 @@ export async function getHomeExtras() {
   const [cov, services, packages, gallery, areaCoverage, tAgg] = await Promise.all([
     prisma.proCoverage.findMany({ where: { pro: { status: "ACTIVE" }, area: { citySlug: { in: citySlugs }, status: "ACTIVE" } }, select: { proId: true, areaId: true, area: { select: { citySlug: true } } } }),
     prisma.service.count({ where: liveService }),
-    prisma.service.findMany({ where: { ...liveService, isPackage: true }, orderBy: [{ leadCount: "desc" }, { sort: "asc" }], select: { id: true, slug: true, title: true, shortDescription: true, price: true, offerPrice: true, duration: true, image: true, imageAlt: true, features: true, leadCount: true, variants: { select: { price: true, offerPrice: true } } } }),
+    prisma.service.findMany({ where: { ...liveService, isPackage: true }, orderBy: [{ leadCount: "desc" }, { sort: "asc" }], select: { id: true, slug: true, title: true, shortDescription: true, price: true, offerPrice: true, duration: true, image: true, imageAlt: true, features: true, leadCount: true, category: { select: { slug: true } }, variants: { select: { price: true, offerPrice: true } } } }),
     prisma.galleryItem.findMany({ where: { status: "ACTIVE", mediaType: "IMAGE", mediaPath: { not: null } }, orderBy: { sort: "asc" }, select: { id: true, title: true, mediaPath: true, alt: true, category: true } }),
     prisma.area.count({ where: { citySlug: { in: citySlugs }, status: "ACTIVE", coverage: { some: { pro: { status: "ACTIVE" } } } } }),
     prisma.testimonial.aggregate({ where: { status: "ACTIVE" }, _avg: { rating: true }, _count: true }),

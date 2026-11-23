@@ -33,10 +33,21 @@ export default async function HomePage() {
 
   // packages (bundle services). The flagship bridal bundle leads and carries the "most popular" badge.
   const FLAGSHIP = "complete-bridal-package";
-  const pkgs = [...extras.packages].sort((a, b) => (b.slug === FLAGSHIP ? 1 : 0) - (a.slug === FLAGSHIP ? 1 : 0) || b.leadCount - a.leadCount).slice(0, 4).map((p) => ({
-    slug: p.slug, title: p.title, image: img(p.image), price: num(p.price), offerPrice: lowest(p.offerPrice, ...p.variants.map((v) => v.offerPrice)) ?? num(p.offerPrice),
-    included: (p.features ?? "").split(/\r?\n|;|•/).map((x) => x.trim()).filter(Boolean), popular: p.slug === FLAGSHIP, href: `/services/${p.slug}`,
-  }));
+  const MONTHLY = "monthly-grooming-essentials-package";
+  const pkgs = [...extras.packages]
+    .filter((p) => p.slug !== MONTHLY)
+    .sort((a, b) => (b.slug === FLAGSHIP ? 1 : 0) - (a.slug === FLAGSHIP ? 1 : 0) || b.leadCount - a.leadCount)
+    .slice(0, 4)
+    .map((p) => ({
+      slug: p.slug,
+      title: p.title,
+      image: img(p.image),
+      price: num(p.price),
+      offerPrice: lowest(p.offerPrice, ...p.variants.map((v) => v.offerPrice)) ?? num(p.offerPrice),
+      included: (p.features ?? "").split(/\r?\n|;|•/).map((x) => x.trim()).filter(Boolean),
+      popular: p.slug === FLAGSHIP,
+      href: p.category?.slug ? `/services/${p.category.slug}/${p.slug}` : `/packages/${p.slug}`,
+    }));
 
   // looks / before-after: only REAL images. A before/after slider needs images an admin has explicitly paired ("Before: X" + "After: X").
   const gallery = extras.gallery.map((g) => ({ title: g.title, src: img(g.mediaPath), alt: g.alt || g.title })).filter((g): g is { title: string; src: string; alt: string } => !!g.src);
