@@ -10,6 +10,7 @@ export function StickyDock({ whatsapp, phone, waText }: { whatsapp: string | nul
   const pathname = usePathname();
   const isServiceDetailPage = /^\/services\/[^/]+\/[^/]+$/.test(pathname ?? "");
   if (
+    pathname?.startsWith("/contact") ||
     pathname?.startsWith("/join-as-beautician") ||
     pathname?.startsWith("/admin") ||
     isServiceDetailPage
@@ -24,7 +25,7 @@ export function StickyDock({ whatsapp, phone, waText }: { whatsapp: string | nul
         {/* Integrated Luxury Trust Banner */}
         <div className="flex items-center justify-center gap-1.5 bg-gradient-to-r from-plum-950 via-plum-900 to-plum-950 px-3 py-1 text-[10px] font-semibold tracking-wide text-gold-300">
           <ShieldCheck className="size-3 shrink-0 text-gold-400" />
-          <span className="truncate">100% Female Verified · 10% Advance · 100% Refund Guarantee</span>
+          <span className="truncate">100% Female Verified · 100% Refund Guarantee</span>
         </div>
 
         {/* Action Row */}

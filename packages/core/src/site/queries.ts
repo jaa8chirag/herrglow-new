@@ -442,7 +442,7 @@ export async function getMegaMenu() {
       services: {
         where: liveService,
         orderBy: [{ sort: "asc" }, { leadCount: "desc" }],
-        take: 16,
+        take: 50,
         select: pick,
       },
     },

@@ -23,8 +23,17 @@ export function PageHero({ crumbs, eyebrow, title, intro, image, children, class
             {children && <Rise delay={0.16} className="mt-3">{children}</Rise>}
           </div>
           {image && (
-            <Rise delay={0.08} className="hidden lg:block">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] border-4 border-ivory shadow-lift"><Photo src={image.src} alt={image.alt} kind={image.kind} seedKey={image.seedKey} priority sizes="40vw" /></div>
+            <Rise delay={0.08} className="mt-3 block lg:mt-0">
+              <div className="relative aspect-[16/10] sm:aspect-[16/9] lg:aspect-[4/3] overflow-hidden rounded-2xl lg:rounded-[1.75rem] border-2 sm:border-4 border-ivory shadow-lift">
+                <Photo
+                  src={image.src}
+                  alt={image.alt}
+                  kind={image.kind}
+                  seedKey={image.seedKey}
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 40vw"
+                />
+              </div>
             </Rise>
           )}
         </div>

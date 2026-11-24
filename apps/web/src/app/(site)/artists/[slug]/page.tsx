@@ -49,7 +49,9 @@ export default async function ProPage(props: PageProps<"/artists/[slug]">) {
           <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-plum-950/40 via-plum-950/15 to-ivory" />
         </div>
         <Container className="relative -mt-24 sm:-mt-28">
-          <Breadcrumbs items={[{ name: covered[0]?.name ?? "Artists", path: covered[0] ? urls.cityHub(covered[0].slug) : "/" }, { name: pro.name, path }]} />
+          <div className="mb-3 inline-flex items-center rounded-full bg-ivory/95 px-3 py-1 shadow-sm backdrop-blur-md border border-line/60">
+            <Breadcrumbs items={[{ name: covered[0]?.name ?? "Artists", path: covered[0] ? urls.cityHub(covered[0].slug) : "/" }, { name: pro.name, path }]} className="mb-0" />
+          </div>
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end">
             <div className="relative size-36 shrink-0 overflow-hidden rounded-[1.75rem] border-4 border-ivory bg-blush-100 shadow-lift sm:size-44">
               {photo ? <Image src={photo} alt={`${pro.name}, ${role}`} fill sizes="176px" className="object-cover" priority /> : <FallbackArt kind="artist" seed={slug.length + 1} />}

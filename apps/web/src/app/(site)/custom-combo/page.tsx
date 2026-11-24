@@ -20,7 +20,6 @@ export default async function CustomComboPage() {
       <Container className="space-y-6">
         <Breadcrumbs
           items={[
-            { name: "Home", path: "/" },
             { name: "Packages", path: "/packages" },
             { name: "Make Your Own Combo", path: "/custom-combo" },
           ]}

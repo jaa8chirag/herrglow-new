@@ -49,12 +49,41 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         );
       };
 
-      const bridal = svcs.filter((s) => !isPartyOrFamily(s.title, s.slug));
-      const nonBridal = svcs.filter((s) => isPartyOrFamily(s.title, s.slug));
+      // Exclude localized landing slugs/titles (e.g., " in Gaur City") from top navigation
+      const validSvcs = svcs.filter((s) => !s.title.includes(" in "));
+
+      const bridal = validSvcs.filter((s) => !isPartyOrFamily(s.title, s.slug));
+      const nonBridal = validSvcs.filter((s) => isPartyOrFamily(s.title, s.slug));
+
+      // Curated ranking for bridal navigation: Complete signature bridal first, then HD, then Airbrush, then Bridal trial/artist
+      const bridalPriority = (sSlug: string) => {
+        if (sSlug.includes("complete-bridal")) return 1;
+        if (sSlug.includes("hd-bridal")) return 2;
+        if (sSlug.includes("airbrush-bridal")) return 3;
+        if (sSlug.includes("bridal-makeup-artist")) return 4;
+        if (sSlug.includes("trial")) return 5;
+        return 10;
+      };
+      const sortedBridal = [...bridal].sort(
+        (a, b) => bridalPriority(a.slug) - bridalPriority(b.slug)
+      );
+
+      // Curated ranking for non-bridal navigation: Party makeup & hair, then bridesmaid & family, then sangeet & glam, then draping
+      const nonBridalPriority = (sSlug: string) => {
+        if (sSlug === "party-makeup-and-hair") return 1;
+        if (sSlug.includes("bridesmaid")) return 2;
+        if (sSlug.includes("sangeet") || sSlug.includes("family-glam")) return 3;
+        if (sSlug.includes("saree") || sSlug.includes("draping")) return 4;
+        if (sSlug === "hd-party-makeup") return 5;
+        return 10;
+      };
+      const sortedNonBridal = [...nonBridal].sort(
+        (a, b) => nonBridalPriority(a.slug) - nonBridalPriority(b.slug)
+      );
 
       const services = [
-        ...bridal.slice(0, 4).map((x) => ({ slug: x.slug, title: x.title, group: "👰 For The Bride (Bridal)" })),
-        ...nonBridal.slice(0, 4).map((x) => ({ slug: x.slug, title: x.title, group: "✨ Non-Bridal (Bridesmaids, Mother & Sister)" })),
+        ...sortedBridal.slice(0, 4).map((x) => ({ slug: x.slug, title: x.title, group: "👰 For The Bride (Bridal)" })),
+        ...sortedNonBridal.slice(0, 4).map((x) => ({ slug: x.slug, title: x.title, group: "✨ Non-Bridal (Bridesmaids, Mother & Sister)" })),
       ];
 
       return {

@@ -47,7 +47,39 @@ export async function proxy(req: NextRequest) {
       // (at most every 5 s) before answering gone.
       if (d.kind === "gone" && cache && Date.now() - cache.at > 5_000) d = decideLegacy(pathname, await context(true));
       if (d.kind === "redirect") return NextResponse.redirect(new URL(d.to + search, req.nextUrl.origin), d.code);
-      if (d.kind === "gone") return noindex(new NextResponse("Gone", { status: 410 }));
+      if (d.kind === "gone") {
+        const goneHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Service Retired | HerrGlow Luxury Salon</title>
+  <style>
+    body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #FAF6F0; color: #2D1124; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; text-align: center; }
+    .card { background: #FFFFFF; border: 1px solid #EADBCE; border-radius: 24px; padding: 48px 32px; max-width: 480px; box-shadow: 0 10px 30px rgba(45,17,36,0.06); }
+    .badge { display: inline-block; padding: 4px 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 9999px; background: #FDE8ED; color: #B52B52; margin-bottom: 20px; }
+    h1 { font-family: serif; font-size: 28px; margin: 0 0 12px; color: #2D1124; }
+    p { font-size: 14px; line-height: 1.6; color: #66505D; margin: 0 0 28px; }
+    .btn { display: inline-block; padding: 12px 28px; font-size: 14px; font-weight: 600; color: #FFFFFF; background: linear-gradient(135deg, #B52B52 0%, #8A1C3C 100%); border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px rgba(181,43,82,0.3); }
+    .btn:hover { opacity: 0.95; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="badge">Discontinued Service</div>
+    <h1>This Service is No Longer Offered</h1>
+    <p>We regularly refine our salon menu to deliver the highest standard of luxury doorstep beauty. Explore our updated signature services across Delhi NCR.</p>
+    <a href="/services" class="btn">Explore All Services →</a>
+  </div>
+</body>
+</html>`;
+        return noindex(
+          new NextResponse(goneHtml, {
+            status: 410,
+            headers: { "Content-Type": "text/html; charset=utf-8" },
+          })
+        );
+      }
     } catch {
       // never take the site down because the rules lookup failed
     }

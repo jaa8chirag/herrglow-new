@@ -323,7 +323,7 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
                                         <li key={s.slug}>
                                           <Drawer.Close asChild>
                                             <Link
-                                              href={`/services/${s.slug}`}
+                                              href={`/services/${c.slug}/${s.slug}`}
                                               className="flex items-center min-h-[40px] rounded-lg px-2.5 py-1.5 text-sm text-ink-soft hover:bg-white active:bg-white"
                                             >
                                               {s.title}
@@ -351,7 +351,7 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
                                   <li key={s.slug}>
                                     <Drawer.Close asChild>
                                       <Link
-                                        href={`/services/${s.slug}`}
+                                        href={`/services/${c.slug}/${s.slug}`}
                                         className="flex items-center min-h-[40px] rounded-lg px-3 py-2 text-ink-soft hover:bg-white"
                                       >
                                         {s.title}
@@ -502,7 +502,7 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
                             {items.map((s) => (
                               <li key={s.slug}>
                                 <Link
-                                  href={`/services/${s.slug}`}
+                                  href={`/services/${cur.slug}/${s.slug}`}
                                   className="group flex items-center justify-between rounded-xl px-2.5 py-1.5 text-sm text-ink hover:bg-blush-50"
                                 >
                                   <span className="line-clamp-1">{s.title}</span>
@@ -521,7 +521,7 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
                   {cur.services.map((s) => (
                     <li key={s.slug}>
                       <Link
-                        href={`/services/${s.slug}`}
+                        href={`/services/${cur.slug}/${s.slug}`}
                         className="group flex items-center justify-between rounded-xl px-3 py-2.5 text-ink hover:bg-blush-50"
                       >
                         <span>{s.title}</span>

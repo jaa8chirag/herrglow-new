@@ -6,11 +6,13 @@ import { realImage } from "@/lib/media";
 import { Photo } from "@/components/Photo";
 
 /* ───────── Breadcrumbs (UI + schema) ───────── */
-export function Breadcrumbs({ items }: { items: { name: string; path: string }[] }) {
-  const all = [{ name: "Home", path: "/" }, ...items];
+export function Breadcrumbs({ items, className }: { items: { name: string; path: string }[]; className?: string }) {
+  // Prevent duplicate 'Home' if already passed in items
+  const normalized = items[0]?.path === "/" || items[0]?.name?.toLowerCase() === "home" ? items.slice(1) : items;
+  const all = [{ name: "Home", path: "/" }, ...normalized];
   return (
     <>
-      <nav aria-label="Breadcrumb" className="mb-2 text-xs text-ink-soft">
+      <nav aria-label="Breadcrumb" className={cn("mb-2 text-xs text-ink-soft", className)}>
         <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
           {all.map((it, i) => (
             <li key={it.path} className="flex items-center gap-2">
