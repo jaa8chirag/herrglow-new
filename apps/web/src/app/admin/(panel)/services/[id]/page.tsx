@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getServiceAdmin } from "@herrglow/core";
+import { getServiceAdmin, listCategoriesAdmin } from "@herrglow/core";
 import { PageHeader, Panel } from "@/components/admin/layout";
 import { Field, Pill, SubmitButton, inputCls } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin";
@@ -13,7 +13,29 @@ export default async function ServiceEdit(props: PageProps<"/admin/services/[id]
   const { id } = await props.params;
   const sp = await props.searchParams;
   const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
-  const data = await getServiceAdmin(id);
+  const isNew = id === "new";
+  const data = isNew
+    ? {
+        svc: {
+          id: "new",
+          title: "",
+          slug: "",
+          categoryId: "",
+          status: "ACTIVE" as const,
+          providerType: "BOTH" as const,
+          price: null,
+          offerPrice: null,
+          priceLabel: "",
+          duration: "",
+          sort: 0,
+          featured: false,
+          variants: [],
+          addons: [],
+        },
+        categories: await listCategoriesAdmin(),
+      }
+    : await getServiceAdmin(id);
+
   if (!data) notFound();
   const { svc, categories } = data;
   const vRows = [
@@ -27,34 +49,45 @@ export default async function ServiceEdit(props: PageProps<"/admin/services/[id]
   return (
     <>
       <PageHeader
-        title={svc.title}
+        title={isNew ? "Add New Service" : svc.title}
         subtitle={
-          <>
-            <Link className="underline" href="/admin/services">
-              ← Services
-            </Link>{" "}
-            ·{" "}
-            <Pill tone={svc.status === "ACTIVE" ? "good" : "neutral"}>
-              {svc.status.toLowerCase()}
-            </Pill>
-          </>
+          isNew ? (
+            <>
+              <Link className="underline" href="/admin/services">
+                ← Services
+              </Link>{" "}
+              · New service
+            </>
+          ) : (
+            <>
+              <Link className="underline" href="/admin/services">
+                ← Services
+              </Link>{" "}
+              ·{" "}
+              <Pill tone={svc.status === "ACTIVE" ? "good" : "neutral"}>
+                {svc.status.toLowerCase()}
+              </Pill>
+            </>
+          )
         }
         actions={
-          <>
-            <Link
-              className="rounded-lg border border-line bg-white px-4 py-2 text-sm hover:bg-blush-100"
-              href={`/admin/review/service/${svc.id}`}
-            >
-              Edit description, FAQs &amp; SEO
-            </Link>
-            <a
-              target="_blank"
-              className="rounded-lg border border-line bg-white px-4 py-2 text-sm hover:bg-blush-100"
-              href={`/services/${svc.slug}`}
-            >
-              View live
-            </a>
-          </>
+          !isNew ? (
+            <>
+              <Link
+                className="rounded-lg border border-line bg-white px-4 py-2 text-sm hover:bg-blush-100"
+                href={`/admin/review/service/${svc.id}`}
+              >
+                Edit description, FAQs &amp; SEO
+              </Link>
+              <a
+                target="_blank"
+                className="rounded-lg border border-line bg-white px-4 py-2 text-sm hover:bg-blush-100"
+                href={`/services/${svc.slug}`}
+              >
+                View live
+              </a>
+            </>
+          ) : undefined
         }
       />
       {one(sp.ok) && (
@@ -64,18 +97,42 @@ export default async function ServiceEdit(props: PageProps<"/admin/services/[id]
         <p className="mb-4 rounded-lg bg-rose-100 p-3 text-sm text-rose-700">{one(sp.err)}</p>
       )}
       <div className="grid gap-6 xl:grid-cols-2">
-        <Panel title="Details">
+        <Panel title={isNew ? "Service Details" : "Details"}>
           <form action={saveServiceAction} className="grid gap-4">
             <input type="hidden" name="id" value={svc.id} />
             <Field label="Title">
-              <input name="title" defaultValue={svc.title} required className={inputCls} />
+              <input
+                name="title"
+                defaultValue={svc.title}
+                placeholder="e.g. Luxury Hydra Facial"
+                required
+                className={inputCls}
+              />
             </Field>
-            <Field label="URL slug" hint="changing it creates a 301 from the old URL">
-              <input name="slug" defaultValue={svc.slug} required className={inputCls} />
+            <Field
+              label="URL slug"
+              hint={
+                isNew
+                  ? "Auto-generated from title if left blank"
+                  : "Changing it creates a 301 from the old URL"
+              }
+            >
+              <input
+                name="slug"
+                defaultValue={svc.slug}
+                placeholder="e.g. luxury-hydra-facial"
+                required={!isNew}
+                className={inputCls}
+              />
             </Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Category">
-                <select name="categoryId" defaultValue={svc.categoryId} className={inputCls}>
+                <select
+                  name="categoryId"
+                  defaultValue={svc.categoryId || categories[0]?.id}
+                  className={inputCls}
+                  required
+                >
                   {categories.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
@@ -103,6 +160,7 @@ export default async function ServiceEdit(props: PageProps<"/admin/services/[id]
                   name="price"
                   inputMode="decimal"
                   defaultValue={n(svc.price)}
+                  placeholder="e.g. 1499"
                   className={inputCls}
                 />
               </Field>
@@ -111,6 +169,7 @@ export default async function ServiceEdit(props: PageProps<"/admin/services/[id]
                   name="offerPrice"
                   inputMode="decimal"
                   defaultValue={n(svc.offerPrice)}
+                  placeholder="e.g. 999"
                   className={inputCls}
                 />
               </Field>
@@ -125,7 +184,12 @@ export default async function ServiceEdit(props: PageProps<"/admin/services/[id]
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Duration">
-                <input name="duration" defaultValue={svc.duration ?? ""} className={inputCls} />
+                <input
+                  name="duration"
+                  defaultValue={svc.duration ?? ""}
+                  placeholder="e.g. 45 mins"
+                  className={inputCls}
+                />
               </Field>
               <Field label="Sort order">
                 <input
@@ -145,71 +209,93 @@ export default async function ServiceEdit(props: PageProps<"/admin/services/[id]
               />{" "}
               Featured
             </label>
-            <SubmitButton>Save details</SubmitButton>
+            <SubmitButton>{isNew ? "Create Service" : "Save details"}</SubmitButton>
           </form>
         </Panel>
         <div className="grid content-start gap-6">
-          <Panel title="Options & prices (variants)">
-            <form action={saveVariantsAction} className="grid gap-3">
-              <input type="hidden" name="id" value={svc.id} />
-              <div className="grid grid-cols-[1.6fr_1fr_1fr_1fr] gap-2 text-xs font-semibold text-ink-soft">
-                <span>Name</span>
-                <span>Price</span>
-                <span>Offer</span>
-                <span>Duration</span>
+          {isNew ? (
+            <Panel title="Options & Add-ons">
+              <div className="rounded-lg border border-line bg-blush-50/50 p-5 text-sm text-ink-soft">
+                <p className="font-semibold text-plum-950">Add Variants & Add-ons Next</p>
+                <p className="mt-2 text-xs leading-relaxed">
+                  Once you create this service, you will immediately be able to configure:
+                </p>
+                <ul className="mt-2 list-disc pl-5 text-xs space-y-1">
+                  <li>Multiple pricing options/variants (e.g. Normal, HD, Airbrush)</li>
+                  <li>Booking add-on treatments and extras</li>
+                  <li>Rich description, FAQs, and SEO metadata via the review queue</li>
+                </ul>
               </div>
-              {vRows.map((v, i) => (
-                <div key={i} className="grid grid-cols-[1.6fr_1fr_1fr_1fr] gap-2">
-                  <input
-                    name="vName"
-                    defaultValue={v?.name ?? ""}
-                    placeholder="e.g. HD"
-                    className={inputCls}
-                  />
-                  <input
-                    name="vPrice"
-                    inputMode="decimal"
-                    defaultValue={n(v?.price)}
-                    className={inputCls}
-                  />
-                  <input
-                    name="vOffer"
-                    inputMode="decimal"
-                    defaultValue={n(v?.offerPrice)}
-                    className={inputCls}
-                  />
-                  <input name="vDuration" defaultValue={v?.duration ?? ""} className={inputCls} />
-                </div>
-              ))}
-              <p className="text-xs text-ink-soft">
-                Leave a name blank to remove that row. Empty rows are ignored.
-              </p>
-              <SubmitButton>Save options</SubmitButton>
-            </form>
-          </Panel>
-          <Panel title="Add-ons (booking form extras)">
-            <form action={saveAddonsAction} className="grid gap-3">
-              <input type="hidden" name="id" value={svc.id} />
-              {aRows.map((a, i) => (
-                <div key={i} className="grid grid-cols-[2fr_1fr] gap-2">
-                  <input
-                    name="aName"
-                    defaultValue={a?.name ?? ""}
-                    placeholder="Add-on name"
-                    className={inputCls}
-                  />
-                  <input
-                    name="aPrice"
-                    inputMode="decimal"
-                    defaultValue={n(a?.price)}
-                    placeholder="₹"
-                    className={inputCls}
-                  />
-                </div>
-              ))}
-              <SubmitButton variant="ghost">Save add-ons</SubmitButton>
-            </form>
-          </Panel>
+            </Panel>
+          ) : (
+            <>
+              <Panel title="Options & prices (variants)">
+                <form action={saveVariantsAction} className="grid gap-3">
+                  <input type="hidden" name="id" value={svc.id} />
+                  <div className="grid grid-cols-[1.6fr_1fr_1fr_1fr] gap-2 text-xs font-semibold text-ink-soft">
+                    <span>Name</span>
+                    <span>Price</span>
+                    <span>Offer</span>
+                    <span>Duration</span>
+                  </div>
+                  {vRows.map((v, i) => (
+                    <div key={i} className="grid grid-cols-[1.6fr_1fr_1fr_1fr] gap-2">
+                      <input
+                        name="vName"
+                        defaultValue={v?.name ?? ""}
+                        placeholder="e.g. HD"
+                        className={inputCls}
+                      />
+                      <input
+                        name="vPrice"
+                        inputMode="decimal"
+                        defaultValue={n(v?.price)}
+                        className={inputCls}
+                      />
+                      <input
+                        name="vOffer"
+                        inputMode="decimal"
+                        defaultValue={n(v?.offerPrice)}
+                        className={inputCls}
+                      />
+                      <input
+                        name="vDuration"
+                        defaultValue={v?.duration ?? ""}
+                        className={inputCls}
+                      />
+                    </div>
+                  ))}
+                  <p className="text-xs text-ink-soft">
+                    Leave a name blank to remove that row. Empty rows are ignored.
+                  </p>
+                  <SubmitButton>Save options</SubmitButton>
+                </form>
+              </Panel>
+              <Panel title="Add-ons (booking form extras)">
+                <form action={saveAddonsAction} className="grid gap-3">
+                  <input type="hidden" name="id" value={svc.id} />
+                  {aRows.map((a, i) => (
+                    <div key={i} className="grid grid-cols-[2fr_1fr] gap-2">
+                      <input
+                        name="aName"
+                        defaultValue={a?.name ?? ""}
+                        placeholder="Add-on name"
+                        className={inputCls}
+                      />
+                      <input
+                        name="aPrice"
+                        inputMode="decimal"
+                        defaultValue={n(a?.price)}
+                        placeholder="₹"
+                        className={inputCls}
+                      />
+                    </div>
+                  ))}
+                  <SubmitButton variant="ghost">Save add-ons</SubmitButton>
+                </form>
+              </Panel>
+            </>
+          )}
         </div>
       </div>
     </>

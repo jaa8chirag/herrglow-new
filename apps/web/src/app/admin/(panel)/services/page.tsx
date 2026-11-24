@@ -28,6 +28,14 @@ export default async function ServicesPage(props: PageProps<"/admin/services">) 
       <PageHeader
         title="Services & Rate Cards"
         subtitle={`${total} salon services and treatments in your catalog. Click 'Edit' to update prices, photos, and descriptions.`}
+        actions={
+          <Link
+            href="/admin/services/new"
+            className="inline-flex min-h-10 items-center rounded-lg bg-plum-700 px-4 text-sm font-medium text-ivory hover:bg-plum-800"
+          >
+            + Add New Service
+          </Link>
+        }
       />
       <Tabs
         items={[

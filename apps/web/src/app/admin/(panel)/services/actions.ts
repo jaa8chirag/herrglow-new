@@ -13,10 +13,10 @@ const num = z
   .transform((v) => (v ? Number(v) : null))
   .refine((n) => n === null || (Number.isFinite(n) && n >= 0), "Invalid number");
 const schema = z.object({
-  id: z.string().min(1),
-  title: z.string().trim().min(2).max(160),
-  slug: z.string().trim().min(2).max(160),
-  categoryId: z.string().min(1),
+  id: z.string().optional(),
+  title: z.string().trim().min(2, "Title must be at least 2 characters").max(160),
+  slug: z.string().trim().max(160).optional(),
+  categoryId: z.string().min(1, "Category is required"),
   status: z.enum(["ACTIVE", "INACTIVE"]),
   providerType: z.enum(["BEAUTICIAN", "MAKEOVER_ARTIST", "BOTH"]),
   price: num,
@@ -37,10 +37,31 @@ const back = (id: string, k: "ok" | "err", m: string): never => {
 export async function saveServiceAction(fd: FormData) {
   const me = await requireAdmin("catalog");
   const d = schema.parse(Object.fromEntries(fd));
-  const res = await saveService(d.id, { ...d, featured: fd.get("featured") === "on" });
-  await log(me, "service.save", "Service", d.id, { slug: d.slug });
-  if (!res.ok) back(d.id, "err", res.error);
-  back(d.id, "ok", "Service saved");
+  const isNew = !d.id || d.id === "new";
+  const slug = d.slug?.trim() || d.title;
+  const res = await saveService(isNew ? undefined : d.id, {
+    ...d,
+    slug,
+    featured: fd.get("featured") === "on",
+  });
+  if (!res.ok) {
+    if (isNew) {
+      revalidatePath("/", "layout");
+      return redirect(`/admin/services/new?err=${encodeURIComponent(res.error)}`);
+    }
+    return back(d.id!, "err", res.error);
+  }
+  await log(me, isNew ? "service.create" : "service.save", "Service", res.id, { slug });
+  revalidatePath("/", "layout");
+  if (isNew) {
+    redirect(
+      `/admin/services/${res.id}?ok=${encodeURIComponent(
+        "Service created successfully! You can now configure options, add-ons, or SEO details."
+      )}`
+    );
+  } else {
+    back(res.id, "ok", "Service saved");
+  }
 }
 
 const money = (v: FormDataEntryValue | undefined) => {

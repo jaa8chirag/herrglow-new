@@ -83,6 +83,10 @@ export async function listServicesAdmin(f: ServiceFilter) {
   };
 }
 
+export async function listCategoriesAdmin() {
+  return prisma.category.findMany({ orderBy: { sort: "asc" }, select: { id: true, name: true } });
+}
+
 export async function getServiceAdmin(id: string) {
   const [svc, categories] = await Promise.all([
     prisma.service.findUnique({
@@ -119,13 +123,40 @@ const slugify = (s: string) =>
 
 /** Saving with a changed slug keeps the old URL alive: a 301 is created automatically. */
 export async function saveService(
-  id: string,
+  id: string | undefined | null,
   i: ServiceInput
-): Promise<{ ok: true } | { ok: false; error: string }> {
+): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
+  const isNew = !id || id === "new";
+  const slug = slugify(i.slug || i.title);
+  if (!slug) return { ok: false, error: "Slug is required" };
+
+  if (isNew) {
+    if (await prisma.service.findFirst({ where: { slug } }))
+      return { ok: false, error: "Another service already uses that slug" };
+    if (await prisma.page.findFirst({ where: { url: `/${slug}` } }))
+      return { ok: false, error: "That slug collides with an existing top-level page" };
+
+    const created = await prisma.service.create({
+      data: {
+        title: i.title.trim(),
+        slug,
+        categoryId: i.categoryId,
+        status: i.status,
+        providerType: i.providerType,
+        price: i.price ?? null,
+        offerPrice: i.offerPrice ?? null,
+        priceLabel: i.priceLabel?.trim() || null,
+        duration: i.duration?.trim() || null,
+        featured: !!i.featured,
+        sort: i.sort ?? 0,
+      },
+    });
+    await syncPages();
+    return { ok: true, id: created.id };
+  }
+
   const cur = await prisma.service.findUnique({ where: { id }, select: { slug: true } });
   if (!cur) return { ok: false, error: "Service not found" };
-  const slug = slugify(i.slug);
-  if (!slug) return { ok: false, error: "Slug is required" };
   if (slug !== cur.slug) {
     if (await prisma.service.findFirst({ where: { slug, id: { not: id } } }))
       return { ok: false, error: "Another service already uses that slug" };
@@ -161,7 +192,7 @@ export async function saveService(
     }
   });
   await syncPages();
-  return { ok: true };
+  return { ok: true, id };
 }
 
 export interface VariantInput {
