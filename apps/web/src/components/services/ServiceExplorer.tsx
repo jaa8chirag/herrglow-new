@@ -39,61 +39,84 @@ export interface ExplorerItem {
   variants?: ExplorerVariant[];
 }
 
+const WAXING_SUBCATS = [
+  { id: "all", label: "All Waxing", keywords: [] },
+  { id: "rica", label: "Rica Wax (Painless & Anti-Tan)", keywords: ["rica", "white chocolate", "aloe"] },
+  { id: "honey", label: "Honey / Regular Wax", keywords: ["honey", "regular"] },
+  { id: "combos", label: "Full Body & Combos", keywords: ["full body", "combo", "arms", "legs"] },
+  { id: "bikini", label: "Bikini & Brazilian", keywords: ["bikini", "brazilian", "peel-off"] },
+];
+
+const MAKEUP_SUBCATS = [
+  { id: "all", label: "All Makeup", keywords: [] },
+  { id: "bridal", label: "👰 For The Bride (HD & Airbrush)", keywords: ["bridal", "airbrush bridal", "hd bridal", "wedding", "complete bridal"] },
+  { id: "party", label: "✨ Non-Bridal & Party Glam", keywords: ["party", "cocktail", "sangeet", "reception", "glam"] },
+  { id: "bridesmaids", label: "👭 Bridesmaids & Sister Glam", keywords: ["bridesmaid", "bridesmaids", "sister", "group", "guest"] },
+  { id: "family", label: "👑 Mother & Family Packages", keywords: ["family", "mother", "bundle", "package"] },
+  { id: "draping", label: "🥻 Saree & Lehenga Draping", keywords: ["draping", "saree", "lehenga", "dupatta"] },
+];
+
+const SKINCARE_SUBCATS = [
+  { id: "all", label: "All Skincare", keywords: [] },
+  { id: "o3", label: "O3+ Brightening & Glow", keywords: ["o3", "power oxygen", "sea white"] },
+  { id: "cleanups", label: "Express Cleanups", keywords: ["cleanup", "clean-up", "fruit", "instant"] },
+  { id: "anti-tan", label: "Anti-Tan & Detox", keywords: ["tan", "sara oxy", "cheryl", "detox"] },
+  { id: "derma", label: "Hydra & Luxury Derma", keywords: ["hydra", "derma", "gold", "lotus"] },
+  { id: "threading", label: "Threading & Face Wax", keywords: ["threading", "eyebrow", "upper lip", "forehead"] },
+];
+
+const HAIR_SUBCATS = [
+  { id: "all", label: "All Hair Care", keywords: [] },
+  { id: "blowdry", label: "Blow Dry & Waves", keywords: ["blow dry", "waves", "curls"] },
+  { id: "buns", label: "Bridal & Floral Buns", keywords: ["bun", "hairdo", "floral", "braid"] },
+  { id: "spa", label: "Nourishing Hair Spas", keywords: ["spa", "mythic", "biolage", "scalp"] },
+  { id: "smoothing", label: "Keratin & Botox Smoothing", keywords: ["keratin", "botox", "smoothing", "treatment"] },
+];
+
+const NAIL_SUBCATS = [
+  { id: "all", label: "All Hand & Feet", keywords: [] },
+  { id: "mani-pedi", label: "Deluxe Mani-Pedi", keywords: ["manicure", "pedicure", "mani-pedi", "combo"] },
+  { id: "spa-pedi", label: "Aroma & Jelly Spas", keywords: ["aroma", "jelly", "crystal", "callus"] },
+  { id: "extensions", label: "Gel Nail Extensions", keywords: ["gel", "extensions", "acrylic", "tips"] },
+  { id: "art", label: "French Ombre & Custom Art", keywords: ["art", "ombre", "chrome", "3d"] },
+];
+
+const MEHNDI_SUBCATS = [
+  { id: "all", label: "All Services", keywords: [] },
+  { id: "draping", label: "Saree & Lehenga Draping", keywords: ["draping", "saree", "lehenga", "dupatta"] },
+  { id: "mehndi", label: "Guest & Bridal Mehndi", keywords: ["mehndi", "mehendi", "henna"] },
+  { id: "eye", label: "Eye Makeup & Lashes", keywords: ["eye", "lash", "lashes", "extension"] },
+];
+
+const PRE_BRIDAL_SUBCATS = [
+  { id: "all", label: "All Packages", keywords: [] },
+  { id: "express", label: "1-Day Express Glow", keywords: ["haldi", "essential", "express", "silver"] },
+  { id: "multi", label: "2-3 Day Complete Bridal Care", keywords: ["luxury", "complete", "ultra-radiance", "gold", "platinum"] },
+];
+
 const SUB_CATEGORIES_BY_CAT: Record<string, { id: string; label: string; keywords: string[] }[]> = {
-  waxing: [
-    { id: "all", label: "All Waxing", keywords: [] },
-    { id: "rica", label: "Rica Wax (Painless & Anti-Tan)", keywords: ["rica", "white chocolate", "aloe"] },
-    { id: "honey", label: "Honey / Regular Wax", keywords: ["honey", "regular"] },
-    { id: "combos", label: "Full Body & Combos", keywords: ["full body", "combo", "arms", "legs"] },
-    { id: "bikini", label: "Bikini & Brazilian", keywords: ["bikini", "brazilian", "peel-off"] },
-  ],
-  "facial-and-skincare": [
-    { id: "all", label: "All Skincare", keywords: [] },
-    { id: "o3", label: "O3+ Brightening & Glow", keywords: ["o3", "power oxygen", "sea white"] },
-    { id: "cleanups", label: "Express Cleanups", keywords: ["cleanup", "clean-up", "fruit", "instant"] },
-    { id: "anti-tan", label: "Anti-Tan & Detox", keywords: ["tan", "sara oxy", "cheryl", "detox"] },
-    { id: "derma", label: "Hydra & Luxury Derma", keywords: ["hydra", "derma", "gold", "lotus"] },
-    { id: "threading", label: "Threading & Face Wax", keywords: ["threading", "eyebrow", "upper lip", "forehead"] },
-  ],
-  "hair-styling": [
-    { id: "all", label: "All Hair Care", keywords: [] },
-    { id: "blowdry", label: "Blow Dry & Waves", keywords: ["blow dry", "waves", "curls"] },
-    { id: "buns", label: "Bridal & Floral Buns", keywords: ["bun", "hairdo", "floral", "braid"] },
-    { id: "spa", label: "Nourishing Hair Spas", keywords: ["spa", "mythic", "biolage", "scalp"] },
-    { id: "smoothing", label: "Keratin & Botox Smoothing", keywords: ["keratin", "botox", "smoothing", "treatment"] },
-  ],
-  "bridal-makeup": [
-    { id: "all", label: "All Bridal Makeup", keywords: [] },
-    { id: "hd", label: "HD Bridal Makeovers", keywords: ["hd", "mac", "signature"] },
-    { id: "airbrush", label: "Airbrush Waterproof Bridal", keywords: ["airbrush", "temptu", "sweat-proof"] },
-    { id: "packages", label: "Complete Wedding Packages", keywords: ["package", "complete", "bundle", "multi-function"] },
-    { id: "regional", label: "Traditional & Regional", keywords: ["traditional", "punjabi", "muslim", "south indian", "bengali"] },
-  ],
-  "engagement-party-makeup": [
-    { id: "all", label: "All Party Glam", keywords: [] },
-    { id: "day", label: "Day & Subtle Glow", keywords: ["day", "subtle", "nude", "birthday"] },
-    { id: "evening", label: "Evening & Cocktail HD", keywords: ["evening", "cocktail", "sangeet", "reception", "hd"] },
-    { id: "engagement", label: "Engagement & Roka", keywords: ["engagement", "roka", "haldi", "mehndi"] },
-    { id: "family", label: "Bridesmaid & Family Combos", keywords: ["family", "bridesmaid", "group", "guest"] },
-  ],
-  "nail-art": [
-    { id: "all", label: "All Hand & Feet", keywords: [] },
-    { id: "mani-pedi", label: "Deluxe Mani-Pedi", keywords: ["manicure", "pedicure", "mani-pedi", "combo"] },
-    { id: "spa-pedi", label: "Aroma & Jelly Spas", keywords: ["aroma", "jelly", "crystal", "callus"] },
-    { id: "extensions", label: "Gel Nail Extensions", keywords: ["gel", "extensions", "acrylic", "tips"] },
-    { id: "art", label: "French Ombre & Custom Art", keywords: ["art", "ombre", "chrome", "3d"] },
-  ],
-  "draping-eye-mehndi": [
-    { id: "all", label: "All Services", keywords: [] },
-    { id: "draping", label: "Saree & Lehenga Draping", keywords: ["draping", "saree", "lehenga", "dupatta"] },
-    { id: "mehndi", label: "Guest & Bridal Mehndi", keywords: ["mehndi", "mehendi", "henna"] },
-    { id: "eye", label: "Eye Makeup & Lashes", keywords: ["eye", "lash", "lashes", "extension"] },
-  ],
-  "pre-bridal-packages": [
-    { id: "all", label: "All Packages", keywords: [] },
-    { id: "express", label: "1-Day Express Glow", keywords: ["haldi", "essential", "express", "silver"] },
-    { id: "multi", label: "2-3 Day Complete Bridal Care", keywords: ["luxury", "complete", "ultra-radiance", "gold", "platinum"] },
-  ],
+  makeup: MAKEUP_SUBCATS,
+  "bridal-makeup": MAKEUP_SUBCATS,
+  bridal: MAKEUP_SUBCATS,
+  "engagement-party-makeup": MAKEUP_SUBCATS,
+  "salon-at-home": WAXING_SUBCATS,
+  waxing: WAXING_SUBCATS,
+  "face-hair-removal": WAXING_SUBCATS,
+  "facial-skincare": SKINCARE_SUBCATS,
+  "facial-and-skincare": SKINCARE_SUBCATS,
+  facials: SKINCARE_SUBCATS,
+  "bleach-detan": SKINCARE_SUBCATS,
+  hair: HAIR_SUBCATS,
+  "hair-styling": HAIR_SUBCATS,
+  nails: NAIL_SUBCATS,
+  "nail-art": NAIL_SUBCATS,
+  "manicure-pedicure": NAIL_SUBCATS,
+  "nail-studio": NAIL_SUBCATS,
+  mehndi: MEHNDI_SUBCATS,
+  mehendi: MEHNDI_SUBCATS,
+  "draping-eye-mehndi": MEHNDI_SUBCATS,
+  "pre-bridal": PRE_BRIDAL_SUBCATS,
+  "pre-bridal-packages": PRE_BRIDAL_SUBCATS,
 };
 
 export function ServiceExplorer({

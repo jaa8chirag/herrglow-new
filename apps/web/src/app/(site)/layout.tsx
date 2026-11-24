@@ -21,15 +21,63 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
     name: string,
     href: string,
     svcs: { slug: string; title: string; image: string | null }[]
-  ): MenuCat => ({
-    slug,
-    name,
-    href,
-    services: svcs.slice(0, 5).map((x) => ({ slug: x.slug, title: x.title })),
-    featured: svcs[0]
-      ? { slug: svcs[0].slug, title: svcs[0].title, image: realImage(keys, svcs[0].image) }
-      : null,
-  });
+  ): MenuCat => {
+    const isMakeup = slug === "makeup" || slug.includes("bridal") || slug.includes("party");
+    if (isMakeup) {
+      const isPartyOrFamily = (title: string, sSlug: string) => {
+        const t = `${title} ${sSlug}`.toLowerCase();
+        // If it specifically targets family, bridesmaids, sisters, or guests, it is non-bridal
+        const isFamilyOrGuest =
+          t.includes("bridesmaid") ||
+          t.includes("sister") ||
+          t.includes("mother") ||
+          t.includes("family") ||
+          t.includes("group") ||
+          t.includes("guest");
+        if (isFamilyOrGuest) return true;
+
+        // Otherwise, if it mentions bridal/bride, it belongs to the bride
+        if (t.includes("bridal") || t.includes("bride")) return false;
+
+        // General party, sangeet, cocktail, non-bridal hair styling, and general draping
+        return (
+          t.includes("party") ||
+          t.includes("sangeet") ||
+          t.includes("cocktail") ||
+          t.includes("draping") ||
+          t.includes("hair")
+        );
+      };
+
+      const bridal = svcs.filter((s) => !isPartyOrFamily(s.title, s.slug));
+      const nonBridal = svcs.filter((s) => isPartyOrFamily(s.title, s.slug));
+
+      const services = [
+        ...bridal.slice(0, 4).map((x) => ({ slug: x.slug, title: x.title, group: "👰 For The Bride (Bridal)" })),
+        ...nonBridal.slice(0, 4).map((x) => ({ slug: x.slug, title: x.title, group: "✨ Non-Bridal (Bridesmaids, Mother & Sister)" })),
+      ];
+
+      return {
+        slug,
+        name,
+        href,
+        services,
+        featured: svcs[0]
+          ? { slug: svcs[0].slug, title: svcs[0].title, image: realImage(keys, svcs[0].image) }
+          : null,
+      };
+    }
+
+    return {
+      slug,
+      name,
+      href,
+      services: svcs.slice(0, 5).map((x) => ({ slug: x.slug, title: x.title })),
+      featured: svcs[0]
+        ? { slug: svcs[0].slug, title: svcs[0].title, image: realImage(keys, svcs[0].image) }
+        : null,
+    };
+  };
   const menu = mega.categories.map((c) => toCat(c.slug, c.name, `/services/${c.slug}`, c.services));
 
   // Luxury trust tagline banner (shown by default or replaced by custom offer from admin settings)

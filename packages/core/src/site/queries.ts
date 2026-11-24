@@ -36,14 +36,14 @@ export async function getCategoryPage(slug: string) {
         include: {
           services: {
             where: { status: { in: ["ACTIVE", "COMING_SOON"] }, mergedIntoId: null },
-            orderBy: [{ leadCount: "desc" }, { sort: "asc" }],
+            orderBy: [{ sort: "asc" }, { leadCount: "desc" }],
             include: { variants: { orderBy: { sortOrder: "asc" } } },
           },
         },
       },
       services: {
         where: { status: { in: ["ACTIVE", "COMING_SOON"] }, mergedIntoId: null },
-        orderBy: [{ leadCount: "desc" }, { sort: "asc" }],
+        orderBy: [{ sort: "asc" }, { leadCount: "desc" }],
         include: { variants: { orderBy: { sortOrder: "asc" } }, subCategory: true },
       },
     },
@@ -218,8 +218,8 @@ export async function getMegaMenu() {
     include: {
       services: {
         where: liveService,
-        orderBy: [{ leadCount: "desc" }, { sort: "asc" }],
-        take: 5,
+        orderBy: [{ sort: "asc" }, { leadCount: "desc" }],
+        take: 16,
         select: pick,
       },
     },

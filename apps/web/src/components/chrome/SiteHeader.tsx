@@ -10,7 +10,7 @@ import { Logo } from "@/components/brand/Logo";
 
 const cityHubUrl = (slug: string) => `/salon-at-home-${slug}`;
 
-export interface MenuCat { slug: string; name: string; href: string; services: { slug: string; title: string }[]; featured: { slug: string; title: string; image: string | null } | null }
+export interface MenuCat { slug: string; name: string; href: string; services: { slug: string; title: string; group?: string }[]; featured: { slug: string; title: string; image: string | null } | null }
 export interface HeaderProps { siteName: string; logo: string | null; menu: MenuCat[]; cities: { slug: string; name: string }[] }
 
 const NAV = [
@@ -116,13 +116,57 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
                     <div className="mt-1 space-y-1 pb-2 pl-2">
                       {menu.map((c) => {
                         const Icon = categoryIcon(c.slug);
+                        const hasGroups = c.services.some((s) => !!s.group);
+                        const groups = hasGroups
+                          ? Array.from(new Set(c.services.map((s) => s.group || "Services"))).map((g) => ({
+                              title: g,
+                              items: c.services.filter((s) => (s.group || "Services") === g),
+                            }))
+                          : [];
+
                         return (
                           <details key={c.slug} className="group/c rounded-xl bg-blush-50">
                             <summary className="flex cursor-pointer list-none items-center gap-3 min-h-[44px] px-3 py-2.5 text-base font-medium text-plum-800"><Icon className="size-5 text-rose-600" />{c.name}<ChevronDown className="ml-auto size-4 transition-transform group-open/c:rotate-180" /></summary>
-                            <ul className="space-y-0.5 px-3 pb-3">
-                              {c.services.map((s) => <li key={s.slug}><Drawer.Close asChild><Link href={`/services/${s.slug}`} className="flex items-center min-h-[40px] rounded-lg px-3 py-2 text-ink-soft hover:bg-white">{s.title}</Link></Drawer.Close></li>)}
-                              <li><Drawer.Close asChild><Link href={c.href} className="flex items-center min-h-[40px] rounded-lg px-3 py-2 font-medium text-rose-700">View all {c.name.toLowerCase()} →</Link></Drawer.Close></li>
-                            </ul>
+                            {hasGroups ? (
+                              <div className="space-y-3 px-3 pb-3">
+                                {groups.map((grp) => (
+                                  <div key={grp.title} className="space-y-0.5">
+                                    <p className="px-2 pt-1 pb-0.5 text-[11px] font-bold uppercase tracking-wider text-rose-700">
+                                      {grp.title}
+                                    </p>
+                                    <ul className="space-y-0.5">
+                                      {grp.items.map((s) => (
+                                        <li key={s.slug}>
+                                          <Drawer.Close asChild>
+                                            <Link
+                                              href={`/services/${s.slug}`}
+                                              className="flex items-center min-h-[40px] rounded-lg px-2.5 py-1.5 text-sm text-ink-soft hover:bg-white active:bg-white"
+                                            >
+                                              {s.title}
+                                            </Link>
+                                          </Drawer.Close>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                ))}
+                                <div className="pt-1.5 border-t border-blush-200/70">
+                                  <Drawer.Close asChild>
+                                    <Link
+                                      href={c.href}
+                                      className="flex items-center min-h-[40px] rounded-lg px-2.5 py-2 font-medium text-rose-700 hover:bg-white"
+                                    >
+                                      View all {c.name.toLowerCase()} →
+                                    </Link>
+                                  </Drawer.Close>
+                                </div>
+                              </div>
+                            ) : (
+                              <ul className="space-y-0.5 px-3 pb-3">
+                                {c.services.map((s) => <li key={s.slug}><Drawer.Close asChild><Link href={`/services/${s.slug}`} className="flex items-center min-h-[40px] rounded-lg px-3 py-2 text-ink-soft hover:bg-white">{s.title}</Link></Drawer.Close></li>)}
+                                <li><Drawer.Close asChild><Link href={c.href} className="flex items-center min-h-[40px] rounded-lg px-3 py-2 font-medium text-rose-700">View all {c.name.toLowerCase()} →</Link></Drawer.Close></li>
+                              </ul>
+                            )}
                           </details>
                         );
                       })}
@@ -169,9 +213,44 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
             </ul>
             <div>
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-rose-700">Popular in {cur.name}</p>
-              <ul className="space-y-1">
-                {cur.services.map((s) => <li key={s.slug}><Link href={`/services/${s.slug}`} className="group flex items-center justify-between rounded-xl px-3 py-2.5 text-ink hover:bg-blush-50"><span>{s.title}</span><ArrowRight className="size-4 -translate-x-1 text-rose-600 opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100" /></Link></li>)}
-              </ul>
+              {cur.services.some((s) => !!s.group) ? (
+                <div className="grid grid-cols-2 gap-4">
+                  {Array.from(new Set(cur.services.map((s) => s.group || "Services"))).map((grpName) => {
+                    const items = cur.services.filter((s) => (s.group || "Services") === grpName);
+                    return (
+                      <div key={grpName} className="space-y-1">
+                        <p className="border-b border-blush-200/80 px-2 pb-1 text-[11px] font-bold uppercase tracking-wider text-plum-900">
+                          {grpName}
+                        </p>
+                        <ul className="space-y-0.5">
+                          {items.map((s) => (
+                            <li key={s.slug}>
+                              <Link
+                                href={`/services/${s.slug}`}
+                                className="group flex items-center justify-between rounded-xl px-2.5 py-1.5 text-sm text-ink hover:bg-blush-50"
+                              >
+                                <span className="line-clamp-1">{s.title}</span>
+                                <ArrowRight className="size-3.5 -translate-x-1 text-rose-600 opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100 shrink-0" />
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <ul className="space-y-1">
+                  {cur.services.map((s) => (
+                    <li key={s.slug}>
+                      <Link href={`/services/${s.slug}`} className="group flex items-center justify-between rounded-xl px-3 py-2.5 text-ink hover:bg-blush-50">
+                        <span>{s.title}</span>
+                        <ArrowRight className="size-4 -translate-x-1 text-rose-600 opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
               <Link href={cur.href} className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-rose-700 underline-offset-4 hover:underline">View all {cur.name.toLowerCase()} <ArrowRight className="size-4" /></Link>
             </div>
             {cur.featured && (

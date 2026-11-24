@@ -97,7 +97,7 @@ async function main() {
       isPackage: true,
       featured: true,
       leadCount: 16,
-      sort: 1,
+      sort: 3,
     },
     {
       slug: "pre-bridal-glow-package",
@@ -122,15 +122,15 @@ async function main() {
       offerPrice: 13999,
       duration: "3 hours",
       image: "/images/packages/sangeet-family-glam-package.jpg",
-      shortDescription: "Party & cocktail glam for bride's family or friends (up to 3 persons) with certified senior artists.",
+      shortDescription: "Party & cocktail glam for bride's family, mother, sister or friends (up to 3 persons) with certified senior artists.",
       features: "Party / Cocktail Makeup for 3 Persons; Hair Styling (Curls / Messy Bun / Straightening); Saree / Dupatta Draping for All 3; International Waterproof Cosmetics; Doorstep Travel Included",
       isPackage: true,
       featured: true,
       leadCount: 8,
-      sort: 3,
+      sort: 22,
     },
 
-    // Individual Services
+    // Individual Services - Bridal First (For The Bride)
     {
       slug: "hd-bridal-makeup",
       title: "HD Bridal Makeup",
@@ -144,7 +144,7 @@ async function main() {
       isPackage: false,
       featured: true,
       leadCount: 22,
-      sort: 4,
+      sort: 1,
     },
     {
       slug: "airbrush-bridal-makeup",
@@ -159,7 +159,7 @@ async function main() {
       isPackage: false,
       featured: true,
       leadCount: 19,
-      sort: 5,
+      sort: 2,
     },
     {
       slug: "bridal-makeup-artist",
@@ -174,8 +174,10 @@ async function main() {
       isPackage: false,
       featured: false,
       leadCount: 14,
-      sort: 6,
+      sort: 4,
     },
+
+    // Non-Bridal / Party (Bridesmaids, Mother & Sister)
     {
       slug: "party-makeup-and-hair",
       title: "Party Makeup & Hair Styling",
@@ -189,7 +191,37 @@ async function main() {
       isPackage: false,
       featured: true,
       leadCount: 18,
-      sort: 7,
+      sort: 20,
+    },
+    {
+      slug: "bridesmaids-makeup-package",
+      title: "Bridesmaids & Sister Makeup Package",
+      categorySlug: "makeup",
+      price: 6999,
+      offerPrice: 4999,
+      duration: "2 hours",
+      image: "/images/services/party-makeup-and-hair.jpg",
+      shortDescription: "Flawless camera-ready party glam and custom hairstyling tailored specifically for bridesmaids and bride's sister.",
+      features: "HD Party Base; Glitter or Smokey Eye Glam; Floral Bun or Hollywood Waves Hairdo; Saree / Lehenga Draping",
+      isPackage: false,
+      featured: true,
+      leadCount: 12,
+      sort: 21,
+    },
+    {
+      slug: "saree-draping-at-home",
+      title: "Saree & Lehenga Draping",
+      categorySlug: "makeup",
+      price: 999,
+      offerPrice: 699,
+      duration: "45 mins",
+      image: "/images/packages/sangeet-family-glam-package.jpg",
+      shortDescription: "Professional doorstep saree, lehenga, and dupatta pleating and pinning with iron-pressed finish.",
+      features: "Precision Pleating & Secure Pinning; Traditional, Gujarati, or Modern Draping; Dupatta Setting with Jewellery Placement",
+      isPackage: false,
+      featured: false,
+      leadCount: 10,
+      sort: 23,
     },
     {
       slug: "facial-at-home",
