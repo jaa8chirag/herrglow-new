@@ -14,7 +14,10 @@ test.describe("Home Page & Core Navigation", () => {
     expect(descContent!.length).toBeLessThanOrEqual(160);
   });
 
-  test("main header contains all primary navigation links including Make a Combo", async ({ page, isMobile }) => {
+  test("main header contains all primary navigation links including Make a Combo", async ({
+    page,
+    isMobile,
+  }) => {
     if (isMobile) {
       // On mobile viewports, verify mobile menu button and drawer contents
       const menuBtn = page.getByRole("button", { name: /Open menu/i });
@@ -39,7 +42,7 @@ test.describe("Home Page & Core Navigation", () => {
       await expect(comboLink).toContainText(/Make a Combo/i);
 
       // Verify Services button that opens mega-menu
-      const servicesBtn = page.locator('header button:has-text("Services")');
+      const servicesBtn = page.getByRole("button", { name: "Services", exact: true });
       await expect(servicesBtn).toBeVisible();
 
       // Verify other key links
@@ -74,11 +77,15 @@ test.describe("Home Page & Core Navigation", () => {
     await expect(page.locator("h1")).toContainText(/Everything we offer, at your home/i);
   });
 
-  test("city selector dropdown navigates to active city hub without 410 Gone", async ({ page, isMobile }) => {
+  test("city selector dropdown navigates to active city hub without 410 Gone", async ({
+    page,
+    isMobile,
+  }) => {
     if (isMobile) {
       // On mobile viewports: Open menu drawer, select Delhi
       const menuBtn = page.getByRole("button", { name: /Open menu/i });
       await menuBtn.click();
+      await page.waitForTimeout(400);
       const delhiChip = page.locator('nav[aria-label="Mobile"] a[href="/salon-at-home-delhi"]');
       await expect(delhiChip).toBeVisible();
       await delhiChip.click();
@@ -103,13 +110,17 @@ test.describe("Home Page & Core Navigation", () => {
     expect(bodyText).toContain("Services available in Delhi");
   });
 
-  test("mobile drawer displays all service cities with direct working links", async ({ page, isMobile }) => {
+  test("mobile drawer displays all service cities with direct working links", async ({
+    page,
+    isMobile,
+  }) => {
     if (!isMobile) {
       await page.setViewportSize({ width: 375, height: 667 });
     }
     const menuBtn = page.getByRole("button", { name: /Open menu/i });
     await expect(menuBtn).toBeVisible();
     await menuBtn.click();
+    await page.waitForTimeout(400);
 
     const noidaChip = page.locator('nav[aria-label="Mobile"] a[href="/salon-at-home-noida"]');
     await expect(noidaChip).toBeVisible();
@@ -123,7 +134,9 @@ test.describe("Home Page & Core Navigation", () => {
     expect(bodyText.trim()).not.toBe("Gone");
   });
 
-  test("legacy /makeup-artist-in-{city} URLs seamlessly 301 redirect to /salon-at-home-{city}", async ({ page }) => {
+  test("legacy /makeup-artist-in-{city} URLs seamlessly 301 redirect to /salon-at-home-{city}", async ({
+    page,
+  }) => {
     for (const city of ["delhi", "noida", "greater-noida"]) {
       await page.goto(`/makeup-artist-in-${city}`);
       await expect(page).toHaveURL(new RegExp(`/salon-at-home-${city}$`));
@@ -138,6 +151,7 @@ test.describe("Home Page & Core Navigation", () => {
   test("city cards section on homepage links to canonical city hubs", async ({ page }) => {
     const greaterNoidaCard = page.locator('a[href="/salon-at-home-greater-noida"]').first();
     await expect(greaterNoidaCard).toBeVisible();
+    await greaterNoidaCard.scrollIntoViewIfNeeded();
     await greaterNoidaCard.click();
     await expect(page).toHaveURL(/\/salon-at-home-greater-noida$/);
     const h1 = page.locator("h1");

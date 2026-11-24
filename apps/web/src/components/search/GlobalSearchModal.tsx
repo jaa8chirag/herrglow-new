@@ -15,10 +15,9 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Badge, buttonStyles, cn } from "@herrglow/ui";
+import { buttonStyles, cn } from "@herrglow/ui";
 
 interface SearchService {
   id: string;
@@ -77,13 +76,7 @@ const CATEGORY_SHORTCUTS = [
   { name: "Nails & Extensions", slug: "nails", icon: Sparkles },
 ];
 
-export function GlobalSearchModal({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
+export function GlobalSearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
@@ -94,7 +87,10 @@ export function GlobalSearchModal({
 
   // Flatten active items for keyboard navigation
   const allItems = [
-    ...(results?.services.map((s) => ({ type: "service", href: `/services/${s.category.slug}/${s.slug}` })) || []),
+    ...(results?.services.map((s) => ({
+      type: "service",
+      href: `/services/${s.category.slug}/${s.slug}`,
+    })) || []),
     ...(results?.packages.map((p) => ({ type: "package", href: `/packages/${p.slug}` })) || []),
     ...(results?.blogs.map((b) => ({ type: "blog", href: `/blog/${b.slug}` })) || []),
   ];
@@ -537,7 +533,10 @@ export function GlobalSearchModal({
                   href="https://wa.me/919319260069?text=Hi%20HerrGlow%2C%20I%20am%20looking%20for%20a%20service"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={cn(buttonStyles({ variant: "shimmer", size: "sm" }), "inline-flex items-center gap-2 text-xs")}
+                  className={cn(
+                    buttonStyles({ variant: "shimmer", size: "sm" }),
+                    "inline-flex items-center gap-2 text-xs"
+                  )}
                 >
                   <MessageCircle className="size-4" /> Ask our Beauty Advisor on WhatsApp
                 </a>
@@ -550,7 +549,9 @@ export function GlobalSearchModal({
         <div className="border-t border-line bg-white px-4 py-3 sm:px-5 flex flex-wrap items-center justify-between gap-2 text-xs text-ink-soft">
           <div className="flex items-center gap-3">
             <span className="hidden sm:inline-flex items-center gap-1">
-              <kbd className="rounded border border-line bg-blush-50 px-1.5 py-0.5 font-semibold text-plum-900">↑↓</kbd>
+              <kbd className="rounded border border-line bg-blush-50 px-1.5 py-0.5 font-semibold text-plum-900">
+                ↑↓
+              </kbd>
               <span>to navigate</span>
             </span>
             <span className="hidden sm:inline-flex items-center gap-1">
@@ -560,7 +561,9 @@ export function GlobalSearchModal({
               <span>to select</span>
             </span>
             <span className="inline-flex items-center gap-1">
-              <kbd className="rounded border border-line bg-blush-50 px-1.5 py-0.5 font-semibold text-plum-900">ESC</kbd>
+              <kbd className="rounded border border-line bg-blush-50 px-1.5 py-0.5 font-semibold text-plum-900">
+                ESC
+              </kbd>
               <span>to close</span>
             </span>
           </div>

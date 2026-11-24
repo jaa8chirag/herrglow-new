@@ -22,4 +22,10 @@ export default defineConfig({
       use: { ...devices["Pixel 7"] },
     },
   ],
+  webServer: {
+    command: "pnpm dev:web",
+    url: "http://localhost:3000",
+    reuseExistingServer: true,
+    timeout: 120 * 1000,
+  },
 });

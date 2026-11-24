@@ -1,0 +1,15 @@
+node_modules
+.next
+out
+build
+dist
+coverage
+playwright-report
+test-results
+*.log
+pnpm-lock.yaml
+public/hero
+public/images
+.husky/_
+packages/db/src/generated
+**/src/generated

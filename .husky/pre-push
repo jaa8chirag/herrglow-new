@@ -1,0 +1,66 @@
+#!/usr/bin/env sh
+
+echo "====================================================="
+echo "  HerrGlow Pre-Push Verification Suite"
+echo "  Running: Pretty (Formatting) -> Lint -> Playwright"
+echo "====================================================="
+
+export PATH="/opt/homebrew/bin:/usr/local/bin:$HOME/.nvm/versions/node/$(ls $HOME/.nvm/versions/node 2>/dev/null | tail -n 1)/bin:$PATH"
+
+# 1. PRETTY: Code formatting check on files being pushed
+echo ""
+echo "👉 [1/3] PRETTY: Verifying code formatting..."
+
+# Determine files being pushed or modified
+CHANGED_FILES=$(git diff --name-only origin/main...HEAD 2>/dev/null)
+if [ -z "$CHANGED_FILES" ]; then
+  CHANGED_FILES=$(git diff --name-only HEAD 2>/dev/null || git status --porcelain 2>/dev/null | awk '{print $2}')
+fi
+
+SUPPORTED_FILES=""
+for file in $CHANGED_FILES; do
+  if [ -f "$file" ]; then
+    case "$file" in
+      *.js|*.jsx|*.ts|*.tsx|*.css)
+        SUPPORTED_FILES="$SUPPORTED_FILES $file"
+        ;;
+    esac
+  fi
+done
+
+if [ -n "$SUPPORTED_FILES" ]; then
+  pnpm exec prettier --check $SUPPORTED_FILES || {
+    echo ""
+    echo "❌ [Pretty Failed] Formatting issues detected in changed files."
+    echo "💡 Fix automatically by running: pnpm pretty"
+    exit 1
+  }
+  echo "✓ Prettier formatting verified on changed files."
+else
+  echo "✓ No code files requiring formatting check."
+fi
+
+# 2. LINT: ESLint check across apps/web
+echo ""
+echo "👉 [2/3] LINT: Running ESLint..."
+pnpm lint || {
+  echo ""
+  echo "❌ [Lint Failed] ESLint reported errors."
+  exit 1
+}
+echo "✓ ESLint check passed."
+
+# 3. PLAYWRIGHT: End-to-end test execution
+echo ""
+echo "👉 [3/3] PLAYWRIGHT: Running end-to-end test suite..."
+pnpm test:e2e || {
+  echo ""
+  echo "❌ [Playwright Failed] E2E tests failed."
+  exit 1
+}
+echo "✓ All Playwright tests passed."
+
+echo ""
+echo "====================================================="
+echo "✅ All pre-push checks passed! Proceeding with push."
+echo "====================================================="

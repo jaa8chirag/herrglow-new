@@ -15,18 +15,25 @@
     "db:seed": "pnpm --filter @herrglow/db seed:dev",
     "import:legacy": "pnpm --filter @herrglow/db import:legacy",
     "typecheck": "pnpm -r run typecheck",
+    "lint": "pnpm --filter @herrglow/web lint",
+    "pretty": "prettier --write .",
+    "pretty:check": "prettier --check .",
     "build": "pnpm --filter @herrglow/web build",
     "test:seo": "pnpm --filter @herrglow/web test:seo",
     "test:e2e": "playwright test",
+    "pre-push": "./.husky/pre-push",
     "import:media": "tsx scripts/import-legacy-media.ts",
-    "shots": "tsx scripts/screenshots.ts"
+    "shots": "tsx scripts/screenshots.ts",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@herrglow/core": "workspace:*",
     "@herrglow/db": "workspace:*",
     "@playwright/test": "^1.65.1",
+    "husky": "^9.1.7",
     "lighthouse": "^13.6.0",
     "playwright": "^1.65.1",
+    "prettier": "^3.10.1",
     "sharp": "^0.35.5",
     "tsx": "^4.23.15"
   },
