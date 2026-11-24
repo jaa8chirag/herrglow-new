@@ -114,6 +114,25 @@ async function main() {
   }
 
   console.log(`Synced ${inserted} services with variants successfully!`);
+
+  // Ensure default admin user
+  await prisma.adminUser.upsert({
+    where: { email: "admin@herrglow.com" },
+    update: {
+      passwordHash: "$2b$12$MQZG1MU45F6.iNSRHF2msO7/HZsdDHGNWc8697kW8qNpQocwk.k6O",
+      active: true,
+      mustChangePassword: false,
+    },
+    create: {
+      email: "admin@herrglow.com",
+      name: "HerrGlow Admin",
+      passwordHash: "$2b$12$MQZG1MU45F6.iNSRHF2msO7/HZsdDHGNWc8697kW8qNpQocwk.k6O",
+      role: "OWNER",
+      active: true,
+      mustChangePassword: false,
+    },
+  });
+  console.log("✓ Default admin credentials ensured: admin@herrglow.com");
 }
 
 main().catch(console.error).finally(() => process.exit(0));

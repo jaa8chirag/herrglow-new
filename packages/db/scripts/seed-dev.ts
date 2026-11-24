@@ -833,6 +833,25 @@ async function main() {
     console.warn("Notice: Deduplication already applied or skipped:", err);
   }
 
+  // 13. Default admin user credentials
+  await prisma.adminUser.upsert({
+    where: { email: "admin@herrglow.com" },
+    update: {
+      passwordHash: "$2b$12$MQZG1MU45F6.iNSRHF2msO7/HZsdDHGNWc8697kW8qNpQocwk.k6O",
+      active: true,
+      mustChangePassword: false,
+    },
+    create: {
+      email: "admin@herrglow.com",
+      name: "HerrGlow Admin",
+      passwordHash: "$2b$12$MQZG1MU45F6.iNSRHF2msO7/HZsdDHGNWc8697kW8qNpQocwk.k6O",
+      role: "OWNER",
+      active: true,
+      mustChangePassword: false,
+    },
+  });
+  console.log("✓ Default admin credentials ensured: admin@herrglow.com");
+
   console.log("✓ Pre-launch seeding with watermarked images completed successfully!");
 }
 
