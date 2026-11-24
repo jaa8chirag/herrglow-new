@@ -20,6 +20,7 @@ import {
   LogOut,
   KeyRound,
   CalendarDays,
+  BarChart3,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@herrglow/ui";
@@ -27,6 +28,7 @@ import { Logo } from "@/components/brand/Logo";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   dashboard: LayoutDashboard,
+  analytics: BarChart3,
   leads: CalendarCheck2,
   calendar: CalendarDays,
   applications: UserPlus,

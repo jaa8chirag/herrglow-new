@@ -19,6 +19,7 @@ const RAW_GROUPS: RawNavGroup[] = [
     title: "Daily Operations",
     items: [
       { href: "/admin", label: "Dashboard", icon: "dashboard" },
+      { href: "/admin/analytics", label: "Demand & Analytics", icon: "analytics" },
       { href: "/admin/leads", label: "Bookings & Leads", icon: "leads", perm: "leads" },
       { href: "/admin/calendar", label: "Beautician Schedule", icon: "calendar", perm: "leads" },
       { href: "/admin/applications", label: "Artist Applications", icon: "applications", perm: "pros" },

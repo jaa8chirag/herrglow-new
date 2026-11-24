@@ -13,3 +13,4 @@ export * from "./users";
 export * from "./applications";
 export * from "./matching";
 export * from "./schedule";
+export * from "./analytics";

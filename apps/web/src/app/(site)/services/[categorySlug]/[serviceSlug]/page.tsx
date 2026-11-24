@@ -1,8 +1,9 @@
 import { Clock, MessageCircle, ShieldCheck, Sparkles, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { headers } from "next/headers";
 import type { Metadata } from "next";
-import { asFaqs, findPage, getRelatedBlogs, getReviewsFor, getServiceArtists, urls } from "@herrglow/core";
+import { asFaqs, findPage, getRelatedBlogs, getReviewsFor, getServiceArtists, urls, recordServiceView } from "@herrglow/core";
 import { Badge, Card, Carousel, Container, Section, SectionHeading, buttonStyles, cn } from "@herrglow/ui";
 import { BookingForm } from "@/components/BookingForm";
 import { ArtistCard } from "@/components/page/ArtistCard";
@@ -90,6 +91,13 @@ export default async function ServicePage({ params }: { params: Promise<ServiceP
     redirect(`/services/${data.svc.category.slug}/${data.svc.slug}`);
   }
   const { svc, related, serviceCities, variantLinks } = data;
+
+  // Record service view asynchronously (ignoring bots)
+  headers().then((h) => {
+    const ua = h.get("user-agent") || "";
+    const isBot = /bot|spider|crawl|slurp|facebookexternalhit|whatsapp/i.test(ua);
+    recordServiceView(svc.id, isBot).catch(() => {});
+  }).catch(() => {});
   const [artists, reviews, blogs, cities, keys, s] = await Promise.all([
     getServiceArtists(svc.id),
     getReviewsFor(svc.title),

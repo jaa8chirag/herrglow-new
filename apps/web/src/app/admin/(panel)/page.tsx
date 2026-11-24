@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@herrglow/db";
-import { STATUS_LABEL, leadCounts } from "@herrglow/core";
+import { STATUS_LABEL, leadCounts, getAnalyticsOverview } from "@herrglow/core";
 import type { LeadStatus } from "@herrglow/db";
 import { PageHeader, Panel } from "@/components/admin/layout";
 import { Pill } from "@/components/admin/ui";
@@ -25,6 +25,10 @@ import {
   Zap,
   MapPin,
   UserCheck,
+  BarChart3,
+  Flame,
+  Search,
+  Eye,
 } from "lucide-react";
 
 const tone = (s: LeadStatus) =>
@@ -62,6 +66,7 @@ export default async function Dashboard(props: PageProps<"/admin">) {
     unassignedBookings,
     recentBookings,
     revenueAgg,
+    analyticsSummary,
   ] = await Promise.all([
     leadCounts(),
     prisma.pro.count({ where: { status: "ACTIVE" } }),
@@ -111,6 +116,7 @@ export default async function Dashboard(props: PageProps<"/admin">) {
       _sum: { finalAmount: true, amount: true },
       where: { status: { in: ["BOOKED", "COMPLETED"] } },
     }),
+    getAnalyticsOverview(7),
   ]);
 
   const newCount = leadsSummary.byStatus.NEW ?? 0;
@@ -484,6 +490,111 @@ export default async function Dashboard(props: PageProps<"/admin">) {
             </table>
           </div>
         )}
+      </section>
+
+      {/* ───────── DEMAND & SEARCH INTELLIGENCE PREVIEW ───────── */}
+      <section className="rounded-3xl border border-line bg-white p-5 sm:p-6 shadow-soft space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-line pb-4">
+          <div className="flex items-center gap-2.5">
+            <span className="grid size-9 place-items-center rounded-xl bg-plum-800 text-white shadow-xs">
+              <BarChart3 className="size-4.5 text-gold-400" />
+            </span>
+            <div>
+              <h2 className="font-serif text-lg font-bold text-plum-950">
+                Customer Demand &amp; Search Intelligence
+              </h2>
+              <p className="text-xs text-ink-soft">
+                Live customer interest, most viewed salon services, and unserved search queries (Last 7 Days)
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/admin/analytics"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-plum-800 hover:text-plum-950 transition"
+          >
+            <span>View Full Demand Analytics</span>
+            <ArrowRight className="size-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Top Viewed Services */}
+          <div className="rounded-2xl border border-line bg-[#fdfbfa] p-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-ink-soft flex items-center gap-1.5">
+                <Flame className="size-3.5 text-rose-600" />
+                Most Viewed Services
+              </span>
+              <span className="text-[11px] font-semibold text-ink-soft">Views</span>
+            </div>
+            {analyticsSummary.topServices.length === 0 ? (
+              <p className="py-4 text-center text-xs text-ink-soft">No views recorded yet.</p>
+            ) : (
+              <ul className="space-y-2 text-xs">
+                {analyticsSummary.topServices.slice(0, 4).map((s) => (
+                  <li key={s.id} className="flex items-center justify-between gap-2 border-b border-line/60 pb-1.5 last:border-none">
+                    <span className="font-medium text-ink truncate" title={s.title}>{s.title}</span>
+                    <span className="font-bold text-plum-900 bg-plum-50 px-2 py-0.5 rounded-full shrink-0">
+                      {s.viewCount}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Top Customer Searches */}
+          <div className="rounded-2xl border border-line bg-[#fdfbfa] p-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-ink-soft flex items-center gap-1.5">
+                <Search className="size-3.5 text-blue-600" />
+                Top Searched Queries
+              </span>
+              <span className="text-[11px] font-semibold text-ink-soft">Count</span>
+            </div>
+            {analyticsSummary.topSearches.length === 0 ? (
+              <p className="py-4 text-center text-xs text-ink-soft">No searches recorded yet.</p>
+            ) : (
+              <ul className="space-y-2 text-xs">
+                {analyticsSummary.topSearches.slice(0, 4).map((s) => (
+                  <li key={s.query} className="flex items-center justify-between gap-2 border-b border-line/60 pb-1.5 last:border-none">
+                    <span className="font-medium text-ink truncate">&ldquo;{s.query}&rdquo;</span>
+                    <span className="font-bold text-blue-900 bg-blue-50 px-2 py-0.5 rounded-full shrink-0">
+                      {s.count}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Zero-Result Demand Alert */}
+          <div className="rounded-2xl border border-amber-200 bg-amber-50/40 p-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+                <AlertTriangle className="size-3.5 text-amber-600" />
+                Missed Demand (0 Results)
+              </span>
+              <Pill tone={analyticsSummary.zeroResultSearches.length > 0 ? "warn" : "good"}>
+                {analyticsSummary.zeroResultSearches.length} items
+              </Pill>
+            </div>
+            {analyticsSummary.zeroResultSearches.length === 0 ? (
+              <p className="py-4 text-center text-xs text-emerald-800 font-medium">All searches matched live services!</p>
+            ) : (
+              <ul className="space-y-2 text-xs">
+                {analyticsSummary.zeroResultSearches.slice(0, 4).map((s) => (
+                  <li key={s.query} className="flex items-center justify-between gap-2 border-b border-amber-200/60 pb-1.5 last:border-none">
+                    <span className="font-semibold text-amber-950 truncate">&ldquo;{s.query}&rdquo;</span>
+                    <span className="font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded-full shrink-0">
+                      {s.count} searches
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
       </section>
 
       {/* Fast Shortcuts for Salon Managers */}

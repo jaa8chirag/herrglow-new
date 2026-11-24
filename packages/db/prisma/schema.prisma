@@ -140,15 +140,18 @@ model Service {
   upsellServiceIds  String[]        @default([])
   /// enquiries received (rolled up from merged services)
   leadCount         Int             @default(0)
+  /// total page views received
+  viewCount         Int             @default(0)
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 
-  variants  ServiceVariant[]
-  addons    ServiceAddon[]
-  cities    ServiceCity[]
-  pros      ProService[]
-  leads     LeadService[]
-  packages  PackageService[]
+  variants   ServiceVariant[]
+  addons     ServiceAddon[]
+  cities     ServiceCity[]
+  pros       ProService[]
+  leads      LeadService[]
+  packages   PackageService[]
+  dailyViews ServiceDailyView[]
 }
 
 model ServiceVariant {
@@ -587,4 +590,31 @@ model Subscriber {
   id        String   @id @default(cuid())
   email     String   @unique
   createdAt DateTime @default(now())
+}
+
+/// Daily aggregated page views per service for historical trend analysis
+model ServiceDailyView {
+  id        String   @id @default(cuid())
+  serviceId String
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date
+  views     Int      @default(1)
+
+  @@unique([serviceId, date])
+  @@index([date])
+  @@index([serviceId])
+}
+
+/// User search queries logged from /services explorer and search bars
+model SearchQueryLog {
+  id           String   @id @default(cuid())
+  query        String
+  resultsCount Int      @default(0)
+  citySlug     String?
+  createdAt    DateTime @default(now())
+
+  @@index([query])
+  @@index([resultsCount])
+  @@index([createdAt])
+  @@index([citySlug])
 }

@@ -12,7 +12,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Badge, Card, cn } from "@herrglow/ui";
 import { Photo } from "@/components/Photo";
 
@@ -151,6 +151,30 @@ export function ServiceExplorer({
       return true;
     });
   }, [items, cat, subCat, q, availableSubCats]);
+
+  // Analytics: Log search query debounced after 800ms to avoid logging every keystroke
+  const lastLoggedQuery = useRef<string>("");
+  useEffect(() => {
+    const trimmed = q.trim();
+    if (trimmed.length < 2 || trimmed.toLowerCase() === lastLoggedQuery.current.toLowerCase()) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      lastLoggedQuery.current = trimmed;
+      fetch("/api/v1/analytics/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: trimmed,
+          resultsCount: shown.length,
+          citySlug: null,
+        }),
+      }).catch(() => {});
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, [q, shown.length]);
 
   // Group shown items by category for structured layout
   const categoriesWithItems = useMemo(() => {
