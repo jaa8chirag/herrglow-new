@@ -45,7 +45,7 @@ export function TrustBadges() {
             Our Safety &amp; Trust Guarantee
           </p>
           <h2 className="mt-2 font-serif text-2xl sm:text-3xl font-bold text-plum-950">
-            Why 12,000+ Women Trust HerrGlow
+            Why Women Trust HerrGlow
           </h2>
           <p className="mt-2 text-sm text-ink-soft">
             Five-star salon luxury and bridal artistry, delivered to your doorstep without compromising on safety, hygiene, or authentic products.
