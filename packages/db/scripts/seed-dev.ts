@@ -852,6 +852,14 @@ async function main() {
   });
   console.log("✓ Default admin credentials ensured: admin@herrglow.com");
 
+  // 14. High-demand SEO blogs with internal backlinks & images
+  try {
+    await import("./seed-3-high-demand-blogs.js").catch(() => import("./seed-3-high-demand-blogs.ts"));
+    console.log("✓ High-demand blogs and editorial images seeded successfully!");
+  } catch (err) {
+    console.warn("Notice: High-demand blogs already seeded or skipped:", err);
+  }
+
   console.log("✓ Pre-launch seeding with watermarked images completed successfully!");
 }
 
