@@ -213,6 +213,7 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
                     <Link
                       key={c.slug}
                       href={cityHubUrl(c.slug)}
+                      onClick={() => setCity(false)}
                       className="flex items-center justify-between rounded-xl px-3 py-2.5 text-ink hover:bg-blush-100"
                     >
                       {c.name}

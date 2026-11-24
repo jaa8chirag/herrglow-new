@@ -92,13 +92,11 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         ...sortedBridal
           .slice(0, 4)
           .map((x) => ({ slug: x.slug, title: x.title, group: "👰 For The Bride (Bridal)" })),
-        ...sortedNonBridal
-          .slice(0, 4)
-          .map((x) => ({
-            slug: x.slug,
-            title: x.title,
-            group: "✨ Non-Bridal (Bridesmaids, Mother & Sister)",
-          })),
+        ...sortedNonBridal.slice(0, 4).map((x) => ({
+          slug: x.slug,
+          title: x.title,
+          group: "✨ Non-Bridal (Bridesmaids, Mother & Sister)",
+        })),
       ];
 
       return {

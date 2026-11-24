@@ -201,15 +201,13 @@ export default async function HomePage() {
       <ReviewsMarquee reviews={testimonials} />
       <CityCards cities={extras.perCity} />
       <BlogCards
-        posts={blogs
-          .slice(0, 3)
-          .map((b) => ({
-            slug: b.slug,
-            title: b.title,
-            excerpt: b.excerpt,
-            image: img(b.image),
-            date: b.publishedAt,
-          }))}
+        posts={blogs.slice(0, 3).map((b) => ({
+          slug: b.slug,
+          title: b.title,
+          excerpt: b.excerpt,
+          image: img(b.image),
+          date: b.publishedAt,
+        }))}
       />
       <FaqSection faqs={faqs} />
       <FinalCta cities={cities} />

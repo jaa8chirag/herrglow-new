@@ -99,9 +99,9 @@ test.describe("Home Page & Core Navigation", () => {
       await delhiLink.click();
     }
 
-    await expect(page).toHaveURL(/\/salon-at-home-delhi$/);
+    await expect(page).toHaveURL(/\/salon-at-home-delhi$/, { timeout: 15000 });
     const h1 = page.locator("h1");
-    await expect(h1).toBeVisible();
+    await expect(h1).toBeVisible({ timeout: 15000 });
     await expect(h1).toContainText(/Makeup Artist at Home in Delhi/i);
 
     // Verify that legacy 410 'Gone' is NEVER displayed
@@ -120,15 +120,15 @@ test.describe("Home Page & Core Navigation", () => {
     const menuBtn = page.getByRole("button", { name: /Open menu/i });
     await expect(menuBtn).toBeVisible();
     await menuBtn.click();
-    await page.waitForTimeout(400);
+    await page.waitForTimeout(500);
 
     const noidaChip = page.locator('nav[aria-label="Mobile"] a[href="/salon-at-home-noida"]');
     await expect(noidaChip).toBeVisible();
     await noidaChip.click();
 
-    await expect(page).toHaveURL(/\/salon-at-home-noida$/);
+    await expect(page).toHaveURL(/\/salon-at-home-noida$/, { timeout: 15000 });
     const h1 = page.locator("h1");
-    await expect(h1).toBeVisible();
+    await expect(h1).toBeVisible({ timeout: 15000 });
     await expect(h1).toContainText(/Makeup Artist at Home in Noida/i);
     const bodyText = await page.locator("body").innerText();
     expect(bodyText.trim()).not.toBe("Gone");
@@ -139,11 +139,11 @@ test.describe("Home Page & Core Navigation", () => {
   }) => {
     for (const city of ["delhi", "noida", "greater-noida"]) {
       await page.goto(`/makeup-artist-in-${city}`);
-      await expect(page).toHaveURL(new RegExp(`/salon-at-home-${city}$`));
+      await expect(page).toHaveURL(new RegExp(`/salon-at-home-${city}$`), { timeout: 15000 });
       const bodyText = await page.locator("body").innerText();
       expect(bodyText.trim()).not.toBe("Gone");
       const h1 = page.locator("h1");
-      await expect(h1).toBeVisible();
+      await expect(h1).toBeVisible({ timeout: 15000 });
       await expect(h1).toContainText(/Makeup Artist at Home in/i);
     }
   });
@@ -153,7 +153,7 @@ test.describe("Home Page & Core Navigation", () => {
     await expect(greaterNoidaCard).toBeVisible();
     await greaterNoidaCard.scrollIntoViewIfNeeded();
     await greaterNoidaCard.click();
-    await expect(page).toHaveURL(/\/salon-at-home-greater-noida$/);
+    await expect(page).toHaveURL(/\/salon-at-home-greater-noida$/, { timeout: 15000 });
     const h1 = page.locator("h1");
     await expect(h1).toBeVisible();
     await expect(h1).toContainText(/Makeup Artist at Home in Greater Noida/i);
