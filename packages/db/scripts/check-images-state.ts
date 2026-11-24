@@ -12,7 +12,9 @@ async function main() {
   console.log(gallery.length ? gallery : "No gallery items");
 
   console.log("\n=== TESTIMONIALS ===");
-  console.log(testimonials.map(t => ({ id: t.id, name: t.name, photo: t.photo, location: t.location })));
+  console.log(
+    testimonials.map((t) => ({ id: t.id, name: t.name, photo: t.photo, location: t.location }))
+  );
 
   console.log("\n=== BLOGS ===");
   console.log(blogs);
@@ -21,4 +23,6 @@ async function main() {
   console.log(pros);
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main()
+  .catch(console.error)
+  .finally(() => prisma.$disconnect());

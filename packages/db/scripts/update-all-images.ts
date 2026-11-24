@@ -7,7 +7,7 @@ const CATEGORY_IMAGE_MAP: Record<string, string> = {
   "draping-eye-mehndi": "/images/services/bridal-makeup-artist.jpg",
   "hair-styling": "/images/services/bridal-hair-styling.jpg",
   "facial-and-skincare": "/images/services/facial-at-home.jpg",
-  "waxing": "/images/services/full-body-waxing-at-home.jpg",
+  waxing: "/images/services/full-body-waxing-at-home.jpg",
   "nail-art": "/images/services/gel-nail-extensions.jpg",
 };
 

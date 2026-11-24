@@ -34,18 +34,22 @@ Build resilient applications with robust error handling strategies that graceful
 ## Core Principles
 
 ### 1. Fail Fast & Validate at Boundaries
+
 - Validate all incoming data at the trust boundary (Zod schemas for forms, APIs, and webhooks).
 - Never let malformed payloads propagate deep into the business or database layers.
 
 ### 2. Differentiate User-Facing vs. Developer Logs
-- **User-Facing:** Compassionate, human-readable, non-technical guidance explaining *what happened* and *what to do next* (e.g. *"This slot was just booked by someone else. Please choose another convenient time."*). Never expose raw database errors, stack traces, or SQL queries to end users.
+
+- **User-Facing:** Compassionate, human-readable, non-technical guidance explaining _what happened_ and _what to do next_ (e.g. _"This slot was just booked by someone else. Please choose another convenient time."_). Never expose raw database errors, stack traces, or SQL queries to end users.
 - **Developer Logs:** Structured, contextual logging including timestamp, correlation ID, error stack, and request metadata for rapid triaging.
 
 ### 3. Graceful Degradation & Safe Fallbacks
+
 - When secondary features fail (e.g. review stars, promotional banners, recommendation carousel), render graceful fallback UI rather than crashing the whole page.
 - Wrap UI subtrees in React `<ErrorBoundary>`.
 
 ### 4. Idempotent Retries for Background Operations
+
 - Operations like sending booking SMS/emails, processing webhooks, or syncing external calendars must be idempotent.
 - Use exponential backoff with jitter for transient network or database connection drops.
 

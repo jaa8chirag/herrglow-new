@@ -3,8 +3,12 @@ import Credentials from "next-auth/providers/credentials";
 import { verifyAdminLogin, type Role } from "@herrglow/core";
 
 declare module "next-auth" {
-  interface Session { user: { id: string; role: Role } & DefaultSession["user"] }
-  interface User { role?: Role }
+  interface Session {
+    user: { id: string; role: Role } & DefaultSession["user"];
+  }
+  interface User {
+    role?: Role;
+  }
 }
 type Claims = { role?: Role; uid?: string };
 
@@ -24,7 +28,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Credentials({
       credentials: { email: {}, password: {} },
       async authorize(c) {
-        const email = String(c?.email ?? "").toLowerCase().trim();
+        const email = String(c?.email ?? "")
+          .toLowerCase()
+          .trim();
         const password = String(c?.password ?? "");
         if (!email || !password || throttled(email)) return null;
         const u = await verifyAdminLogin(email, password);
@@ -37,7 +43,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   callbacks: {
     jwt({ token, user }) {
-      if (user) { (token as Claims).role = user.role; (token as Claims).uid = user.id; }
+      if (user) {
+        (token as Claims).role = user.role;
+        (token as Claims).uid = user.id;
+      }
       return token;
     },
     session({ session, token }) {

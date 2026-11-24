@@ -7,10 +7,7 @@ export async function POST(req: Request) {
     const result = await createLead(body);
 
     if (!result.ok) {
-      return NextResponse.json(
-        { ok: false, errors: result.errors },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, errors: result.errors }, { status: 400 });
     }
 
     return NextResponse.json(
@@ -31,7 +28,11 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error("Error in POST /api/v1/bookings:", err);
     return NextResponse.json(
-      { ok: false, error: "Unable to process booking request. Please try again shortly or contact support on WhatsApp." },
+      {
+        ok: false,
+        error:
+          "Unable to process booking request. Please try again shortly or contact support on WhatsApp.",
+      },
       { status: 500 }
     );
   }

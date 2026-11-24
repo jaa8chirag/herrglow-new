@@ -124,7 +124,10 @@ export function Logo({
             {/* Signature Luminous Gold Sparkle Dot */}
             <span
               aria-hidden="true"
-              className={cn("inline-block ml-0.5 font-sans font-black", isDark ? "text-gold-300" : "text-gold-500")}
+              className={cn(
+                "inline-block ml-0.5 font-sans font-black",
+                isDark ? "text-gold-300" : "text-gold-500"
+              )}
             >
               ✦
             </span>
@@ -147,7 +150,11 @@ export function Logo({
 
   if (withLink) {
     return (
-      <Link href="/" aria-label="HerrGlow Home" className="group inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 rounded-xl transition-transform active:scale-[0.98]">
+      <Link
+        href="/"
+        aria-label="HerrGlow Home"
+        className="group inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 rounded-xl transition-transform active:scale-[0.98]"
+      >
         {content}
       </Link>
     );

@@ -38,7 +38,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -55,8 +55,8 @@ jobs:
       - name: Build Web Application
         run: pnpm --filter @herrglow/web build
         env:
-          ALLOW_INDEXING: 'false'
-          NEXT_PUBLIC_SITE_URL: 'https://staging.herrglow.com'
+          ALLOW_INDEXING: "false"
+          NEXT_PUBLIC_SITE_URL: "https://staging.herrglow.com"
 ```
 
 ---
@@ -114,10 +114,10 @@ jobs:
 
 Ensure the following secrets are configured in GitHub Settings $\rightarrow$ Secrets and Variables $\rightarrow$ Actions:
 
-| Secret Name | Description | Example / Target |
-| :--- | :--- | :--- |
-| `DATABASE_URL` | Production PostgreSQL connection string | `postgresql://user:pass@host:5432/herrglow` |
-| `REDIS_URL` | Production Redis connection string | `redis://default:pass@host:6379` |
-| `ALLOW_INDEXING` | Mandatory `true` for production indexing | `true` |
-| `NEXTAUTH_SECRET` | 32-character random string for Auth cookies | `openssl rand -base64 32` |
-| `DEPLOY_WEBHOOK_URL`| Hosting trigger hook (Vercel / Coolify / Railway) | `https://...` |
+| Secret Name          | Description                                       | Example / Target                            |
+| :------------------- | :------------------------------------------------ | :------------------------------------------ |
+| `DATABASE_URL`       | Production PostgreSQL connection string           | `postgresql://user:pass@host:5432/herrglow` |
+| `REDIS_URL`          | Production Redis connection string                | `redis://default:pass@host:6379`            |
+| `ALLOW_INDEXING`     | Mandatory `true` for production indexing          | `true`                                      |
+| `NEXTAUTH_SECRET`    | 32-character random string for Auth cookies       | `openssl rand -base64 32`                   |
+| `DEPLOY_WEBHOOK_URL` | Hosting trigger hook (Vercel / Coolify / Railway) | `https://...`                               |

@@ -50,7 +50,11 @@ export interface AnalyticsOverview {
 /**
  * Logs a user search query asynchronously without blocking the user response.
  */
-export async function recordSearchQuery({ query, resultsCount, citySlug }: LogSearchParams): Promise<void> {
+export async function recordSearchQuery({
+  query,
+  resultsCount,
+  citySlug,
+}: LogSearchParams): Promise<void> {
   const normalized = query.trim().toLowerCase().slice(0, 100);
   if (normalized.length < 2) return;
 
@@ -156,7 +160,10 @@ export async function getAnalyticsOverview(days = 30): Promise<AnalyticsOverview
   ]);
 
   // Aggregate search queries by count and average results
-  const searchMap = new Map<string, { count: number; totalResults: number; lastSearchedAt: Date }>();
+  const searchMap = new Map<
+    string,
+    { count: number; totalResults: number; lastSearchedAt: Date }
+  >();
   let totalZeroResults = 0;
 
   for (const log of allLogs) {
@@ -178,12 +185,14 @@ export async function getAnalyticsOverview(days = 30): Promise<AnalyticsOverview
     }
   }
 
-  const aggregatedSearches: SearchQuerySummary[] = Array.from(searchMap.entries()).map(([query, data]) => ({
-    query,
-    count: data.count,
-    avgResults: Math.round(data.totalResults / data.count),
-    lastSearchedAt: data.lastSearchedAt,
-  }));
+  const aggregatedSearches: SearchQuerySummary[] = Array.from(searchMap.entries()).map(
+    ([query, data]) => ({
+      query,
+      count: data.count,
+      avgResults: Math.round(data.totalResults / data.count),
+      lastSearchedAt: data.lastSearchedAt,
+    })
+  );
 
   aggregatedSearches.sort((a, b) => b.count - a.count);
 
@@ -213,7 +222,8 @@ export async function getAnalyticsOverview(days = 30): Promise<AnalyticsOverview
 
   const totalViews = topServices.reduce((sum, s) => sum + s.viewCount, 0);
   const totalSearches = allLogs.length;
-  const zeroResultRate = totalSearches > 0 ? Number(((totalZeroResults / totalSearches) * 100).toFixed(1)) : 0;
+  const zeroResultRate =
+    totalSearches > 0 ? Number(((totalZeroResults / totalSearches) * 100).toFixed(1)) : 0;
 
   const topConverting = [...topServices]
     .filter((s) => s.viewCount >= 5)
@@ -229,7 +239,9 @@ export async function getAnalyticsOverview(days = 30): Promise<AnalyticsOverview
       totalSearches,
       zeroResultCount: totalZeroResults,
       zeroResultRate,
-      topConvertingService: topConverting ? `${topConverting.title} (${topConverting.conversionRate}%)` : null,
+      topConvertingService: topConverting
+        ? `${topConverting.title} (${topConverting.conversionRate}%)`
+        : null,
     },
   };
 }

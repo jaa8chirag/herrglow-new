@@ -1,22 +1,50 @@
 import { prisma } from "@herrglow/db";
-import { realChannels, ownerEmail, whatsappEnabled, type ChannelResult, type Channels } from "./channels";
-import { applicationText, customerEmail, customerWhatsAppText, digestText, ownerLeadSubject, ownerLeadText, type Digest, type LeadView } from "./messages";
+import {
+  realChannels,
+  ownerEmail,
+  whatsappEnabled,
+  type ChannelResult,
+  type Channels,
+} from "./channels";
+import {
+  applicationText,
+  customerEmail,
+  customerWhatsAppText,
+  digestText,
+  ownerLeadSubject,
+  ownerLeadText,
+  type Digest,
+  type LeadView,
+} from "./messages";
 
 /**
  * Idempotent per (kind, ref, channel): a retry skips channels that already SENT and only re-attempts the ones that
  * failed or were skipped. After trying every channel, any failure is rethrown so the queue retries with backoff.
  */
-async function once(kind: string, refId: string, channel: string, fn: () => Promise<ChannelResult>): Promise<{ sent: boolean; error?: Error }> {
+async function once(
+  kind: string,
+  refId: string,
+  channel: string,
+  fn: () => Promise<ChannelResult>
+): Promise<{ sent: boolean; error?: Error }> {
   const key = { kind_refId_channel: { kind, refId, channel } };
   const prev = await prisma.notificationLog.findUnique({ where: key });
   if (prev?.status === "SENT") return { sent: true };
   try {
     const r = await fn();
-    await prisma.notificationLog.upsert({ where: key, update: { status: r.status, error: r.detail ?? null }, create: { kind, refId, channel, status: r.status, error: r.detail ?? null } });
+    await prisma.notificationLog.upsert({
+      where: key,
+      update: { status: r.status, error: r.detail ?? null },
+      create: { kind, refId, channel, status: r.status, error: r.detail ?? null },
+    });
     return { sent: r.status === "SENT" };
   } catch (e) {
     const err = e as Error;
-    await prisma.notificationLog.upsert({ where: key, update: { status: "FAILED", error: err.message.slice(0, 500) }, create: { kind, refId, channel, status: "FAILED", error: err.message.slice(0, 500) } });
+    await prisma.notificationLog.upsert({
+      where: key,
+      update: { status: "FAILED", error: err.message.slice(0, 500) },
+      create: { kind, refId, channel, status: "FAILED", error: err.message.slice(0, 500) },
+    });
     return { sent: false, error: err };
   }
 }
@@ -59,10 +87,15 @@ export async function processNewLead(leadId: string, ch: Channels = realChannels
   if (!l) return { skipped: "lead not found" };
   const email = ownerEmail();
   const results = await Promise.all([
-    once("new-lead", leadId, "email", async () => (email ? ch.email({ to: email, subject: ownerLeadSubject(l), text: ownerLeadText(l) }) : { status: "SKIPPED", detail: "OWNER_EMAIL not set" })),
+    once("new-lead", leadId, "email", async () =>
+      email
+        ? ch.email({ to: email, subject: ownerLeadSubject(l), text: ownerLeadText(l) })
+        : { status: "SKIPPED", detail: "OWNER_EMAIL not set" }
+    ),
     once("new-lead", leadId, "telegram", () => ch.telegram(ownerLeadText(l))),
   ]);
-  if (results.some((r) => r.sent)) await prisma.lead.update({ where: { id: leadId }, data: { notifiedAt: new Date() } });
+  if (results.some((r) => r.sent))
+    await prisma.lead.update({ where: { id: leadId }, data: { notifiedAt: new Date() } });
   failIf(results, "owner notification");
   return { sent: results.map((r) => r.sent) };
 }
@@ -77,7 +110,11 @@ export async function processCustomerConfirmation(leadId: string, ch: Channels =
       const m = customerEmail(l);
       return ch.email({ to: l.email, ...m });
     }),
-    once("customer-confirmation", leadId, "whatsapp", async () => (whatsappEnabled() ? ch.whatsapp({ to: l.phone, text: customerWhatsAppText(l) }) : { status: "SKIPPED", detail: "WhatsApp disabled" })),
+    once("customer-confirmation", leadId, "whatsapp", async () =>
+      whatsappEnabled()
+        ? ch.whatsapp({ to: l.phone, text: customerWhatsAppText(l) })
+        : { status: "SKIPPED", detail: "WhatsApp disabled" }
+    ),
   ]);
   failIf(results, "customer confirmation");
   return { sent: results.map((r) => r.sent) };
@@ -89,7 +126,11 @@ export async function processNewApplication(id: string, ch: Channels = realChann
   const text = applicationText(a);
   const email = ownerEmail();
   const results = await Promise.all([
-    once("new-application", id, "email", async () => (email ? ch.email({ to: email, subject: `New artist application: ${a.name} (${a.city})`, text }) : { status: "SKIPPED", detail: "OWNER_EMAIL not set" })),
+    once("new-application", id, "email", async () =>
+      email
+        ? ch.email({ to: email, subject: `New artist application: ${a.name} (${a.city})`, text })
+        : { status: "SKIPPED", detail: "OWNER_EMAIL not set" }
+    ),
     once("new-application", id, "telegram", () => ch.telegram(text)),
   ]);
   failIf(results, "application notification");
@@ -106,11 +147,24 @@ export async function buildDigest(now = new Date()): Promise<Digest> {
     prisma.lead.count({ where: { createdAt: { gt: since } } }),
     prisma.lead.count({ where: { createdAt: { gt: since }, tags: { has: "out_of_area" } } }),
     prisma.lead.count({ where }),
-    prisma.lead.findMany({ where, orderBy: { createdAt: "asc" }, take: 15, include: { services: { include: { service: { select: { title: true } } } } } }),
+    prisma.lead.findMany({
+      where,
+      orderBy: { createdAt: "asc" },
+      take: 15,
+      include: { services: { include: { service: { select: { title: true } } } } },
+    }),
   ]);
   return {
-    newLast24h, outOfArea24h, totalUnattended,
-    unattended: rows.map((r) => ({ id: r.id, name: r.name, service: r.services[0]?.service.title ?? "enquiry", where: r.locationText ?? "?", ageHours: (now.getTime() - r.createdAt.getTime()) / 3_600_000 })),
+    newLast24h,
+    outOfArea24h,
+    totalUnattended,
+    unattended: rows.map((r) => ({
+      id: r.id,
+      name: r.name,
+      service: r.services[0]?.service.title ?? "enquiry",
+      where: r.locationText ?? "?",
+      ageHours: (now.getTime() - r.createdAt.getTime()) / 3_600_000,
+    })),
   };
 }
 
@@ -121,7 +175,15 @@ export async function processDailyDigest(ch: Channels = realChannels, now = new 
   const ref = now.toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
   const email = ownerEmail();
   const results = await Promise.all([
-    once("daily-digest", ref, "email", async () => (email ? ch.email({ to: email, subject: `HerrGlow summary: ${d.totalUnattended} unattended, ${d.newLast24h} new`, text }) : { status: "SKIPPED", detail: "OWNER_EMAIL not set" })),
+    once("daily-digest", ref, "email", async () =>
+      email
+        ? ch.email({
+            to: email,
+            subject: `HerrGlow summary: ${d.totalUnattended} unattended, ${d.newLast24h} new`,
+            text,
+          })
+        : { status: "SKIPPED", detail: "OWNER_EMAIL not set" }
+    ),
     once("daily-digest", ref, "telegram", () => ch.telegram(text)),
   ]);
   failIf(results, "daily digest");
@@ -130,5 +192,15 @@ export async function processDailyDigest(ch: Channels = realChannels, now = new 
 
 /** Safety net: leads whose owner notification never went out (Redis was down, worker was off) get re-queued. */
 export async function findUnnotifiedLeads(now = new Date()) {
-  return prisma.lead.findMany({ where: { notifiedAt: null, createdAt: { gt: new Date(now.getTime() - 86_400_000), lt: new Date(now.getTime() - 120_000) } }, select: { id: true }, take: 50 });
+  return prisma.lead.findMany({
+    where: {
+      notifiedAt: null,
+      createdAt: {
+        gt: new Date(now.getTime() - 86_400_000),
+        lt: new Date(now.getTime() - 120_000),
+      },
+    },
+    select: { id: true },
+    take: 50,
+  });
 }

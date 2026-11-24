@@ -83,7 +83,13 @@ services:
     profiles: ["tools"]
     build: { context: ., dockerfile: Dockerfile.backup }
     env_file: .env
-    environment: { PGHOST: postgres, PGUSER: herrglow, PGPASSWORD: "${POSTGRES_PASSWORD}", PGDATABASE: herrglow }
+    environment:
+      {
+        PGHOST: postgres,
+        PGUSER: herrglow,
+        PGPASSWORD: "${POSTGRES_PASSWORD}",
+        PGDATABASE: herrglow,
+      }
     depends_on: { postgres: { condition: service_healthy } }
 
 volumes:

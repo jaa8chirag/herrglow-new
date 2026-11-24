@@ -11,10 +11,12 @@ docs/       P0 checklist, URL inventory, decisions
 ```
 
 ## Dev
+
 ```
 pnpm infra:up      # Postgres :5432, Redis :6379
 ```
 
 ## Rules
+
 - Never commit SQL dumps or exports (`.gitignore` blocks them). The legacy dump contains an SMTP password, password hashes and customer PII.
 - Passwords are not migrated; users re-login via OTP.

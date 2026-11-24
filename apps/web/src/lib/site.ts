@@ -1,5 +1,9 @@
 /** Site-wide constants. No DB access here: this file is imported by tests and by the proxy. */
-export const SITE_URL = (process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "https://herrglow.com").replace(/\/$/, "");
+export const SITE_URL = (
+  process.env.SITE_URL ??
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  "https://herrglow.com"
+).replace(/\/$/, "");
 export const CANONICAL_HOST = new URL(SITE_URL).host;
 export const SITE_NAME = "HerrGlow";
 /** Indexing is OFF unless explicitly enabled for the production deployment (staging/preview stay noindex). */

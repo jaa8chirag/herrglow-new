@@ -3,18 +3,40 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { addPortfolioItem, removePortfolioItem, savePrivate, saveProProfile, setProCoverageForCity, setProPhoto, setProServices } from "@herrglow/core";
+import {
+  addPortfolioItem,
+  removePortfolioItem,
+  savePrivate,
+  saveProProfile,
+  setProCoverageForCity,
+  setProPhoto,
+  setProServices,
+} from "@herrglow/core";
 import { log, requireAdmin } from "@/lib/admin";
 
-const num = z.string().trim().optional().transform((v) => (v ? Number(v) : null)).refine((n) => n === null || (Number.isFinite(n) && n >= 0), "Invalid number");
+const num = z
+  .string()
+  .trim()
+  .optional()
+  .transform((v) => (v ? Number(v) : null))
+  .refine((n) => n === null || (Number.isFinite(n) && n >= 0), "Invalid number");
 const profile = z.object({
-  id: z.string().min(1), name: z.string().trim().min(2).max(100),
-  providerType: z.enum(["BEAUTICIAN", "MAKEOVER_ARTIST", "BOTH"]), status: z.enum(["PENDING", "ACTIVE", "INACTIVE"]),
-  specialization: z.string().max(200).optional(), experienceYears: num, basePrice: num, bio: z.string().max(20000).optional(),
-  seoTitle: z.string().max(120).optional(), seoDescription: z.string().max(300).optional(),
+  id: z.string().min(1),
+  name: z.string().trim().min(2).max(100),
+  providerType: z.enum(["BEAUTICIAN", "MAKEOVER_ARTIST", "BOTH"]),
+  status: z.enum(["PENDING", "ACTIVE", "INACTIVE"]),
+  specialization: z.string().max(200).optional(),
+  experienceYears: num,
+  basePrice: num,
+  bio: z.string().max(20000).optional(),
+  seoTitle: z.string().max(120).optional(),
+  seoDescription: z.string().max(300).optional(),
 });
 
-const done = (id: string, msg: string): never => { revalidatePath("/", "layout"); redirect(`/admin/pros/${id}?ok=${encodeURIComponent(msg)}`); };
+const done = (id: string, msg: string): never => {
+  revalidatePath("/", "layout");
+  redirect(`/admin/pros/${id}?ok=${encodeURIComponent(msg)}`);
+};
 
 export async function saveProfileAction(fd: FormData) {
   const me = await requireAdmin("pros");
@@ -27,7 +49,12 @@ export async function saveProfileAction(fd: FormData) {
 export async function savePrivateAction(fd: FormData) {
   const me = await requireAdmin("pros");
   const id = String(fd.get("id"));
-  await savePrivate(id, { phone: String(fd.get("phone") ?? ""), email: String(fd.get("email") ?? ""), addressLine: String(fd.get("addressLine") ?? ""), pincode: String(fd.get("pincode") ?? "") });
+  await savePrivate(id, {
+    phone: String(fd.get("phone") ?? ""),
+    email: String(fd.get("email") ?? ""),
+    addressLine: String(fd.get("addressLine") ?? ""),
+    pincode: String(fd.get("pincode") ?? ""),
+  });
   await log(me, "pro.private", "Pro", id);
   done(id, "Private details saved");
 }
@@ -42,7 +69,8 @@ export async function saveServicesAction(fd: FormData) {
 
 export async function saveCoverageAction(fd: FormData) {
   const me = await requireAdmin("pros");
-  const id = String(fd.get("id")), city = String(fd.get("city"));
+  const id = String(fd.get("id")),
+    city = String(fd.get("city"));
   await setProCoverageForCity(id, city, fd.getAll("areaId").map(String));
   await log(me, "pro.coverage", "Pro", id, { city });
   revalidatePath("/", "layout");

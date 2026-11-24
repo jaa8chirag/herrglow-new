@@ -35,6 +35,7 @@ Build efficient, scalable monorepos that enable code sharing, consistent tooling
 ## Core Best Practices
 
 ### 1. Workspace Dependency Management
+
 - Internal packages should always reference each other via `workspace:*`:
   ```json
   "dependencies": {
@@ -46,12 +47,14 @@ Build efficient, scalable monorepos that enable code sharing, consistent tooling
 - Run package installs and dependency updates from the repository root (`pnpm add <pkg> --filter <target>`).
 
 ### 2. Turborepo Pipeline Architecture (`turbo.json`)
+
 - Explicitly define `dependsOn`:
   - `^build` for packages that depend on their dependencies being built first.
 - Clearly specify `inputs` and `outputs` for build artifacts to maximize cache hits.
 - Define `env` variables that affect task outputs (e.g. `NODE_ENV`, `DATABASE_URL`) to invalidate stale caches safely.
 
 ### 3. Shared TypeScript and Linting Configurations
+
 - Export base configs from a shared package (e.g. `packages/config/tsconfig` or `@herrglow/tsconfig`).
 - Consumer packages extend the base config:
   ```json
@@ -61,6 +64,7 @@ Build efficient, scalable monorepos that enable code sharing, consistent tooling
   ```
 
 ### 4. Verification
+
 - Always test whole-repo integrity using:
   - `pnpm turbo run build` or `pnpm build`
   - `pnpm turbo run typecheck` or `pnpm typecheck`

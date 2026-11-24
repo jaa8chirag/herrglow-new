@@ -1,6 +1,9 @@
 import { prisma } from "../src";
 
-const AREA_COORDINATES: Record<string, { lat: number; lng: number; sector?: string; radiusKm?: number }> = {
+const AREA_COORDINATES: Record<
+  string,
+  { lat: number; lng: number; sector?: string; radiusKm?: number }
+> = {
   "sector-62-noida": { lat: 28.6271, lng: 77.3725, sector: "Sector 62", radiusKm: 6 },
   "sector-18-noida": { lat: 28.5708, lng: 77.326, sector: "Sector 18", radiusKm: 6 },
   "sector-50-noida": { lat: 28.5729, lng: 77.3686, sector: "Sector 50", radiusKm: 6 },
@@ -13,11 +16,14 @@ const AREA_COORDINATES: Record<string, { lat: number; lng: number; sector?: stri
   "south-delhi": { lat: 28.5244, lng: 77.2167, sector: "South Delhi", radiusKm: 12 },
   "vasant-kunj": { lat: 28.5293, lng: 77.1539, sector: "Vasant Kunj", radiusKm: 8 },
   "lajpat-nagar": { lat: 28.5677, lng: 77.2433, sector: "Lajpat Nagar", radiusKm: 7 },
-  "dwarka": { lat: 28.5921, lng: 77.046, sector: "Dwarka", radiusKm: 10 },
-  "rohini": { lat: 28.7495, lng: 77.0565, sector: "Rohini", radiusKm: 10 },
+  dwarka: { lat: 28.5921, lng: 77.046, sector: "Dwarka", radiusKm: 10 },
+  rohini: { lat: 28.7495, lng: 77.0565, sector: "Rohini", radiusKm: 10 },
 };
 
-const PRO_LOCATIONS: Record<string, { lat: number; lng: number; radiusKm: number; address: string; phone: string }> = {
+const PRO_LOCATIONS: Record<
+  string,
+  { lat: number; lng: number; radiusKm: number; address: string; phone: string }
+> = {
   "sunita-rawat": {
     lat: 28.6271,
     lng: 77.3725,
@@ -160,11 +166,15 @@ async function main() {
           areaId: matchedAreaId ?? l.areaId,
         },
       });
-      console.log(`✓ Updated Lead ${l.id} (${l.name}): matched coords (${matchedCoords.lat}, ${matchedCoords.lng})`);
+      console.log(
+        `✓ Updated Lead ${l.id} (${l.name}): matched coords (${matchedCoords.lat}, ${matchedCoords.lng})`
+      );
     }
   }
 
   console.log("\nDone updating geo coordinates!");
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main()
+  .catch(console.error)
+  .finally(() => prisma.$disconnect());

@@ -11,7 +11,14 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["@prisma/client", "pg", "bullmq", "ioredis", "nodemailer", "bcryptjs"],
   async headers() {
     // public HTML is cacheable at the edge (Cloudflare). Admin, API and Next internals are excluded.
-    return [{ source: "/((?!admin|api|_next|design).*)", headers: [{ key: "Cache-Control", value: "public, s-maxage=300, stale-while-revalidate=600" }] }];
+    return [
+      {
+        source: "/((?!admin|api|_next|design).*)",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=300, stale-while-revalidate=600" },
+        ],
+      },
+    ];
   },
   images: {
     loader: "custom",

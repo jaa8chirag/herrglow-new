@@ -67,47 +67,65 @@ export default async function AnalyticsPage(props: PageProps) {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Panel className="border-l-4 border-l-plum-700">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-ink-soft">Total Service Views</span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-ink-soft">
+              Total Service Views
+            </span>
             <span className="rounded-lg bg-plum-100 p-2 text-plum-800">
               <Eye className="size-4" />
             </span>
           </div>
-          <p className="mt-3 text-3xl font-bold tracking-tight text-ink">{stats.totalViews.toLocaleString("en-IN")}</p>
+          <p className="mt-3 text-3xl font-bold tracking-tight text-ink">
+            {stats.totalViews.toLocaleString("en-IN")}
+          </p>
           <p className="mt-1 text-xs text-ink-soft">Across verified salon services</p>
         </Panel>
 
         <Panel className="border-l-4 border-l-blue-600">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-ink-soft">Total User Searches</span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-ink-soft">
+              Total User Searches
+            </span>
             <span className="rounded-lg bg-blue-100 p-2 text-blue-700">
               <Search className="size-4" />
             </span>
           </div>
-          <p className="mt-3 text-3xl font-bold tracking-tight text-ink">{stats.totalSearches.toLocaleString("en-IN")}</p>
+          <p className="mt-3 text-3xl font-bold tracking-tight text-ink">
+            {stats.totalSearches.toLocaleString("en-IN")}
+          </p>
           <p className="mt-1 text-xs text-ink-soft">Queries logged from service explorer</p>
         </Panel>
 
         <Panel className="border-l-4 border-l-amber-500">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-ink-soft">Zero-Result Searches</span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-ink-soft">
+              Zero-Result Searches
+            </span>
             <span className="rounded-lg bg-amber-100 p-2 text-amber-700">
               <AlertTriangle className="size-4" />
             </span>
           </div>
-          <p className="mt-3 text-3xl font-bold tracking-tight text-amber-900">{stats.zeroResultCount.toLocaleString("en-IN")}</p>
+          <p className="mt-3 text-3xl font-bold tracking-tight text-amber-900">
+            {stats.zeroResultCount.toLocaleString("en-IN")}
+          </p>
           <p className="mt-1 text-xs text-ink-soft">
-            <span className="font-semibold text-amber-700">{stats.zeroResultRate}%</span> of searches found 0 results
+            <span className="font-semibold text-amber-700">{stats.zeroResultRate}%</span> of
+            searches found 0 results
           </p>
         </Panel>
 
         <Panel className="border-l-4 border-l-emerald-600">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-ink-soft">Top Converting Service</span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-ink-soft">
+              Top Converting Service
+            </span>
             <span className="rounded-lg bg-emerald-100 p-2 text-emerald-700">
               <Target className="size-4" />
             </span>
           </div>
-          <p className="mt-3 text-sm font-bold text-ink truncate" title={stats.topConvertingService ?? "Awaiting view data"}>
+          <p
+            className="mt-3 text-sm font-bold text-ink truncate"
+            title={stats.topConvertingService ?? "Awaiting view data"}
+          >
             {stats.topConvertingService ?? "Collecting metrics..."}
           </p>
           <p className="mt-1 text-xs text-ink-soft">Highest lead to view ratio</p>
@@ -124,8 +142,12 @@ export default async function AnalyticsPage(props: PageProps) {
                 <AlertTriangle className="size-4" />
               </span>
               <div>
-                <h2 className="!text-base font-bold text-ink">Unserved Demand (Zero-Result Searches)</h2>
-                <p className="text-xs text-ink-soft">Services users searched for that had 0 matches on your site</p>
+                <h2 className="!text-base font-bold text-ink">
+                  Unserved Demand (Zero-Result Searches)
+                </h2>
+                <p className="text-xs text-ink-soft">
+                  Services users searched for that had 0 matches on your site
+                </p>
               </div>
             </div>
             <Pill tone={zeroResultSearches.length > 0 ? "warn" : "good"}>
@@ -155,7 +177,9 @@ export default async function AnalyticsPage(props: PageProps) {
                   {zeroResultSearches.map((s) => (
                     <tr key={s.query} className="hover:bg-amber-50/30 transition">
                       <td className="px-3.5 py-2.5 font-medium text-ink">
-                        <span className="font-semibold text-amber-900">&ldquo;{s.query}&rdquo;</span>
+                        <span className="font-semibold text-amber-900">
+                          &ldquo;{s.query}&rdquo;
+                        </span>
                       </td>
                       <td className="px-3.5 py-2.5 text-right font-bold text-ink">{s.count}</td>
                       <td className="px-3.5 py-2.5">
@@ -184,7 +208,9 @@ export default async function AnalyticsPage(props: PageProps) {
               </span>
               <div>
                 <h2 className="!text-base font-bold text-ink">Top Searched Queries</h2>
-                <p className="text-xs text-ink-soft">Most frequent customer searches in the services explorer</p>
+                <p className="text-xs text-ink-soft">
+                  Most frequent customer searches in the services explorer
+                </p>
               </div>
             </div>
           </div>
@@ -230,9 +256,12 @@ export default async function AnalyticsPage(props: PageProps) {
               <Flame className="size-4" />
             </span>
             <div>
-              <h2 className="!text-base font-bold text-ink">Most Viewed Services &amp; Conversion Funnel</h2>
+              <h2 className="!text-base font-bold text-ink">
+                Most Viewed Services &amp; Conversion Funnel
+              </h2>
               <p className="text-xs text-ink-soft">
-                Traffic volume vs lead generation per service to identify high-interest services and pricing drop-offs
+                Traffic volume vs lead generation per service to identify high-interest services and
+                pricing drop-offs
               </p>
             </div>
           </div>
@@ -267,7 +296,9 @@ export default async function AnalyticsPage(props: PageProps) {
                       <div className="flex items-center gap-2.5">
                         <div>
                           <p className="font-semibold text-ink">{svc.title}</p>
-                          <p className="text-[11px] text-ink-soft">/services/{svc.categorySlug}/{svc.slug}</p>
+                          <p className="text-[11px] text-ink-soft">
+                            /services/{svc.categorySlug}/{svc.slug}
+                          </p>
                         </div>
                       </div>
                     </td>
@@ -295,8 +326,8 @@ export default async function AnalyticsPage(props: PageProps) {
                           svc.conversionRate >= 5
                             ? "bg-emerald-100 text-emerald-800"
                             : svc.conversionRate > 0
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-gray-100 text-gray-600"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-gray-100 text-gray-600"
                         }`}
                       >
                         {svc.conversionRate}%
@@ -330,7 +361,9 @@ export default async function AnalyticsPage(props: PageProps) {
             </span>
             <div>
               <h2 className="!text-base font-bold text-ink">Recent Real-Time Searches</h2>
-              <p className="text-xs text-ink-soft">Live stream of latest searches executed by visitors on HerrGlow</p>
+              <p className="text-xs text-ink-soft">
+                Live stream of latest searches executed by visitors on HerrGlow
+              </p>
             </div>
           </div>
         </div>

@@ -132,7 +132,9 @@ export function HeroCarousel({ slides = DEFAULT_SLIDES }: { slides?: HeroSlide[]
             <div className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full bg-ivory/90 px-3 py-1 text-xs font-semibold text-plum-900 shadow-soft backdrop-blur-md">
               {slide.tagIcon === "sparkles" && <Sparkles className="size-3 text-gold-500" />}
               {slide.tagIcon === "shield" && <ShieldCheck className="size-3 text-emerald-600" />}
-              {slide.tagIcon === "heart" && <Heart className="size-3 text-rose-600 fill-rose-600" />}
+              {slide.tagIcon === "heart" && (
+                <Heart className="size-3 text-rose-600 fill-rose-600" />
+              )}
               <span>{slide.tag}</span>
             </div>
 
@@ -219,7 +221,9 @@ export function HeroCarousel({ slides = DEFAULT_SLIDES }: { slides?: HeroSlide[]
       {/* Trust pill below carousel */}
       <div className="mt-3.5 flex items-center justify-center gap-2 text-center text-xs text-ink-soft">
         <Sparkles className="size-3.5 text-gold-500" />
-        <span>100% Real Transformations · Verified Female Artists · 10% Advance (100% Refund Guarantee)</span>
+        <span>
+          100% Real Transformations · Verified Female Artists · 10% Advance (100% Refund Guarantee)
+        </span>
       </div>
     </div>
   );

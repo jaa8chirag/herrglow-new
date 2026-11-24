@@ -33,7 +33,10 @@ export function parseDump(path: string, only?: Set<string>): Map<string, Row[]> 
               const n = sql[i++]!;
               s += ESC[n] ?? n;
             } else if (ch === "'") {
-              if (sql[i] === "'") { s += "'"; i++; } else break;
+              if (sql[i] === "'") {
+                s += "'";
+                i++;
+              } else break;
             } else s += ch;
           }
           vals.push(s);
@@ -44,8 +47,14 @@ export function parseDump(path: string, only?: Set<string>): Map<string, Row[]> 
           vals.push(tok === "NULL" ? null : Number(tok));
           i = j;
         }
-        if (sql[i] === ",") { i++; continue; }
-        if (sql[i] === ")") { i++; break; }
+        if (sql[i] === ",") {
+          i++;
+          continue;
+        }
+        if (sql[i] === ")") {
+          i++;
+          break;
+        }
       }
       const row: Row = {};
       cols.forEach((c, k) => (row[c] = vals[k] ?? null));

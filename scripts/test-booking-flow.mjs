@@ -14,11 +14,11 @@ async function testBookingFlow() {
     viewport: { width: 390, height: 844 },
     isMobile: true,
     hasTouch: true,
-    deviceScaleFactor: 2
+    deviceScaleFactor: 2,
   });
 
   const page = await context.newPage();
-  
+
   const errors = [];
   page.on("console", (msg) => {
     if (msg.type() === "error") errors.push(msg.text());
@@ -26,7 +26,9 @@ async function testBookingFlow() {
   page.on("pageerror", (err) => errors.push(err.message));
 
   // 1. Visit service page
-  await page.goto(`${BASE_URL}/services/face-hair-removal/eyebrow-threading`, { waitUntil: "networkidle" });
+  await page.goto(`${BASE_URL}/services/face-hair-removal/eyebrow-threading`, {
+    waitUntil: "networkidle",
+  });
   console.log("1. Loaded service page: /services/face-hair-removal/eyebrow-threading");
 
   // 2. Click Book Now to scroll to form
@@ -59,7 +61,9 @@ async function testBookingFlow() {
   await page.locator("#booking-date").fill(tomorrow);
 
   // Select slot
-  const slotBtn = page.locator("#book button:has-text('Morning'), #book button:has-text('Afternoon')").first();
+  const slotBtn = page
+    .locator("#book button:has-text('Morning'), #book button:has-text('Afternoon')")
+    .first();
   if (await slotBtn.isVisible()) {
     await slotBtn.click();
   }
@@ -85,7 +89,8 @@ async function testBookingFlow() {
   const refText = await page.locator("text=/HG-\\d+/").first().innerText();
   console.log(`\n>>> SUCCESS! Booking confirmed with Reference: ${refText} <<<`);
 
-  const shotPath = "/Users/rex/.gemini/antigravity/brain/de3b07d8-1a1d-4c34-94a8-b378c52cb46b/audit-results/mobile_booking_success.png";
+  const shotPath =
+    "/Users/rex/.gemini/antigravity/brain/de3b07d8-1a1d-4c34-94a8-b378c52cb46b/audit-results/mobile_booking_success.png";
   await page.screenshot({ path: shotPath });
   console.log("Saved confirmation screenshot to:", shotPath);
 

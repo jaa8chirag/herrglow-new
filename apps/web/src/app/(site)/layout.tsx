@@ -13,7 +13,14 @@ import { realImage } from "@/lib/media";
 export const dynamic = "force-dynamic";
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
-  const [categories, cities, s, mega, popular, keys] = await Promise.all([getCategories(), getLiveCities(), getSettings(), getMegaMenu(), getPopularServices(6), getMediaKeys()]);
+  const [categories, cities, s, mega, popular, keys] = await Promise.all([
+    getCategories(),
+    getLiveCities(),
+    getSettings(),
+    getMegaMenu(),
+    getPopularServices(6),
+    getMediaKeys(),
+  ]);
 
   // Category items for mega-menu
   const toCat = (
@@ -82,8 +89,16 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       );
 
       const services = [
-        ...sortedBridal.slice(0, 4).map((x) => ({ slug: x.slug, title: x.title, group: "👰 For The Bride (Bridal)" })),
-        ...sortedNonBridal.slice(0, 4).map((x) => ({ slug: x.slug, title: x.title, group: "✨ Non-Bridal (Bridesmaids, Mother & Sister)" })),
+        ...sortedBridal
+          .slice(0, 4)
+          .map((x) => ({ slug: x.slug, title: x.title, group: "👰 For The Bride (Bridal)" })),
+        ...sortedNonBridal
+          .slice(0, 4)
+          .map((x) => ({
+            slug: x.slug,
+            title: x.title,
+            group: "✨ Non-Bridal (Bridesmaids, Mother & Sister)",
+          })),
       ];
 
       return {
@@ -114,7 +129,13 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
     s.raw.offer_strip_enabled === "1" && s.raw.offer_strip_text?.trim()
       ? s.raw.offer_strip_text.trim()
       : "Delhi NCR's Most Trusted Luxury Doorstep Salon & Bridal Artistry · 100% Female Verified · 100% Authentic Products · 10% Advance (100% Refund Guarantee)";
-  const socials = [["Instagram", s.raw.social_instagram], ["Facebook", s.raw.social_facebook], ["YouTube", s.raw.social_youtube]].filter((x): x is [string, string] => !!x[1]?.trim()).map(([label, href]) => ({ label, href }));
+  const socials = [
+    ["Instagram", s.raw.social_instagram],
+    ["Facebook", s.raw.social_facebook],
+    ["YouTube", s.raw.social_youtube],
+  ]
+    .filter((x): x is [string, string] => !!x[1]?.trim())
+    .map(([label, href]) => ({ label, href }));
   const logo = realImage(keys, s.raw.site_logo);
 
   return (
@@ -124,9 +145,23 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       {strip && <AnnouncementBar text={strip} />}
       <SiteHeader siteName={s.siteName} logo={logo} menu={menu} cities={cities} />
       <main>{children}</main>
-      <SiteFooter siteName={s.siteName} categories={categories.map((c) => ({ slug: c.slug, name: c.name }))} cities={cities} popular={popular.map((p) => ({ slug: p.slug, title: p.title }))} whatsapp={s.whatsappNumber} phone={s.contactPhone} email={s.contactEmail} waText={s.raw.whatsapp_prefill_text} socials={socials} />
+      <SiteFooter
+        siteName={s.siteName}
+        categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
+        cities={cities}
+        popular={popular.map((p) => ({ slug: p.slug, title: p.title }))}
+        whatsapp={s.whatsappNumber}
+        phone={s.contactPhone}
+        email={s.contactEmail}
+        waText={s.raw.whatsapp_prefill_text}
+        socials={socials}
+      />
       <BackToTop />
-      <StickyDock whatsapp={s.whatsappNumber} phone={s.contactPhone} waText={s.raw.whatsapp_prefill_text} />
+      <StickyDock
+        whatsapp={s.whatsappNumber}
+        phone={s.contactPhone}
+        waText={s.raw.whatsapp_prefill_text}
+      />
     </MotionProvider>
   );
 }

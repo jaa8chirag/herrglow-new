@@ -27,16 +27,19 @@ import {
 import { saveLead } from "../actions";
 
 const tone = (s: string) =>
-  s === "NEW" ? "info" : s === "BOOKED" || s === "COMPLETED" ? "good" : s === "LOST" ? "bad" : "warn";
+  s === "NEW"
+    ? "info"
+    : s === "BOOKED" || s === "COMPLETED"
+      ? "good"
+      : s === "LOST"
+        ? "bad"
+        : "warn";
 
 export default async function LeadDetail(props: PageProps<"/admin/leads/[id]">) {
   await requireAdmin("leads");
   const { id } = await props.params;
 
-  const [lead, matchData] = await Promise.all([
-    getLead(id),
-    findMatchingBeauticiansForLead(id),
-  ]);
+  const [lead, matchData] = await Promise.all([getLead(id), findMatchingBeauticiansForLead(id)]);
 
   if (!lead) notFound();
 
@@ -56,9 +59,10 @@ export default async function LeadDetail(props: PageProps<"/admin/leads/[id]">) 
     leadData.package?.title ??
     (leadData.services?.map((s) => s.service.title).join(", ") || "General Enquiry");
 
-  const depositAmount = lead.finalAmount || lead.amount
-    ? Math.round(Number(lead.finalAmount ?? lead.amount) * 0.1)
-    : null;
+  const depositAmount =
+    lead.finalAmount || lead.amount
+      ? Math.round(Number(lead.finalAmount ?? lead.amount) * 0.1)
+      : null;
 
   return (
     <div className="space-y-6">
@@ -75,7 +79,8 @@ export default async function LeadDetail(props: PageProps<"/admin/leads/[id]">) 
             </Link>
             <span className="text-ink-soft text-xs">·</span>
             <span className="text-ink-soft text-xs">
-              Received on {lead.createdAt.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}
+              Received on{" "}
+              {lead.createdAt.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}
             </span>
             <span className="text-ink-soft text-xs">·</span>
             <Pill tone={tone(lead.status)}>{STATUS_LABEL[lead.status]}</Pill>
@@ -210,7 +215,10 @@ export default async function LeadDetail(props: PageProps<"/admin/leads/[id]">) 
                   {lead.latitude && lead.longitude && (
                     <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-medium text-emerald-900">
                       <MapPin className="size-3 text-emerald-700" />
-                      <span>GPS Pin Confirmed: {Number(lead.latitude).toFixed(4)}, {Number(lead.longitude).toFixed(4)}</span>
+                      <span>
+                        GPS Pin Confirmed: {Number(lead.latitude).toFixed(4)},{" "}
+                        {Number(lead.longitude).toFixed(4)}
+                      </span>
                     </div>
                   )}
                   {lead.tags.includes(OUT_OF_AREA) && (
@@ -254,12 +262,15 @@ export default async function LeadDetail(props: PageProps<"/admin/leads/[id]">) 
                 </span>
               </div>
               <p className="text-xs text-plum-950 leading-relaxed">
-                HerrGlow collects 10% in advance to eliminate last-minute fake cancellations and compensate beauticians for travel time.
+                HerrGlow collects 10% in advance to eliminate last-minute fake cancellations and
+                compensate beauticians for travel time.
               </p>
               {depositAmount != null && (
                 <div className="flex items-center justify-between pt-2 border-t border-gold-200 text-xs">
                   <span className="text-ink-soft font-medium">Calculated 10% Deposit:</span>
-                  <span className="font-bold text-plum-950 text-sm">₹{depositAmount.toLocaleString("en-IN")}</span>
+                  <span className="font-bold text-plum-950 text-sm">
+                    ₹{depositAmount.toLocaleString("en-IN")}
+                  </span>
                 </div>
               )}
             </div>

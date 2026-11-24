@@ -11,17 +11,59 @@ export const leadInput = z.object({
     .trim()
     .transform((v) => v.replace(/[\s()-]/g, "").replace(/^(\+?91|0)/, ""))
     .pipe(z.string().regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number")),
-  email: z.string().trim().email().max(120).optional().or(z.literal("")).transform((v) => v || undefined),
+  email: z
+    .string()
+    .trim()
+    .email()
+    .max(120)
+    .optional()
+    .or(z.literal(""))
+    .transform((v) => v || undefined),
   /** city slug of an ACTIVE city, or "other" */
   city: z.string().trim().min(1, "Please choose your city"),
-  area: z.string().trim().max(120).optional().transform((v) => v || undefined),
-  address: z.string().trim().max(250).optional().transform((v) => v || undefined),
-  serviceSlug: z.string().trim().max(120).optional().transform((v) => v || undefined),
-  packageSlug: z.string().trim().max(120).optional().transform((v) => v || undefined),
-  variant: z.string().trim().max(80).optional().transform((v) => v || undefined),
+  area: z
+    .string()
+    .trim()
+    .max(120)
+    .optional()
+    .transform((v) => v || undefined),
+  address: z
+    .string()
+    .trim()
+    .max(250)
+    .optional()
+    .transform((v) => v || undefined),
+  serviceSlug: z
+    .string()
+    .trim()
+    .max(120)
+    .optional()
+    .transform((v) => v || undefined),
+  packageSlug: z
+    .string()
+    .trim()
+    .max(120)
+    .optional()
+    .transform((v) => v || undefined),
+  variant: z
+    .string()
+    .trim()
+    .max(80)
+    .optional()
+    .transform((v) => v || undefined),
   addons: z.array(z.string().max(80)).max(10).optional().default([]),
-  proSlug: z.string().trim().max(120).optional().transform((v) => v || undefined),
-  slot: z.string().trim().max(60).optional().transform((v) => v || undefined),
+  proSlug: z
+    .string()
+    .trim()
+    .max(120)
+    .optional()
+    .transform((v) => v || undefined),
+  slot: z
+    .string()
+    .trim()
+    .max(60)
+    .optional()
+    .transform((v) => v || undefined),
   eventDate: z
     .string()
     .trim()
@@ -29,7 +71,12 @@ export const leadInput = z.object({
     .transform((v) => (v ? new Date(v) : undefined))
     .refine((d) => !d || !Number.isNaN(d.getTime()), "Invalid date"),
   guestCount: z.coerce.number().int().min(1).max(20).optional(),
-  message: z.string().trim().max(1000).optional().transform((v) => v || undefined),
+  message: z
+    .string()
+    .trim()
+    .max(1000)
+    .optional()
+    .transform((v) => v || undefined),
   latitude: z.coerce.number().min(-90).max(90).optional(),
   longitude: z.coerce.number().min(-180).max(180).optional(),
   sourceUrl: z.string().trim().max(300).optional(),
@@ -90,11 +137,21 @@ export async function createLead(raw: LeadInput): Promise<LeadResult> {
   }
 
   // City and Area lookup
-  const city = d.city === "other" ? null : await prisma.city.findFirst({ where: { slug: d.city, isActive: true }, select: { slug: true, name: true } });
+  const city =
+    d.city === "other"
+      ? null
+      : await prisma.city.findFirst({
+          where: { slug: d.city, isActive: true },
+          select: { slug: true, name: true },
+        });
   const outOfArea = !city;
-  const area = city && d.area
-    ? await prisma.area.findFirst({ where: { citySlug: city.slug, name: { equals: d.area, mode: "insensitive" } }, select: { id: true } })
-    : null;
+  const area =
+    city && d.area
+      ? await prisma.area.findFirst({
+          where: { citySlug: city.slug, name: { equals: d.area, mode: "insensitive" } },
+          select: { id: true },
+        })
+      : null;
 
   // Check if target is a Package (either passed via packageSlug or serviceSlug matching a Package)
   const targetPackageSlug = d.packageSlug || d.serviceSlug;
@@ -103,16 +160,20 @@ export async function createLead(raw: LeadInput): Promise<LeadResult> {
     : null;
 
   // Check if target is an individual Service (only if not already a package)
-  const service = d.serviceSlug && !pkg
-    ? await prisma.service.findFirst({
-        where: { slug: d.serviceSlug },
-        include: { variants: true, addons: true },
-      })
-    : null;
+  const service =
+    d.serviceSlug && !pkg
+      ? await prisma.service.findFirst({
+          where: { slug: d.serviceSlug },
+          include: { variants: true, addons: true },
+        })
+      : null;
 
   // Check Professional (if explicitly requested)
   const pro = d.proSlug
-    ? await prisma.pro.findFirst({ where: { slug: d.proSlug, status: "ACTIVE" }, select: { id: true, name: true } })
+    ? await prisma.pro.findFirst({
+        where: { slug: d.proSlug, status: "ACTIVE" },
+        select: { id: true, name: true },
+      })
     : null;
 
   // Calculate base & final pricing
@@ -124,10 +185,14 @@ export async function createLead(raw: LeadInput): Promise<LeadResult> {
     finalPrice = Number(pkg.offerPrice ?? pkg.price ?? 0);
   } else if (service) {
     if (d.variant) {
-      const matchVariant = service.variants.find((v) => v.name.toLowerCase() === d.variant?.toLowerCase());
+      const matchVariant = service.variants.find(
+        (v) => v.name.toLowerCase() === d.variant?.toLowerCase()
+      );
       if (matchVariant) {
         basePrice = Number(matchVariant.price ?? matchVariant.offerPrice ?? service.price ?? 0);
-        finalPrice = Number(matchVariant.offerPrice ?? matchVariant.price ?? service.offerPrice ?? 0);
+        finalPrice = Number(
+          matchVariant.offerPrice ?? matchVariant.price ?? service.offerPrice ?? 0
+        );
       } else {
         basePrice = Number(service.price ?? service.offerPrice ?? 0);
         finalPrice = Number(service.offerPrice ?? service.price ?? 0);
@@ -140,7 +205,9 @@ export async function createLead(raw: LeadInput): Promise<LeadResult> {
     // Add selected add-ons pricing
     if (d.addons && d.addons.length > 0) {
       for (const addonName of d.addons) {
-        const matchAddon = service.addons.find((a) => a.name.toLowerCase() === addonName.toLowerCase());
+        const matchAddon = service.addons.find(
+          (a) => a.name.toLowerCase() === addonName.toLowerCase()
+        );
         if (matchAddon && matchAddon.price) {
           const addonCost = Number(matchAddon.price);
           basePrice += addonCost;
@@ -170,7 +237,11 @@ export async function createLead(raw: LeadInput): Promise<LeadResult> {
   const ref = await generateBookingRef();
 
   // Create lead record
-  const locationParts = [d.address, d.area, city?.name ?? (outOfArea ? "Outside service area" : "")].filter(Boolean);
+  const locationParts = [
+    d.address,
+    d.area,
+    city?.name ?? (outOfArea ? "Outside service area" : ""),
+  ].filter(Boolean);
   const locationText = locationParts.length > 0 ? locationParts.join(", ") : null;
 
   const lead = await prisma.lead.create({
@@ -218,16 +289,24 @@ export async function createLead(raw: LeadInput): Promise<LeadResult> {
 
   // Update popularity metrics asynchronously
   if (service) {
-    await prisma.service.update({
-      where: { id: service.id },
-      data: { leadCount: { increment: 1 } },
-    }).catch((e) => console.warn(`[createLead] could not increment service leadCount: ${(e as Error).message}`));
+    await prisma.service
+      .update({
+        where: { id: service.id },
+        data: { leadCount: { increment: 1 } },
+      })
+      .catch((e) =>
+        console.warn(`[createLead] could not increment service leadCount: ${(e as Error).message}`)
+      );
   }
   if (area) {
-    await prisma.area.update({
-      where: { id: area.id },
-      data: { leadCount: { increment: 1 } },
-    }).catch((e) => console.warn(`[createLead] could not increment area leadCount: ${(e as Error).message}`));
+    await prisma.area
+      .update({
+        where: { id: area.id },
+        data: { leadCount: { increment: 1 } },
+      })
+      .catch((e) =>
+        console.warn(`[createLead] could not increment area leadCount: ${(e as Error).message}`)
+      );
   }
 
   // Dispatch background notification jobs (retried via BullMQ worker)

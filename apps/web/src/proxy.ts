@@ -17,14 +17,27 @@ async function context(force = false): Promise<LegacyContext> {
   const [rows, pages, pros] = await Promise.all([
     prisma.redirect.findMany(),
     prisma.page.findMany({ select: { url: true } }),
-    prisma.pro.findMany({ where: { legacySlug: { not: null } }, select: { legacySlug: true, slug: true } }),
+    prisma.pro.findMany({
+      where: { legacySlug: { not: null } },
+      select: { legacySlug: true, slug: true },
+    }),
   ]);
-  const proPages = new Set((await prisma.page.findMany({ where: { type: "PRO" }, select: { url: true } })).map((p) => p.url));
+  const proPages = new Set(
+    (await prisma.page.findMany({ where: { type: "PRO" }, select: { url: true } })).map(
+      (p) => p.url
+    )
+  );
   const ctx: LegacyContext = {
-    redirects: new Map(rows.map((r) => [normalizePath(r.fromPath), { to: r.toPath, code: r.code }])),
+    redirects: new Map(
+      rows.map((r) => [normalizePath(r.fromPath), { to: r.toPath, code: r.code }])
+    ),
     pageUrls: new Set(pages.map((p) => p.url)),
     // only artists that have a page on the new site get a 301; others are 410
-    proByLegacySlug: new Map(pros.filter((p) => proPages.has(`/artists/${p.slug}`)).map((p) => [p.legacySlug!.toLowerCase(), `/artists/${p.slug}`])),
+    proByLegacySlug: new Map(
+      pros
+        .filter((p) => proPages.has(`/artists/${p.slug}`))
+        .map((p) => [p.legacySlug!.toLowerCase(), `/artists/${p.slug}`])
+    ),
   };
   cache = { at: Date.now(), ctx };
   return ctx;
@@ -38,15 +51,18 @@ export async function proxy(req: NextRequest) {
   const prod = process.env.NODE_ENV === "production";
   const offHost = prod && host !== CANONICAL_HOST && !host.startsWith("localhost");
 
-  if (offHost && host === `www.${CANONICAL_HOST}`) return NextResponse.redirect(`${SITE_URL}${pathname}${search}`, 308);
+  if (offHost && host === `www.${CANONICAL_HOST}`)
+    return NextResponse.redirect(`${SITE_URL}${pathname}${search}`, 308);
 
   if (!pathname.startsWith("/admin")) {
     try {
       let d = decideLegacy(pathname, await context());
       // Never serve a (sticky) 410 from stale data: a page may have just been published. Re-check the DB once
       // (at most every 5 s) before answering gone.
-      if (d.kind === "gone" && cache && Date.now() - cache.at > 5_000) d = decideLegacy(pathname, await context(true));
-      if (d.kind === "redirect") return NextResponse.redirect(new URL(d.to + search, req.nextUrl.origin), d.code);
+      if (d.kind === "gone" && cache && Date.now() - cache.at > 5_000)
+        d = decideLegacy(pathname, await context(true));
+      if (d.kind === "redirect")
+        return NextResponse.redirect(new URL(d.to + search, req.nextUrl.origin), d.code);
       if (d.kind === "gone") {
         const goneHtml = `<!DOCTYPE html>
 <html lang="en">
@@ -91,5 +107,7 @@ export async function proxy(req: NextRequest) {
 
 export const config = {
   // skip Next internals, API routes and static assets
-  matcher: ["/((?!_next/|api/|.*\.(?:png|jpe?g|webp|avif|svg|ico|gif|css|js|map|woff2?|txt|xml|json)$).*)"],
+  matcher: [
+    "/((?!_next/|api/|.*\.(?:png|jpe?g|webp|avif|svg|ico|gif|css|js|map|woff2?|txt|xml|json)$).*)",
+  ],
 };

@@ -13,8 +13,20 @@ export function ReadingProgress({ targetId = "article" }: { targetId?: string })
       const total = r.height - window.innerHeight * 0.6;
       setP(Math.min(1, Math.max(0, -r.top / Math.max(1, total))));
     };
-    on(); window.addEventListener("scroll", on, { passive: true }); window.addEventListener("resize", on);
-    return () => { window.removeEventListener("scroll", on); window.removeEventListener("resize", on); };
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    window.addEventListener("resize", on);
+    return () => {
+      window.removeEventListener("scroll", on);
+      window.removeEventListener("resize", on);
+    };
   }, [targetId]);
-  return <div aria-hidden className="fixed inset-x-0 top-20 z-30 h-1 bg-transparent"><div className="h-full origin-left bg-gradient-to-r from-rose-600 to-gold-400" style={{ transform: `scaleX(${p})` }} /></div>;
+  return (
+    <div aria-hidden className="fixed inset-x-0 top-20 z-30 h-1 bg-transparent">
+      <div
+        className="h-full origin-left bg-gradient-to-r from-rose-600 to-gold-400"
+        style={{ transform: `scaleX(${p})` }}
+      />
+    </div>
+  );
 }

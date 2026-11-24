@@ -13,12 +13,16 @@ export async function saveReview(fd: FormData) {
   const id = String(fd.get("id"));
   if (!KINDS.includes(kind)) throw new Error("Bad kind");
   const publish = fd.get("intent") === "publish";
-  const fields = Object.fromEntries([...fd.entries()].filter(([, v]) => typeof v === "string")) as Record<string, string>;
+  const fields = Object.fromEntries(
+    [...fd.entries()].filter(([, v]) => typeof v === "string")
+  ) as Record<string, string>;
   const res = await saveReviewItem(kind, id, fields, publish);
   await log(me, publish ? "review.publish" : "review.save", kind, id);
   revalidatePath("/", "layout"); // purge public pages so changes show immediately
   const back = `/admin/review/${kind}/${encodeURIComponent(id)}`;
-  redirect(`${back}?${res.ok ? "ok=" + encodeURIComponent(res.message) : "err=" + encodeURIComponent(res.error)}`);
+  redirect(
+    `${back}?${res.ok ? "ok=" + encodeURIComponent(res.message) : "err=" + encodeURIComponent(res.error)}`
+  );
 }
 
 export async function unpublish(fd: FormData) {

@@ -8,7 +8,9 @@ async function login(fd: FormData) {
   "use server";
   try {
     await signIn("credentials", {
-      email: String(fd.get("email") ?? "").trim().toLowerCase(),
+      email: String(fd.get("email") ?? "")
+        .trim()
+        .toLowerCase(),
       password: String(fd.get("password") ?? ""),
       redirectTo: "/admin",
     });
@@ -35,9 +37,7 @@ export default async function LoginPage(props: PageProps<"/admin/login">) {
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-plum-900 text-ivory font-serif text-2xl font-bold shadow-soft">
             H
           </div>
-          <h1 className="mt-3 font-serif text-2xl font-bold text-plum-950">
-            HerrGlow Portal
-          </h1>
+          <h1 className="mt-3 font-serif text-2xl font-bold text-plum-950">HerrGlow Portal</h1>
           <p className="mt-1 text-xs text-ink-soft">
             Sign in to manage salon bookings, appointments & team
           </p>

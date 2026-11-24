@@ -41,7 +41,11 @@ export interface ExplorerItem {
 
 const WAXING_SUBCATS = [
   { id: "all", label: "All Waxing", keywords: [] },
-  { id: "rica", label: "Rica Wax (Painless & Anti-Tan)", keywords: ["rica", "white chocolate", "aloe"] },
+  {
+    id: "rica",
+    label: "Rica Wax (Painless & Anti-Tan)",
+    keywords: ["rica", "white chocolate", "aloe"],
+  },
   { id: "honey", label: "Honey / Regular Wax", keywords: ["honey", "regular"] },
   { id: "combos", label: "Full Body & Combos", keywords: ["full body", "combo", "arms", "legs"] },
   { id: "bikini", label: "Bikini & Brazilian", keywords: ["bikini", "brazilian", "peel-off"] },
@@ -49,20 +53,48 @@ const WAXING_SUBCATS = [
 
 const MAKEUP_SUBCATS = [
   { id: "all", label: "All Makeup", keywords: [] },
-  { id: "bridal", label: "👰 For The Bride (HD & Airbrush)", keywords: ["bridal", "airbrush bridal", "hd bridal", "wedding", "complete bridal"] },
-  { id: "party", label: "✨ Non-Bridal & Party Glam", keywords: ["party", "cocktail", "sangeet", "reception", "glam"] },
-  { id: "bridesmaids", label: "👭 Bridesmaids & Sister Glam", keywords: ["bridesmaid", "bridesmaids", "sister", "group", "guest"] },
-  { id: "family", label: "👑 Mother & Family Packages", keywords: ["family", "mother", "bundle", "package"] },
-  { id: "draping", label: "🥻 Saree & Lehenga Draping", keywords: ["draping", "saree", "lehenga", "dupatta"] },
+  {
+    id: "bridal",
+    label: "👰 For The Bride (HD & Airbrush)",
+    keywords: ["bridal", "airbrush bridal", "hd bridal", "wedding", "complete bridal"],
+  },
+  {
+    id: "party",
+    label: "✨ Non-Bridal & Party Glam",
+    keywords: ["party", "cocktail", "sangeet", "reception", "glam"],
+  },
+  {
+    id: "bridesmaids",
+    label: "👭 Bridesmaids & Sister Glam",
+    keywords: ["bridesmaid", "bridesmaids", "sister", "group", "guest"],
+  },
+  {
+    id: "family",
+    label: "👑 Mother & Family Packages",
+    keywords: ["family", "mother", "bundle", "package"],
+  },
+  {
+    id: "draping",
+    label: "🥻 Saree & Lehenga Draping",
+    keywords: ["draping", "saree", "lehenga", "dupatta"],
+  },
 ];
 
 const SKINCARE_SUBCATS = [
   { id: "all", label: "All Skincare", keywords: [] },
   { id: "o3", label: "O3+ Brightening & Glow", keywords: ["o3", "power oxygen", "sea white"] },
-  { id: "cleanups", label: "Express Cleanups", keywords: ["cleanup", "clean-up", "fruit", "instant"] },
+  {
+    id: "cleanups",
+    label: "Express Cleanups",
+    keywords: ["cleanup", "clean-up", "fruit", "instant"],
+  },
   { id: "anti-tan", label: "Anti-Tan & Detox", keywords: ["tan", "sara oxy", "cheryl", "detox"] },
   { id: "derma", label: "Hydra & Luxury Derma", keywords: ["hydra", "derma", "gold", "lotus"] },
-  { id: "threading", label: "Threading & Face Wax", keywords: ["threading", "eyebrow", "upper lip", "forehead"] },
+  {
+    id: "threading",
+    label: "Threading & Face Wax",
+    keywords: ["threading", "eyebrow", "upper lip", "forehead"],
+  },
 ];
 
 const HAIR_SUBCATS = [
@@ -70,28 +102,56 @@ const HAIR_SUBCATS = [
   { id: "blowdry", label: "Blow Dry & Waves", keywords: ["blow dry", "waves", "curls"] },
   { id: "buns", label: "Bridal & Floral Buns", keywords: ["bun", "hairdo", "floral", "braid"] },
   { id: "spa", label: "Nourishing Hair Spas", keywords: ["spa", "mythic", "biolage", "scalp"] },
-  { id: "smoothing", label: "Keratin & Botox Smoothing", keywords: ["keratin", "botox", "smoothing", "treatment"] },
+  {
+    id: "smoothing",
+    label: "Keratin & Botox Smoothing",
+    keywords: ["keratin", "botox", "smoothing", "treatment"],
+  },
 ];
 
 const NAIL_SUBCATS = [
   { id: "all", label: "All Hand & Feet", keywords: [] },
-  { id: "mani-pedi", label: "Deluxe Mani-Pedi", keywords: ["manicure", "pedicure", "mani-pedi", "combo"] },
-  { id: "spa-pedi", label: "Aroma & Jelly Spas", keywords: ["aroma", "jelly", "crystal", "callus"] },
-  { id: "extensions", label: "Gel Nail Extensions", keywords: ["gel", "extensions", "acrylic", "tips"] },
+  {
+    id: "mani-pedi",
+    label: "Deluxe Mani-Pedi",
+    keywords: ["manicure", "pedicure", "mani-pedi", "combo"],
+  },
+  {
+    id: "spa-pedi",
+    label: "Aroma & Jelly Spas",
+    keywords: ["aroma", "jelly", "crystal", "callus"],
+  },
+  {
+    id: "extensions",
+    label: "Gel Nail Extensions",
+    keywords: ["gel", "extensions", "acrylic", "tips"],
+  },
   { id: "art", label: "French Ombre & Custom Art", keywords: ["art", "ombre", "chrome", "3d"] },
 ];
 
 const MEHNDI_SUBCATS = [
   { id: "all", label: "All Services", keywords: [] },
-  { id: "draping", label: "Saree & Lehenga Draping", keywords: ["draping", "saree", "lehenga", "dupatta"] },
+  {
+    id: "draping",
+    label: "Saree & Lehenga Draping",
+    keywords: ["draping", "saree", "lehenga", "dupatta"],
+  },
   { id: "mehndi", label: "Guest & Bridal Mehndi", keywords: ["mehndi", "mehendi", "henna"] },
   { id: "eye", label: "Eye Makeup & Lashes", keywords: ["eye", "lash", "lashes", "extension"] },
 ];
 
 const PRE_BRIDAL_SUBCATS = [
   { id: "all", label: "All Packages", keywords: [] },
-  { id: "express", label: "1-Day Express Glow", keywords: ["haldi", "essential", "express", "silver"] },
-  { id: "multi", label: "2-3 Day Complete Bridal Care", keywords: ["luxury", "complete", "ultra-radiance", "gold", "platinum"] },
+  {
+    id: "express",
+    label: "1-Day Express Glow",
+    keywords: ["haldi", "essential", "express", "silver"],
+  },
+  {
+    id: "multi",
+    label: "2-3 Day Complete Bridal Care",
+    keywords: ["luxury", "complete", "ultra-radiance", "gold", "platinum"],
+  },
 ];
 
 const SUB_CATEGORIES_BY_CAT: Record<string, { id: string; label: string; keywords: string[] }[]> = {
@@ -165,8 +225,11 @@ export function ServiceExplorer({
       if (subCat !== "all" && availableSubCats.length > 0) {
         const activeSub = availableSubCats.find((s) => s.id === subCat);
         if (activeSub && activeSub.keywords.length > 0) {
-          const matchTarget = `${i.title} ${i.short ?? ""} ${i.variants?.map((v) => v.name).join(" ") ?? ""}`.toLowerCase();
-          const matchesKeyword = activeSub.keywords.some((k) => matchTarget.includes(k.toLowerCase()));
+          const matchTarget =
+            `${i.title} ${i.short ?? ""} ${i.variants?.map((v) => v.name).join(" ") ?? ""}`.toLowerCase();
+          const matchesKeyword = activeSub.keywords.some((k) =>
+            matchTarget.includes(k.toLowerCase())
+          );
           if (!matchesKeyword) return false;
         }
       }
@@ -329,12 +392,13 @@ export function ServiceExplorer({
             {group.items.map((s) => {
               const effectiveLow = calculateAreaPrice(s.price);
               const effectiveHigh = s.maxPrice != null ? calculateAreaPrice(s.maxPrice) : null;
-              const hasRange = effectiveLow != null && effectiveHigh != null && effectiveHigh > effectiveLow;
+              const hasRange =
+                effectiveLow != null && effectiveHigh != null && effectiveHigh > effectiveLow;
               const formattedPrice = hasRange
                 ? `₹${effectiveLow.toLocaleString("en-IN")} - ₹${effectiveHigh.toLocaleString("en-IN")}`
                 : effectiveLow != null
-                ? `₹${effectiveLow.toLocaleString("en-IN")}`
-                : "Custom Quote";
+                  ? `₹${effectiveLow.toLocaleString("en-IN")}`
+                  : "Custom Quote";
 
               return (
                 <Card
@@ -343,7 +407,10 @@ export function ServiceExplorer({
                 >
                   {/* Image area */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-ivory-deep">
-                    <Link href={`/services/${s.categorySlug}/${s.slug}`} className="block h-full w-full">
+                    <Link
+                      href={`/services/${s.categorySlug}/${s.slug}`}
+                      className="block h-full w-full"
+                    >
                       <Photo
                         src={s.image}
                         alt={s.alt}
@@ -401,13 +468,24 @@ export function ServiceExplorer({
                       <ShieldCheck className="size-3.5 shrink-0 text-emerald-600" />
                       <span className="truncate">
                         {s.categorySlug === "makeup" && "100% Genuine MAC/Huda · Doorstep Artist"}
-                        {s.categorySlug === "salon-at-home" && "Italian Rica Wax · Sanitized Disposables"}
-                        {s.categorySlug === "facial-skincare" && "O3+ Glow Range · Extraction & Massage"}
+                        {s.categorySlug === "salon-at-home" &&
+                          "Italian Rica Wax · Sanitized Disposables"}
+                        {s.categorySlug === "facial-skincare" &&
+                          "O3+ Glow Range · Extraction & Massage"}
                         {s.categorySlug === "hair" && "L'Oreal & Keratin · Advanced Styling"}
                         {s.categorySlug === "nails" && "Non-Toxic Gel · Cuticle Care & Shine"}
                         {s.categorySlug === "mehndi" && "100% Herbal Henna · Deep Dark Stain"}
-                        {s.categorySlug === "pre-bridal" && "All-in-One Luxury Routine · High Savings"}
-                        {!["makeup", "salon-at-home", "facial-skincare", "hair", "nails", "mehndi", "pre-bridal"].includes(s.categorySlug) && "100% Verified Female Beautician"}
+                        {s.categorySlug === "pre-bridal" &&
+                          "All-in-One Luxury Routine · High Savings"}
+                        {![
+                          "makeup",
+                          "salon-at-home",
+                          "facial-skincare",
+                          "hair",
+                          "nails",
+                          "mehndi",
+                          "pre-bridal",
+                        ].includes(s.categorySlug) && "100% Verified Female Beautician"}
                       </span>
                     </div>
 

@@ -1,12 +1,27 @@
 "use client";
 
-import { Check, Clock, HelpCircle, Info, MessageCircle, ShieldCheck, Sparkles, Wallet, X } from "lucide-react";
+import {
+  Check,
+  Clock,
+  HelpCircle,
+  Info,
+  MessageCircle,
+  ShieldCheck,
+  Sparkles,
+  Wallet,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Drawer, DrawerShell, Price, buttonStyles, cn } from "@herrglow/ui";
 import { whatsappLink } from "@/lib/whatsapp";
 
-export interface PriceOption { name: string; price: number | null; offerPrice: number | null; duration: string | null }
+export interface PriceOption {
+  name: string;
+  price: number | null;
+  offerPrice: number | null;
+  duration: string | null;
+}
 
 const pick = (name: string) => {
   if (typeof window !== "undefined") {
@@ -17,7 +32,10 @@ const pick = (name: string) => {
 const toForm = () => {
   const el = document.getElementById("book");
   el?.scrollIntoView({ behavior: "smooth", block: "start" });
-  setTimeout(() => el?.querySelector<HTMLElement>("button,input,select")?.focus({ preventScroll: true }), 600);
+  setTimeout(
+    () => el?.querySelector<HTMLElement>("button,input,select")?.focus({ preventScroll: true }),
+    600
+  );
 };
 
 interface WaxInfo {
@@ -36,7 +54,8 @@ function getWaxMeta(name: string): WaxInfo | null {
       badge: "⭐ Delhi NCR Bestseller",
       formula: "Italian Liposoluble · Anti-Tan",
       tagTone: "border-amber-300 bg-amber-100 text-amber-900",
-      summary: "98% Colophony-free Italian formula. Pulls roots smoothly with minimal pain, prevents redness, lifts deep tanning, and leaves zero sticky residue.",
+      summary:
+        "98% Colophony-free Italian formula. Pulls roots smoothly with minimal pain, prevents redness, lifts deep tanning, and leaves zero sticky residue.",
     };
   }
   if (lower.includes("roll-on") || lower.includes("rollon") || lower.includes("cartridge")) {
@@ -45,7 +64,8 @@ function getWaxMeta(name: string): WaxInfo | null {
       badge: "Zero-Spill · Fast & Clean",
       formula: "Single-Client Sealed Roller",
       tagTone: "border-sky-300 bg-sky-100 text-sky-900",
-      summary: "Pre-heated single-client roller cartridge. Zero wax drips on sheets or clothes, 25% faster service, and 100% untouched hygienic application.",
+      summary:
+        "Pre-heated single-client roller cartridge. Zero wax drips on sheets or clothes, 25% faster service, and 100% untouched hygienic application.",
     };
   }
   if (lower.includes("honey") || lower.includes("regular") || lower.includes("smooth")) {
@@ -54,7 +74,8 @@ function getWaxMeta(name: string): WaxInfo | null {
       badge: "Classic Budget Friendly",
       formula: "Warm Sugar-Honey Wax",
       tagTone: "border-amber-200 bg-amber-50 text-amber-800",
-      summary: "Warm water-soluble wax enriched with honey and lemon. Ideal for normal skin types and routine monthly maintenance at pocket-friendly pricing.",
+      summary:
+        "Warm water-soluble wax enriched with honey and lemon. Ideal for normal skin types and routine monthly maintenance at pocket-friendly pricing.",
     };
   }
   return null;
@@ -147,11 +168,14 @@ function WaxOptions({
                 </span>
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="block font-bold text-sm text-plum-950 truncate">
-                      {o.name}
-                    </span>
+                    <span className="block font-bold text-sm text-plum-950 truncate">{o.name}</span>
                     {meta?.badge && (
-                      <span className={cn("rounded-md border px-1.5 py-0.5 text-[9px] font-bold shrink-0", meta.tagTone)}>
+                      <span
+                        className={cn(
+                          "rounded-md border px-1.5 py-0.5 text-[9px] font-bold shrink-0",
+                          meta.tagTone
+                        )}
+                      >
                         {meta.badge}
                       </span>
                     )}
@@ -186,9 +210,7 @@ function WaxOptions({
             <Sparkles className="size-3.5 text-rose-600 shrink-0" />
             <span>Formula Benefit: {selectedMeta.formula}</span>
           </div>
-          <p className="text-[11px] leading-relaxed text-ink-soft">
-            {selectedMeta.summary}
-          </p>
+          <p className="text-[11px] leading-relaxed text-ink-soft">{selectedMeta.summary}</p>
         </div>
       )}
     </fieldset>
@@ -212,7 +234,9 @@ function StandardOptions({
           key={o.name}
           className={cn(
             "flex min-h-14 cursor-pointer items-center justify-between gap-3 rounded-2xl border px-4 py-2 transition",
-            selected === o.name ? "border-plum-700 bg-blush-50 ring-2 ring-blush-200" : "border-line bg-white hover:bg-blush-50/60"
+            selected === o.name
+              ? "border-plum-700 bg-blush-50 ring-2 ring-blush-200"
+              : "border-line bg-white hover:bg-blush-50/60"
           )}
         >
           <span className="flex items-center gap-3">
@@ -267,14 +291,15 @@ export function PriceBox({
   }, [options]);
 
   const cur = options.find((o) => o.name === sel);
-  const shownPrice = cur ? { price: cur.price, offer: cur.offerPrice } : { price, offer: offerPrice };
+  const shownPrice = cur
+    ? { price: cur.price, offer: cur.offerPrice }
+    : { price, offer: offerPrice };
   const choose = (n: string) => {
     setSel(n);
     pick(n);
   };
 
-  const isWaxCategory =
-    options.some((o) => Boolean(getWaxMeta(o.name))) || /wax/i.test(title);
+  const isWaxCategory = options.some((o) => Boolean(getWaxMeta(o.name))) || /wax/i.test(title);
 
   const currentPrice = Number(shownPrice.offer ?? shownPrice.price ?? 0);
   const isAddonUnderThreshold = currentPrice > 0 && currentPrice < 499;
@@ -282,8 +307,8 @@ export function PriceBox({
   const finalPriceStr = shownPrice.offer
     ? `₹${Math.round(shownPrice.offer).toLocaleString("en-IN")}`
     : shownPrice.price
-    ? `₹${Math.round(shownPrice.price).toLocaleString("en-IN")}`
-    : "";
+      ? `₹${Math.round(shownPrice.price).toLocaleString("en-IN")}`
+      : "";
 
   const wa = whatsappLink(
     whatsappNumber || "9319260069",
@@ -337,7 +362,8 @@ export function PriceBox({
               <span>Add-on Service · Min. Doorstep Visit ₹499</span>
             </div>
             <p className="text-[11px] text-amber-900/90 leading-relaxed">
-              To support our travelling female beauticians, the minimum doorstep booking is ₹499. You can add this service with any waxing or facial, or build your own combo.
+              To support our travelling female beauticians, the minimum doorstep booking is ₹499.
+              You can add this service with any waxing or facial, or build your own combo.
             </p>
             <div className="flex flex-wrap gap-2 pt-1">
               <Link
@@ -405,7 +431,9 @@ export function PriceBox({
             {/* Integrated Luxury Trust Banner */}
             <div className="flex items-center justify-center gap-1.5 bg-gradient-to-r from-plum-950 via-plum-900 to-plum-950 px-3 py-1 text-[10px] font-semibold tracking-wide text-gold-300">
               <ShieldCheck className="size-3 shrink-0 text-gold-400" />
-              <span className="truncate">100% Female Verified · 10% Advance · 100% Refund Guarantee</span>
+              <span className="truncate">
+                100% Female Verified · 10% Advance · 100% Refund Guarantee
+              </span>
             </div>
 
             {/* Unified Action Dock */}
@@ -419,11 +447,17 @@ export function PriceBox({
                 <div className="flex items-center gap-1 text-[11px] font-medium text-rose-700 truncate">
                   <span className="truncate">{sel || title}</span>
                   {options.length > 1 && (
-                    <span className="text-[10px] text-ink-soft shrink-0 underline decoration-rose-300">Change ▾</span>
+                    <span className="text-[10px] text-ink-soft shrink-0 underline decoration-rose-300">
+                      Change ▾
+                    </span>
                   )}
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Price price={shownPrice.price} offerPrice={shownPrice.offer} className="[&>span:nth-child(2)]:text-base font-bold text-plum-950" />
+                  <Price
+                    price={shownPrice.price}
+                    offerPrice={shownPrice.offer}
+                    className="[&>span:nth-child(2)]:text-base font-bold text-plum-950"
+                  />
                   {isAddonUnderThreshold && (
                     <span className="text-[9px] font-bold text-amber-900 bg-amber-100 border border-amber-300 px-1.5 py-0.5 rounded-md shrink-0">
                       Add-on (Min. ₹499)
@@ -436,7 +470,10 @@ export function PriceBox({
               <button
                 type="button"
                 onClick={toForm}
-                className={cn(buttonStyles({ variant: "shimmer", size: "sm" }), "pointer-events-auto h-11 px-3.5 text-xs font-bold shrink-0")}
+                className={cn(
+                  buttonStyles({ variant: "shimmer", size: "sm" }),
+                  "pointer-events-auto h-11 px-3.5 text-xs font-bold shrink-0"
+                )}
               >
                 {isAddonUnderThreshold ? "Book (Min ₹499)" : "Book Now"}
               </button>
@@ -462,7 +499,9 @@ export function PriceBox({
           <div className="overflow-y-auto p-5 pb-7 max-h-[80vh]">
             <div className="mb-4 flex items-start justify-between gap-3">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-rose-700">Customize Service</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-rose-700">
+                  Customize Service
+                </p>
                 <h2 className="!text-xl font-serif text-plum-950 mt-0.5">{title}</h2>
               </div>
               <Drawer.Close asChild>

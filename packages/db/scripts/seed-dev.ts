@@ -13,50 +13,64 @@ async function main() {
       slug: "makeup",
       name: "Bridal & Party Makeup",
       sort: 1,
-      shortDescription: "Five-star bridal, engagement, and party glam delivered directly to your doorstep. Choose between camera-ready Ultra-HD and 16-hour sweat-proof Airbrush makeup with 100% genuine MAC, Huda Beauty & NARS products.",
-      seoDescription: "Book professional bridal and party makeup artists at home in Delhi, Noida & Greater Noida. HD & Airbrush packages with sanitized kits.",
+      shortDescription:
+        "Five-star bridal, engagement, and party glam delivered directly to your doorstep. Choose between camera-ready Ultra-HD and 16-hour sweat-proof Airbrush makeup with 100% genuine MAC, Huda Beauty & NARS products.",
+      seoDescription:
+        "Book professional bridal and party makeup artists at home in Delhi, Noida & Greater Noida. HD & Airbrush packages with sanitized kits.",
     },
     {
       slug: "salon-at-home",
       name: "Salon at Home & Waxing",
       sort: 2,
-      shortDescription: "Painless Italian Rica liposoluble waxing, peel-off waxing, threading, manicure-pedicures, and relaxing full-body massages. Sanitized single-use disposables, zero travel surcharges, and verified female beauticians.",
-      seoDescription: "Doorstep salon services at home in Delhi NCR. Painless Rica waxing, full body waxing, cleanups, and threading by verified female beauticians.",
+      shortDescription:
+        "Painless Italian Rica liposoluble waxing, peel-off waxing, threading, manicure-pedicures, and relaxing full-body massages. Sanitized single-use disposables, zero travel surcharges, and verified female beauticians.",
+      seoDescription:
+        "Doorstep salon services at home in Delhi NCR. Painless Rica waxing, full body waxing, cleanups, and threading by verified female beauticians.",
     },
     {
       slug: "facial-skincare",
       name: "Facials & Skincare",
       sort: 3,
-      shortDescription: "Revitalize tired, pollution-exposed skin with authentic O3+ brightening facials, deep pore fruit cleanups, and hydrating derma care. Visible instant radiance in the comfort and privacy of your home.",
-      seoDescription: "Book authentic O3+ facials, hydrating cleanups and skincare treatments at home across Delhi, Noida & Greater Noida.",
+      shortDescription:
+        "Revitalize tired, pollution-exposed skin with authentic O3+ brightening facials, deep pore fruit cleanups, and hydrating derma care. Visible instant radiance in the comfort and privacy of your home.",
+      seoDescription:
+        "Book authentic O3+ facials, hydrating cleanups and skincare treatments at home across Delhi, Noida & Greater Noida.",
     },
     {
       slug: "hair",
       name: "Hair Styling & Treatments",
       sort: 4,
-      shortDescription: "Advanced bridal hairstyling, floral gajra buns, nourishing L'Oreal keratin spas, and volumizing extensions. Complete heat styling and scalp care without stepping into a crowded salon.",
-      seoDescription: "Doorstep hair spa, bridal hairstyling, keratin treatments and hair extensions delivered at home across Delhi NCR.",
+      shortDescription:
+        "Advanced bridal hairstyling, floral gajra buns, nourishing L'Oreal keratin spas, and volumizing extensions. Complete heat styling and scalp care without stepping into a crowded salon.",
+      seoDescription:
+        "Doorstep hair spa, bridal hairstyling, keratin treatments and hair extensions delivered at home across Delhi NCR.",
     },
     {
       slug: "nails",
       name: "Nails & Extensions",
       sort: 5,
-      shortDescription: "Deluxe manicures, crystal pedicures, and long-lasting gel nail extensions with custom nail art. Hospital-grade sanitized clippers, safe e-files, and non-toxic high-shine gel polishes.",
-      seoDescription: "Professional gel nail extensions, custom nail art, deluxe manicure and pedicure services at home in Delhi, Noida & Greater Noida.",
+      shortDescription:
+        "Deluxe manicures, crystal pedicures, and long-lasting gel nail extensions with custom nail art. Hospital-grade sanitized clippers, safe e-files, and non-toxic high-shine gel polishes.",
+      seoDescription:
+        "Professional gel nail extensions, custom nail art, deluxe manicure and pedicure services at home in Delhi, Noida & Greater Noida.",
     },
     {
       slug: "mehndi",
       name: "Bridal & Party Mehndi",
       sort: 6,
-      shortDescription: "Intricate North Indian bridal, Arabic, and festive guest mehndi applied by experienced henna artists. 100% organic, chemical-free henna paste with guaranteed deep mahogany stain.",
-      seoDescription: "Book certified bridal mehndi artists and party guest henna specialists at home across Delhi NCR.",
+      shortDescription:
+        "Intricate North Indian bridal, Arabic, and festive guest mehndi applied by experienced henna artists. 100% organic, chemical-free henna paste with guaranteed deep mahogany stain.",
+      seoDescription:
+        "Book certified bridal mehndi artists and party guest henna specialists at home across Delhi NCR.",
     },
     {
       slug: "pre-bridal",
       name: "Pre-Bridal & Combo Packages",
       sort: 7,
-      shortDescription: "All-inclusive pre-bridal pampering packages designed for modern brides. Complete head-to-toe polishing, Rica waxing, signature facials, and hair spas planned across flexible multi-day visits with maximum savings.",
-      seoDescription: "Luxury pre-bridal packages at home in Delhi NCR. Multi-day head-to-toe beauty countdowns with Rica waxing, facials, and hair spas.",
+      shortDescription:
+        "All-inclusive pre-bridal pampering packages designed for modern brides. Complete head-to-toe polishing, Rica waxing, signature facials, and hair spas planned across flexible multi-day visits with maximum savings.",
+      seoDescription:
+        "Luxury pre-bridal packages at home in Delhi NCR. Multi-day head-to-toe beauty countdowns with Rica waxing, facials, and hair spas.",
     },
   ];
 
@@ -92,8 +106,10 @@ async function main() {
       offerPrice: 19999,
       duration: "4–5 hours",
       image: "/images/packages/complete-bridal-package.jpg",
-      shortDescription: "All-inclusive luxury bridal experience: HD/Airbrush makeup, luxury hairstyling, draping, and lashes.",
-      features: "HD or Airbrush Bridal Makeup; Luxury Hairstyle with Floral Styling; Saree / Dupatta Draping & Jewellery Setting; Complimentary Pre-Bridal Skin Prep; Mink Eyelashes & Lens Application Included",
+      shortDescription:
+        "All-inclusive luxury bridal experience: HD/Airbrush makeup, luxury hairstyling, draping, and lashes.",
+      features:
+        "HD or Airbrush Bridal Makeup; Luxury Hairstyle with Floral Styling; Saree / Dupatta Draping & Jewellery Setting; Complimentary Pre-Bridal Skin Prep; Mink Eyelashes & Lens Application Included",
       isPackage: true,
       featured: true,
       leadCount: 16,
@@ -107,8 +123,10 @@ async function main() {
       offerPrice: 7999,
       duration: "3.5 hours",
       image: "/images/packages/pre-bridal-glow-package.jpg",
-      shortDescription: "Head-to-toe pre-wedding pampering with luxury facial, full body Rica waxing, body polishing, and mani-pedi.",
-      features: "O3+ Bridal Glow Facial & De-Tan; Full Body Waxing (Rica Wax); Full Body Scrub & Skin Polishing; Crystal Spa Manicure & Pedicure; Deep Conditioning Hair Spa",
+      shortDescription:
+        "Head-to-toe pre-wedding pampering with luxury facial, full body Rica waxing, body polishing, and mani-pedi.",
+      features:
+        "O3+ Bridal Glow Facial & De-Tan; Full Body Waxing (Rica Wax); Full Body Scrub & Skin Polishing; Crystal Spa Manicure & Pedicure; Deep Conditioning Hair Spa",
       isPackage: true,
       featured: true,
       leadCount: 10,
@@ -122,8 +140,10 @@ async function main() {
       offerPrice: 13999,
       duration: "3 hours",
       image: "/images/packages/sangeet-family-glam-package.jpg",
-      shortDescription: "Party & cocktail glam for bride's family, mother, sister or friends (up to 3 persons) with certified senior artists.",
-      features: "Party / Cocktail Makeup for 3 Persons; Hair Styling (Curls / Messy Bun / Straightening); Saree / Dupatta Draping for All 3; International Waterproof Cosmetics; Doorstep Travel Included",
+      shortDescription:
+        "Party & cocktail glam for bride's family, mother, sister or friends (up to 3 persons) with certified senior artists.",
+      features:
+        "Party / Cocktail Makeup for 3 Persons; Hair Styling (Curls / Messy Bun / Straightening); Saree / Dupatta Draping for All 3; International Waterproof Cosmetics; Doorstep Travel Included",
       isPackage: true,
       featured: true,
       leadCount: 8,
@@ -139,8 +159,10 @@ async function main() {
       offerPrice: 12000,
       duration: "3 hours",
       image: "/images/services/hd-bridal-makeup.jpg",
-      shortDescription: "High-definition bridal makeover with premium international products for photography perfection.",
-      features: "Full Face HD Base; Glam Smokey or Cut-Crease Eyes; Natural Lashes & Lens Placement; Dupatta Draping; Hair Styling Included",
+      shortDescription:
+        "High-definition bridal makeover with premium international products for photography perfection.",
+      features:
+        "Full Face HD Base; Glam Smokey or Cut-Crease Eyes; Natural Lashes & Lens Placement; Dupatta Draping; Hair Styling Included",
       isPackage: false,
       featured: true,
       leadCount: 22,
@@ -154,8 +176,10 @@ async function main() {
       offerPrice: 15000,
       duration: "3.5 hours",
       image: "/images/services/airbrush-bridal-makeup.jpg",
-      shortDescription: "Flawless airbrush finish bridal makeup lasting over 16 hours with zero transfer.",
-      features: "Silicon Airbrush Base Application; High Definition Contouring; Waterproof 16-Hour Wear; Intricate Bridal Hairstyle; Complete Draping",
+      shortDescription:
+        "Flawless airbrush finish bridal makeup lasting over 16 hours with zero transfer.",
+      features:
+        "Silicon Airbrush Base Application; High Definition Contouring; Waterproof 16-Hour Wear; Intricate Bridal Hairstyle; Complete Draping",
       isPackage: false,
       featured: true,
       leadCount: 19,
@@ -169,8 +193,10 @@ async function main() {
       offerPrice: 9999,
       duration: "2.5 hours",
       image: "/images/services/bridal-makeup-artist.jpg",
-      shortDescription: "Complete bridal makeover package for your special day with sanitized brushes and luxury brands.",
-      features: "Bridal Base; Traditional or Modern Eye Glam; Hair Styling with Accessories; Jewellery Fitting; Draping",
+      shortDescription:
+        "Complete bridal makeover package for your special day with sanitized brushes and luxury brands.",
+      features:
+        "Bridal Base; Traditional or Modern Eye Glam; Hair Styling with Accessories; Jewellery Fitting; Draping",
       isPackage: false,
       featured: false,
       leadCount: 14,
@@ -186,8 +212,10 @@ async function main() {
       offerPrice: 3499,
       duration: "90 mins",
       image: "/images/services/party-makeup-and-hair.jpg",
-      shortDescription: "Glamorous party makeover for sangeet, cocktails, receptions, and special family gatherings.",
-      features: "Dewy / Matte HD Base; Glam Eye Makeup & Lashes; Creative Hair Styling; Dupatta Draping",
+      shortDescription:
+        "Glamorous party makeover for sangeet, cocktails, receptions, and special family gatherings.",
+      features:
+        "Dewy / Matte HD Base; Glam Eye Makeup & Lashes; Creative Hair Styling; Dupatta Draping",
       isPackage: false,
       featured: true,
       leadCount: 18,
@@ -201,8 +229,10 @@ async function main() {
       offerPrice: 4999,
       duration: "2 hours",
       image: "/images/services/party-makeup-and-hair.jpg",
-      shortDescription: "Flawless camera-ready party glam and custom hairstyling tailored specifically for bridesmaids and bride's sister.",
-      features: "HD Party Base; Glitter or Smokey Eye Glam; Floral Bun or Hollywood Waves Hairdo; Saree / Lehenga Draping",
+      shortDescription:
+        "Flawless camera-ready party glam and custom hairstyling tailored specifically for bridesmaids and bride's sister.",
+      features:
+        "HD Party Base; Glitter or Smokey Eye Glam; Floral Bun or Hollywood Waves Hairdo; Saree / Lehenga Draping",
       isPackage: false,
       featured: true,
       leadCount: 12,
@@ -216,8 +246,10 @@ async function main() {
       offerPrice: 699,
       duration: "45 mins",
       image: "/images/packages/sangeet-family-glam-package.jpg",
-      shortDescription: "Professional doorstep saree, lehenga, and dupatta pleating and pinning with iron-pressed finish.",
-      features: "Precision Pleating & Secure Pinning; Traditional, Gujarati, or Modern Draping; Dupatta Setting with Jewellery Placement",
+      shortDescription:
+        "Professional doorstep saree, lehenga, and dupatta pleating and pinning with iron-pressed finish.",
+      features:
+        "Precision Pleating & Secure Pinning; Traditional, Gujarati, or Modern Draping; Dupatta Setting with Jewellery Placement",
       isPackage: false,
       featured: false,
       leadCount: 10,
@@ -231,8 +263,10 @@ async function main() {
       offerPrice: 999,
       duration: "60 mins",
       image: "/images/services/facial-at-home.jpg",
-      shortDescription: "Relaxing glow facial performed by certified beauticians with organic, skin-nourishing serums.",
-      features: "Deep Pore Cleansing & Steaming; Gentle Exfoliation & Blackhead Removal; Relaxing Facial & Neck Massage; Brightening Herbal Peel-Off Mask",
+      shortDescription:
+        "Relaxing glow facial performed by certified beauticians with organic, skin-nourishing serums.",
+      features:
+        "Deep Pore Cleansing & Steaming; Gentle Exfoliation & Blackhead Removal; Relaxing Facial & Neck Massage; Brightening Herbal Peel-Off Mask",
       isPackage: false,
       featured: true,
       leadCount: 25,
@@ -246,8 +280,10 @@ async function main() {
       offerPrice: 1899,
       duration: "90 mins",
       image: "/images/services/full-body-waxing-at-home.jpg",
-      shortDescription: "Hygienic full body waxing service at your home with choice of Honey or Rica wax.",
-      features: "Disposable Sheets & Wooden Spatulas; Full Arms, Underarms, Full Legs & Stomach; Pre & Post Wax Soothing Lotions",
+      shortDescription:
+        "Hygienic full body waxing service at your home with choice of Honey or Rica wax.",
+      features:
+        "Disposable Sheets & Wooden Spatulas; Full Arms, Underarms, Full Legs & Stomach; Pre & Post Wax Soothing Lotions",
       isPackage: false,
       featured: true,
       leadCount: 30,
@@ -261,8 +297,10 @@ async function main() {
       offerPrice: 1899,
       duration: "90 mins",
       image: "/images/services/gel-nail-extensions.jpg",
-      shortDescription: "Long-lasting gel extensions with custom nail art, chrome, or ombre finishes.",
-      features: "Tip or Form Extension; Choice of Ombre / French / Chrome; High-Shine UV Top Coat; Cuticle Care Included",
+      shortDescription:
+        "Long-lasting gel extensions with custom nail art, chrome, or ombre finishes.",
+      features:
+        "Tip or Form Extension; Choice of Ombre / French / Chrome; High-Shine UV Top Coat; Cuticle Care Included",
       isPackage: false,
       featured: true,
       leadCount: 12,
@@ -276,8 +314,10 @@ async function main() {
       offerPrice: 999,
       duration: "60 mins",
       image: "/images/services/classic-manicure-pedicure.jpg",
-      shortDescription: "Deep cleansing, organic scrub, massage, and nail shaping in the comfort of your living room.",
-      features: "Aromatherapy Foot Soak; Dead Skin Exfoliation; Relaxing Hand & Foot Massage; Choice of Long-Wear Polish",
+      shortDescription:
+        "Deep cleansing, organic scrub, massage, and nail shaping in the comfort of your living room.",
+      features:
+        "Aromatherapy Foot Soak; Dead Skin Exfoliation; Relaxing Hand & Foot Massage; Choice of Long-Wear Polish",
       isPackage: false,
       featured: false,
       leadCount: 15,
@@ -291,8 +331,10 @@ async function main() {
       offerPrice: 1999,
       duration: "60 mins",
       image: "/images/services/bridal-hair-styling.jpg",
-      shortDescription: "Intricate buns, Hollywood waves, floral braiding, and traditional Indian wedding hairstyles.",
-      features: "Textured Buns / Romantic Waves; Real Flower / Accessory Setting; Heat Protection & Hold Spray; Extension Placement",
+      shortDescription:
+        "Intricate buns, Hollywood waves, floral braiding, and traditional Indian wedding hairstyles.",
+      features:
+        "Textured Buns / Romantic Waves; Real Flower / Accessory Setting; Heat Protection & Hold Spray; Extension Placement",
       isPackage: false,
       featured: true,
       leadCount: 11,
@@ -306,8 +348,10 @@ async function main() {
       offerPrice: 1299,
       duration: "50 mins",
       image: "/images/services/hair-spa-at-home.jpg",
-      shortDescription: "Deep conditioning hair mask with warm steam and relaxing head, neck, and shoulder massage.",
-      features: "Deep Conditioning Cream Mask; Scalp Stimulation & Head Massage; Steam Therapy; Blow-Dry Finish",
+      shortDescription:
+        "Deep conditioning hair mask with warm steam and relaxing head, neck, and shoulder massage.",
+      features:
+        "Deep Conditioning Cream Mask; Scalp Stimulation & Head Massage; Steam Therapy; Blow-Dry Finish",
       isPackage: false,
       featured: false,
       leadCount: 9,
@@ -361,8 +405,10 @@ async function main() {
       offerPrice: 19999,
       duration: "4–5 hours",
       image: "/images/packages/complete-bridal-package.jpg",
-      shortDescription: "All-inclusive luxury bridal experience: HD/Airbrush makeup, luxury hairstyling, draping, and lashes.",
-      description: "Designed for the bride who wants absolute perfection without salon chaos. Our senior artists bring professional lighting, sanitized luxury brushes, and top international brands (Huda Beauty, MAC, NARS, Charlotte Tilbury) directly to your bridal suite.",
+      shortDescription:
+        "All-inclusive luxury bridal experience: HD/Airbrush makeup, luxury hairstyling, draping, and lashes.",
+      description:
+        "Designed for the bride who wants absolute perfection without salon chaos. Our senior artists bring professional lighting, sanitized luxury brushes, and top international brands (Huda Beauty, MAC, NARS, Charlotte Tilbury) directly to your bridal suite.",
       linkedServices: ["hd-bridal-makeup", "bridal-hair-styling"],
     },
     {
@@ -372,8 +418,10 @@ async function main() {
       offerPrice: 7999,
       duration: "3.5 hours",
       image: "/images/packages/pre-bridal-glow-package.jpg",
-      shortDescription: "Head-to-toe pre-wedding pampering with luxury facial, full body Rica waxing, body polishing, and mani-pedi.",
-      description: "A relaxing head-to-toe pre-wedding regimen executed in total hygiene. We use disposable bedsheets, single-use wax cartridges, and gentle organic exfoliators.",
+      shortDescription:
+        "Head-to-toe pre-wedding pampering with luxury facial, full body Rica waxing, body polishing, and mani-pedi.",
+      description:
+        "A relaxing head-to-toe pre-wedding regimen executed in total hygiene. We use disposable bedsheets, single-use wax cartridges, and gentle organic exfoliators.",
       linkedServices: ["facial-at-home", "full-body-waxing-at-home", "classic-manicure-pedicure"],
     },
     {
@@ -383,8 +431,10 @@ async function main() {
       offerPrice: 13999,
       duration: "3 hours",
       image: "/images/packages/sangeet-family-glam-package.jpg",
-      shortDescription: "Party & cocktail glam for bride's family or friends (up to 3 persons) with certified senior artists.",
-      description: "The easiest way to get the mother of the bride, bridesmaids, and sisters ready together on time with zero rush.",
+      shortDescription:
+        "Party & cocktail glam for bride's family or friends (up to 3 persons) with certified senior artists.",
+      description:
+        "The easiest way to get the mother of the bride, bridesmaids, and sisters ready together on time with zero rush.",
       linkedServices: ["party-makeup-and-hair"],
     },
   ];
@@ -444,27 +494,146 @@ async function main() {
 
   // 5. Areas
   const areas = [
-    { slug: "gaur-city-1", name: "Gaur City 1", citySlug: "greater-noida", zone: "West", latitude: 28.608, longitude: 77.429, radiusKm: 5 },
-    { slug: "gaur-city-2", name: "Gaur City 2", citySlug: "greater-noida", zone: "West", latitude: 28.614, longitude: 77.442, radiusKm: 5 },
-    { slug: "pari-chowk", name: "Pari Chowk", citySlug: "greater-noida", zone: "Central", latitude: 28.4682, longitude: 77.51, radiusKm: 10 },
-    { slug: "sector-1-greater-noida", name: "Sector 1", citySlug: "greater-noida", zone: "West", latitude: 28.591, longitude: 77.448, radiusKm: 5 },
-    { slug: "sector-62-noida", name: "Sector 62", citySlug: "noida", zone: "Central", latitude: 28.6271, longitude: 77.3725, radiusKm: 6 },
-    { slug: "sector-18-noida", name: "Sector 18", citySlug: "noida", zone: "Atta", latitude: 28.5708, longitude: 77.326, radiusKm: 6 },
-    { slug: "sector-137-noida", name: "Sector 137", citySlug: "noida", zone: "Expressway", latitude: 28.513, longitude: 77.4042, radiusKm: 8 },
-    { slug: "sector-76-noida", name: "Sector 76", citySlug: "noida", zone: "Central", latitude: 28.567, longitude: 77.382, radiusKm: 6 },
-    { slug: "sector-50-noida", name: "Sector 50", citySlug: "noida", zone: "Central", latitude: 28.5729, longitude: 77.3686, radiusKm: 6 },
-    { slug: "south-delhi", name: "South Delhi", citySlug: "delhi", zone: "South", latitude: 28.5244, longitude: 77.2167, radiusKm: 12 },
-    { slug: "dwarka", name: "Dwarka", citySlug: "delhi", zone: "West", latitude: 28.5921, longitude: 77.046, radiusKm: 10 },
-    { slug: "lajpat-nagar", name: "Lajpat Nagar", citySlug: "delhi", zone: "South", latitude: 28.5677, longitude: 77.2433, radiusKm: 7 },
-    { slug: "rohini", name: "Rohini", citySlug: "delhi", zone: "North", latitude: 28.7495, longitude: 77.0565, radiusKm: 10 },
-    { slug: "vasant-kunj", name: "Vasant Kunj", citySlug: "delhi", zone: "South", latitude: 28.5293, longitude: 77.1539, radiusKm: 8 },
+    {
+      slug: "gaur-city-1",
+      name: "Gaur City 1",
+      citySlug: "greater-noida",
+      zone: "West",
+      latitude: 28.608,
+      longitude: 77.429,
+      radiusKm: 5,
+    },
+    {
+      slug: "gaur-city-2",
+      name: "Gaur City 2",
+      citySlug: "greater-noida",
+      zone: "West",
+      latitude: 28.614,
+      longitude: 77.442,
+      radiusKm: 5,
+    },
+    {
+      slug: "pari-chowk",
+      name: "Pari Chowk",
+      citySlug: "greater-noida",
+      zone: "Central",
+      latitude: 28.4682,
+      longitude: 77.51,
+      radiusKm: 10,
+    },
+    {
+      slug: "sector-1-greater-noida",
+      name: "Sector 1",
+      citySlug: "greater-noida",
+      zone: "West",
+      latitude: 28.591,
+      longitude: 77.448,
+      radiusKm: 5,
+    },
+    {
+      slug: "sector-62-noida",
+      name: "Sector 62",
+      citySlug: "noida",
+      zone: "Central",
+      latitude: 28.6271,
+      longitude: 77.3725,
+      radiusKm: 6,
+    },
+    {
+      slug: "sector-18-noida",
+      name: "Sector 18",
+      citySlug: "noida",
+      zone: "Atta",
+      latitude: 28.5708,
+      longitude: 77.326,
+      radiusKm: 6,
+    },
+    {
+      slug: "sector-137-noida",
+      name: "Sector 137",
+      citySlug: "noida",
+      zone: "Expressway",
+      latitude: 28.513,
+      longitude: 77.4042,
+      radiusKm: 8,
+    },
+    {
+      slug: "sector-76-noida",
+      name: "Sector 76",
+      citySlug: "noida",
+      zone: "Central",
+      latitude: 28.567,
+      longitude: 77.382,
+      radiusKm: 6,
+    },
+    {
+      slug: "sector-50-noida",
+      name: "Sector 50",
+      citySlug: "noida",
+      zone: "Central",
+      latitude: 28.5729,
+      longitude: 77.3686,
+      radiusKm: 6,
+    },
+    {
+      slug: "south-delhi",
+      name: "South Delhi",
+      citySlug: "delhi",
+      zone: "South",
+      latitude: 28.5244,
+      longitude: 77.2167,
+      radiusKm: 12,
+    },
+    {
+      slug: "dwarka",
+      name: "Dwarka",
+      citySlug: "delhi",
+      zone: "West",
+      latitude: 28.5921,
+      longitude: 77.046,
+      radiusKm: 10,
+    },
+    {
+      slug: "lajpat-nagar",
+      name: "Lajpat Nagar",
+      citySlug: "delhi",
+      zone: "South",
+      latitude: 28.5677,
+      longitude: 77.2433,
+      radiusKm: 7,
+    },
+    {
+      slug: "rohini",
+      name: "Rohini",
+      citySlug: "delhi",
+      zone: "North",
+      latitude: 28.7495,
+      longitude: 77.0565,
+      radiusKm: 10,
+    },
+    {
+      slug: "vasant-kunj",
+      name: "Vasant Kunj",
+      citySlug: "delhi",
+      zone: "South",
+      latitude: 28.5293,
+      longitude: 77.1539,
+      radiusKm: 8,
+    },
   ];
 
   const areaMap = new Map<string, string>();
   for (const a of areas) {
     const areaRow = await prisma.area.upsert({
       where: { slug: a.slug },
-      update: { name: a.name, citySlug: a.citySlug, zone: a.zone, latitude: a.latitude, longitude: a.longitude, radiusKm: a.radiusKm },
+      update: {
+        name: a.name,
+        citySlug: a.citySlug,
+        zone: a.zone,
+        latitude: a.latitude,
+        longitude: a.longitude,
+        radiusKm: a.radiusKm,
+      },
       create: a,
     });
     areaMap.set(a.slug, areaRow.id);
@@ -483,12 +652,34 @@ async function main() {
       bio: "Senior Bridal Makeup Specialist certified by London College of Make-up with over 9 years of experience glamming brides across Delhi NCR. Known for flawless skin finishes, customized HD palettes, and long-lasting waterproof looks tailored to traditional and modern Indian weddings. Brings professional lighting, sanitized brushes, and international luxury cosmetics directly to your doorstep.",
       basePrice: 12000,
       portfolio: [
-        { path: "/images/services/hd-bridal-makeup.jpg", alt: "Royal HD Bridal Makeup by Priyanka" },
-        { path: "/images/services/airbrush-bridal-makeup.jpg", alt: "Airbrush Bridal Finish by Priyanka" },
-        { path: "/images/services/bridal-makeup-artist.jpg", alt: "Bridal Glamour Look by Priyanka" },
+        {
+          path: "/images/services/hd-bridal-makeup.jpg",
+          alt: "Royal HD Bridal Makeup by Priyanka",
+        },
+        {
+          path: "/images/services/airbrush-bridal-makeup.jpg",
+          alt: "Airbrush Bridal Finish by Priyanka",
+        },
+        {
+          path: "/images/services/bridal-makeup-artist.jpg",
+          alt: "Bridal Glamour Look by Priyanka",
+        },
       ],
-      coveredAreas: ["sector-62-noida", "sector-18-noida", "sector-50-noida", "gaur-city-1", "gaur-city-2", "pari-chowk"],
-      offeredServices: ["hd-bridal-makeup", "airbrush-bridal-makeup", "bridal-makeup-artist", "complete-bridal-package", "party-makeup-and-hair"],
+      coveredAreas: [
+        "sector-62-noida",
+        "sector-18-noida",
+        "sector-50-noida",
+        "gaur-city-1",
+        "gaur-city-2",
+        "pari-chowk",
+      ],
+      offeredServices: [
+        "hd-bridal-makeup",
+        "airbrush-bridal-makeup",
+        "bridal-makeup-artist",
+        "complete-bridal-package",
+        "party-makeup-and-hair",
+      ],
     },
     {
       slug: "mehak-khurana",
@@ -500,12 +691,29 @@ async function main() {
       bio: "Editorial and bridal makeup artist specializing in high-definition airbrush techniques, soft cut-crease eyes, and modern Bollywood reception glam. With 7 years of on-location bridal experience across South Delhi, Central Noida, and Gurgaon, Mehak brings an exacting standard of hygiene and camera-ready luxury directly to your wedding suite or home.",
       basePrice: 10000,
       portfolio: [
-        { path: "/images/services/party-makeup-and-hair.jpg", alt: "Dewy Cocktail Party Makeup by Mehak" },
-        { path: "/images/services/bridal-hair-styling.jpg", alt: "Intricate Bridal Floral Bun by Mehak" },
+        {
+          path: "/images/services/party-makeup-and-hair.jpg",
+          alt: "Dewy Cocktail Party Makeup by Mehak",
+        },
+        {
+          path: "/images/services/bridal-hair-styling.jpg",
+          alt: "Intricate Bridal Floral Bun by Mehak",
+        },
         { path: "/images/services/hd-bridal-makeup.jpg", alt: "Reception Glam by Mehak" },
       ],
-      coveredAreas: ["south-delhi", "vasant-kunj", "lajpat-nagar", "sector-50-noida", "sector-137-noida"],
-      offeredServices: ["airbrush-bridal-makeup", "hd-bridal-makeup", "sangeet-family-glam-package", "party-makeup-and-hair"],
+      coveredAreas: [
+        "south-delhi",
+        "vasant-kunj",
+        "lajpat-nagar",
+        "sector-50-noida",
+        "sector-137-noida",
+      ],
+      offeredServices: [
+        "airbrush-bridal-makeup",
+        "hd-bridal-makeup",
+        "sangeet-family-glam-package",
+        "party-makeup-and-hair",
+      ],
     },
     {
       slug: "sunita-rawat",
@@ -517,12 +725,33 @@ async function main() {
       bio: "Master Aesthetician and Skincare Specialist with over 11 years of salon experience. Trained extensively in advanced dermaceutical facials, painless Rica waxing rituals, and pre-bridal organic body polishing. Dedicated to creating a relaxing, spa-grade sanctuary in the comfort and privacy of client homes with hospital-grade sanitization protocols.",
       basePrice: 1500,
       portfolio: [
-        { path: "/images/services/facial-at-home.jpg", alt: "Hydrating Facial & Glow Treatment by Sunita" },
-        { path: "/images/services/hair-spa-at-home.jpg", alt: "Deep Nourishing Hair Spa by Sunita" },
-        { path: "/images/services/full-body-waxing-at-home.jpg", alt: "Rica Waxing Session by Sunita" },
+        {
+          path: "/images/services/facial-at-home.jpg",
+          alt: "Hydrating Facial & Glow Treatment by Sunita",
+        },
+        {
+          path: "/images/services/hair-spa-at-home.jpg",
+          alt: "Deep Nourishing Hair Spa by Sunita",
+        },
+        {
+          path: "/images/services/full-body-waxing-at-home.jpg",
+          alt: "Rica Waxing Session by Sunita",
+        },
       ],
-      coveredAreas: ["sector-62-noida", "sector-76-noida", "gaur-city-1", "sector-1-greater-noida", "south-delhi", "dwarka"],
-      offeredServices: ["facial-at-home", "full-body-waxing-at-home", "pre-bridal-glow-package", "classic-manicure-pedicure"],
+      coveredAreas: [
+        "sector-62-noida",
+        "sector-76-noida",
+        "gaur-city-1",
+        "sector-1-greater-noida",
+        "south-delhi",
+        "dwarka",
+      ],
+      offeredServices: [
+        "facial-at-home",
+        "full-body-waxing-at-home",
+        "pre-bridal-glow-package",
+        "classic-manicure-pedicure",
+      ],
     },
     {
       slug: "kritika-sharma",
@@ -534,12 +763,24 @@ async function main() {
       bio: "Comprehensive bridal stylist trained in both couture hairstyling and HD party makeovers. Renowned across Delhi NCR for intricate textured buns, cascading romantic waves, floral hair accents, and saree draping. Her warm demeanor and meticulous timing ensure a stress-free, luxurious wedding morning for every bride and family.",
       basePrice: 3500,
       portfolio: [
-        { path: "/images/services/gel-nail-extensions.jpg", alt: "Glossy Gel Nail Art Extensions by Kritika" },
-        { path: "/images/services/classic-manicure-pedicure.jpg", alt: "Spa Manicure & Pedicure by Kritika" },
+        {
+          path: "/images/services/gel-nail-extensions.jpg",
+          alt: "Glossy Gel Nail Art Extensions by Kritika",
+        },
+        {
+          path: "/images/services/classic-manicure-pedicure.jpg",
+          alt: "Spa Manicure & Pedicure by Kritika",
+        },
         { path: "/images/services/facial-at-home.jpg", alt: "O3+ Bridal Facial Glow by Kritika" },
       ],
       coveredAreas: ["dwarka", "rohini", "lajpat-nagar", "sector-18-noida", "pari-chowk"],
-      offeredServices: ["bridal-hair-styling", "hair-spa-at-home", "party-makeup-and-hair", "complete-bridal-package", "sangeet-family-glam-package"],
+      offeredServices: [
+        "bridal-hair-styling",
+        "hair-spa-at-home",
+        "party-makeup-and-hair",
+        "complete-bridal-package",
+        "sangeet-family-glam-package",
+      ],
     },
     {
       slug: "neha-bisht",
@@ -551,12 +792,29 @@ async function main() {
       bio: "Certified Nail Artist and hand-care specialist with 6 years of expertise delivering high-fashion gel extensions, 3D embellishments, ombre nail art, and restorative aromatherapy pedicures at home. Uses sanitized equipment and LED-cured non-toxic formulas for salon-quality results that last for weeks.",
       basePrice: 1800,
       portfolio: [
-        { path: "/images/services/airbrush-bridal-makeup.jpg", alt: "Flawless Airbrush Finish by Neha" },
+        {
+          path: "/images/services/airbrush-bridal-makeup.jpg",
+          alt: "Flawless Airbrush Finish by Neha",
+        },
         { path: "/images/services/party-makeup-and-hair.jpg", alt: "Sangeet Glam by Neha" },
-        { path: "/images/services/bridal-hair-styling.jpg", alt: "Hollywood Waves Styling by Neha" },
+        {
+          path: "/images/services/bridal-hair-styling.jpg",
+          alt: "Hollywood Waves Styling by Neha",
+        },
       ],
-      coveredAreas: ["sector-50-noida", "sector-137-noida", "south-delhi", "vasant-kunj", "sector-62-noida"],
-      offeredServices: ["gel-nail-extensions", "classic-manicure-pedicure", "facial-at-home", "pre-bridal-glow-package"],
+      coveredAreas: [
+        "sector-50-noida",
+        "sector-137-noida",
+        "south-delhi",
+        "vasant-kunj",
+        "sector-62-noida",
+      ],
+      offeredServices: [
+        "gel-nail-extensions",
+        "classic-manicure-pedicure",
+        "facial-at-home",
+        "pre-bridal-glow-package",
+      ],
     },
   ];
 
@@ -589,12 +847,45 @@ async function main() {
     });
 
     // ProPrivate contact & base location info
-    const proGeo: Record<string, { lat: number; lng: number; radiusKm: number; address: string; phone: string }> = {
-      "sunita-rawat": { lat: 28.6271, lng: 77.3725, radiusKm: 12, address: "Block B, Sector 62, Noida", phone: "9876543211" },
-      "priyanka-verma": { lat: 28.5708, lng: 77.326, radiusKm: 15, address: "Atta Market, Sector 18, Noida", phone: "9876543210" },
-      "neha-bisht": { lat: 28.5729, lng: 77.3686, radiusKm: 10, address: "Sector 50, Noida", phone: "9876543212" },
-      "mehak-khurana": { lat: 28.5244, lng: 77.2167, radiusKm: 16, address: "Saket & South Delhi", phone: "9876543213" },
-      "kritika-sharma": { lat: 28.5921, lng: 77.046, radiusKm: 15, address: "Sector 11, Dwarka, New Delhi", phone: "9876543214" },
+    const proGeo: Record<
+      string,
+      { lat: number; lng: number; radiusKm: number; address: string; phone: string }
+    > = {
+      "sunita-rawat": {
+        lat: 28.6271,
+        lng: 77.3725,
+        radiusKm: 12,
+        address: "Block B, Sector 62, Noida",
+        phone: "9876543211",
+      },
+      "priyanka-verma": {
+        lat: 28.5708,
+        lng: 77.326,
+        radiusKm: 15,
+        address: "Atta Market, Sector 18, Noida",
+        phone: "9876543210",
+      },
+      "neha-bisht": {
+        lat: 28.5729,
+        lng: 77.3686,
+        radiusKm: 10,
+        address: "Sector 50, Noida",
+        phone: "9876543212",
+      },
+      "mehak-khurana": {
+        lat: 28.5244,
+        lng: 77.2167,
+        radiusKm: 16,
+        address: "Saket & South Delhi",
+        phone: "9876543213",
+      },
+      "kritika-sharma": {
+        lat: 28.5921,
+        lng: 77.046,
+        radiusKm: 15,
+        address: "Sector 11, Dwarka, New Delhi",
+        phone: "9876543214",
+      },
     };
     const geo = proGeo[p.slug];
 
@@ -672,7 +963,8 @@ async function main() {
       serviceName: "HD Bridal Makeup",
       photo: "/images/testimonials/pooja-sharma.jpg",
       rating: 5,
-      review: "Booked HerrGlow for my wedding reception. The artist arrived 15 minutes early with a spotless kit and sanitized brushes. The makeup stayed completely fresh and sweat-proof through 6 hours of photos!",
+      review:
+        "Booked HerrGlow for my wedding reception. The artist arrived 15 minutes early with a spotless kit and sanitized brushes. The makeup stayed completely fresh and sweat-proof through 6 hours of photos!",
       sort: 1,
     },
     {
@@ -681,7 +973,8 @@ async function main() {
       serviceName: "Airbrush Bridal Makeup",
       photo: "/images/testimonials/ananya-verma.jpg",
       rating: 5,
-      review: "Best at-home bridal experience. No waiting in noisy, crowded parlours. The airbrush finish looked so natural and feather-light under stage lights. Highly recommended!",
+      review:
+        "Best at-home bridal experience. No waiting in noisy, crowded parlours. The airbrush finish looked so natural and feather-light under stage lights. Highly recommended!",
       sort: 2,
     },
     {
@@ -690,7 +983,8 @@ async function main() {
       serviceName: "Pre-Bridal Luxury Glow",
       photo: "/images/testimonials/simran-kaur.jpg",
       rating: 5,
-      review: "Got the pre-bridal glow package. The facial massage was incredible and the beautician was polite, gentle and clean. Pure five-star salon luxury right in my living room.",
+      review:
+        "Got the pre-bridal glow package. The facial massage was incredible and the beautician was polite, gentle and clean. Pure five-star salon luxury right in my living room.",
       sort: 3,
     },
     {
@@ -699,7 +993,8 @@ async function main() {
       serviceName: "Sangeet Family Glam",
       photo: "/images/testimonials/meenakshi-joshi.jpg",
       rating: 5,
-      review: "We booked the Sangeet family package for myself, my mother and my sister. All 3 of us got ready right on schedule with gorgeous hairstyles and saree draping. Zero rush, zero stress.",
+      review:
+        "We booked the Sangeet family package for myself, my mother and my sister. All 3 of us got ready right on schedule with gorgeous hairstyles and saree draping. Zero rush, zero stress.",
       sort: 4,
     },
     {
@@ -708,7 +1003,8 @@ async function main() {
       serviceName: "Full Body Waxing & Facial",
       photo: "/images/testimonials/rhea-malhotra.jpg",
       rating: 5,
-      review: "I am extremely particular about hygiene. HerrGlow beauticians used clean sheets, sanitized tools and authentic products. 10/10 service quality and punctuality.",
+      review:
+        "I am extremely particular about hygiene. HerrGlow beauticians used clean sheets, sanitized tools and authentic products. 10/10 service quality and punctuality.",
       sort: 5,
     },
     {
@@ -717,17 +1013,27 @@ async function main() {
       serviceName: "Gel Nail Extensions",
       photo: "/images/testimonials/tanvi-saxena.jpg",
       rating: 5,
-      review: "Flawless gel extensions and custom French ombre art right at my dining table! Saved me 3 hours of driving and parking in Noida traffic.",
+      review:
+        "Flawless gel extensions and custom French ombre art right at my dining table! Saved me 3 hours of driving and parking in Noida traffic.",
       sort: 6,
     },
   ];
 
   for (const t of testimonials) {
-    const existing = await prisma.testimonial.findFirst({ where: { name: t.name, serviceName: t.serviceName } });
+    const existing = await prisma.testimonial.findFirst({
+      where: { name: t.name, serviceName: t.serviceName },
+    });
     if (existing) {
       await prisma.testimonial.update({
         where: { id: existing.id },
-        data: { location: t.location, rating: t.rating, review: t.review, photo: t.photo, status: "ACTIVE", sort: t.sort },
+        data: {
+          location: t.location,
+          rating: t.rating,
+          review: t.review,
+          photo: t.photo,
+          status: "ACTIVE",
+          sort: t.sort,
+        },
       });
     } else {
       await prisma.testimonial.create({
@@ -787,7 +1093,13 @@ async function main() {
     if (existing) {
       await prisma.galleryItem.update({
         where: { id: existing.id },
-        data: { alt: g.alt, mediaPath: g.mediaPath, category: g.category, status: "ACTIVE", sort: g.sort },
+        data: {
+          alt: g.alt,
+          mediaPath: g.mediaPath,
+          category: g.category,
+          status: "ACTIVE",
+          sort: g.sort,
+        },
       });
     } else {
       await prisma.galleryItem.create({
@@ -801,7 +1113,10 @@ async function main() {
     { key: "whatsapp_number", value: "9319260069" },
     { key: "contact_phone", value: "9319260069" },
     { key: "contact_email", value: "herrglow77@gmail.com" },
-    { key: "whatsapp_prefill_text", value: "Hi HerrGlow! I would like to enquire about home salon and makeup services." },
+    {
+      key: "whatsapp_prefill_text",
+      value: "Hi HerrGlow! I would like to enquire about home salon and makeup services.",
+    },
   ];
 
   for (const s of settings) {
@@ -814,7 +1129,9 @@ async function main() {
 
   // 10. Premium SEO Blogs
   try {
-    const { PREMIUM_BLOGS } = await import("./seed-blogs.js").catch(() => import("./seed-blogs.ts"));
+    const { PREMIUM_BLOGS } = await import("./seed-blogs.js").catch(
+      () => import("./seed-blogs.ts")
+    );
     for (const b of PREMIUM_BLOGS) {
       await prisma.blog.upsert({
         where: { slug: b.slug },
@@ -851,7 +1168,9 @@ async function main() {
 
   // 11. Sub-categories (Service Variants) & Area-Specific Pricing
   try {
-    await import("./seed-subcategories-and-area-pricing.js").catch(() => import("./seed-subcategories-and-area-pricing.ts"));
+    await import("./seed-subcategories-and-area-pricing.js").catch(
+      () => import("./seed-subcategories-and-area-pricing.ts")
+    );
     console.log("✓ Sub-categories and area-specific pricing seeded successfully!");
   } catch (err) {
     console.warn("Notice: Subcategories already seeded or skipped:", err);
@@ -859,7 +1178,9 @@ async function main() {
 
   // 12. Deduplicate services and apply 301 redirects
   try {
-    await import("./clean-duplicate-services.js").catch(() => import("./clean-duplicate-services.ts"));
+    await import("./clean-duplicate-services.js").catch(
+      () => import("./clean-duplicate-services.ts")
+    );
     console.log("✓ Services deduplication & 301 redirects applied successfully!");
   } catch (err) {
     console.warn("Notice: Deduplication already applied or skipped:", err);
@@ -886,7 +1207,9 @@ async function main() {
 
   // 14. High-demand SEO blogs with internal backlinks & images
   try {
-    await import("./seed-3-high-demand-blogs.js").catch(() => import("./seed-3-high-demand-blogs.ts"));
+    await import("./seed-3-high-demand-blogs.js").catch(
+      () => import("./seed-3-high-demand-blogs.ts")
+    );
     console.log("✓ High-demand blogs and editorial images seeded successfully!");
   } catch (err) {
     console.warn("Notice: High-demand blogs already seeded or skipped:", err);

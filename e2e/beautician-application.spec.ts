@@ -5,7 +5,9 @@ test.describe("Beautician Partner Onboarding (/join-as-beautician)", () => {
     await page.goto("/join-as-beautician");
   });
 
-  test("renders recruitment value proposition and bilingual language switcher", async ({ page }) => {
+  test("renders recruitment value proposition and bilingual language switcher", async ({
+    page,
+  }) => {
     // Check heading
     const heading = page.locator("h1");
     await expect(heading).toBeVisible();
@@ -40,7 +42,9 @@ test.describe("Beautician Partner Onboarding (/join-as-beautician)", () => {
     await expect(emailInput).toBeVisible();
 
     // Submit button
-    const submitBtn = form.getByRole("button", { name: /Submit application|Application Submit Karein/i });
+    const submitBtn = form.getByRole("button", {
+      name: /Submit application|Application Submit Karein/i,
+    });
     await expect(submitBtn).toBeVisible();
   });
 });

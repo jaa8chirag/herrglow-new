@@ -22,7 +22,12 @@ const RAW_GROUPS: RawNavGroup[] = [
       { href: "/admin/analytics", label: "Demand & Analytics", icon: "analytics" },
       { href: "/admin/leads", label: "Bookings & Leads", icon: "leads", perm: "leads" },
       { href: "/admin/calendar", label: "Beautician Schedule", icon: "calendar", perm: "leads" },
-      { href: "/admin/applications", label: "Artist Applications", icon: "applications", perm: "pros" },
+      {
+        href: "/admin/applications",
+        label: "Artist Applications",
+        icon: "applications",
+        perm: "pros",
+      },
     ],
   },
   {
@@ -46,7 +51,12 @@ const RAW_GROUPS: RawNavGroup[] = [
   {
     title: "Business Settings",
     items: [
-      { href: "/admin/settings", label: "Salon Settings & WhatsApp", icon: "settings", perm: "settings" },
+      {
+        href: "/admin/settings",
+        label: "Salon Settings & WhatsApp",
+        icon: "settings",
+        perm: "settings",
+      },
       { href: "/admin/users", label: "Staff Login Accounts", icon: "users", perm: "users" },
     ],
   },

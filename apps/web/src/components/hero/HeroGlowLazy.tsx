@@ -19,22 +19,41 @@ export function HeroGlowLazy({ className }: { className?: string }) {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const ok = window.matchMedia("(min-width: 1024px) and (pointer: fine)").matches
-      && !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      && !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+    const ok =
+      window.matchMedia("(min-width: 1024px) and (pointer: fine)").matches &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+      !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
     if (!ok) return;
-    const start = () => ("requestIdleCallback" in window ? (window as Window & { requestIdleCallback: (f: () => void, o?: { timeout: number }) => number }).requestIdleCallback(() => setEnabled(true), { timeout: 2500 }) : setTimeout(() => setEnabled(true), 1500));
-    if (document.readyState === "complete") start(); else window.addEventListener("load", start, { once: true });
+    const start = () =>
+      "requestIdleCallback" in window
+        ? (
+            window as Window & {
+              requestIdleCallback: (f: () => void, o?: { timeout: number }) => number;
+            }
+          ).requestIdleCallback(() => setEnabled(true), { timeout: 2500 })
+        : setTimeout(() => setEnabled(true), 1500);
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
   }, []);
 
   useEffect(() => {
     if (!enabled || !box.current) return;
-    const io = new IntersectionObserver(([e]) => setVisible(!!e?.isIntersecting && !document.hidden), { threshold: 0.05 });
+    const io = new IntersectionObserver(
+      ([e]) => setVisible(!!e?.isIntersecting && !document.hidden),
+      { threshold: 0.05 }
+    );
     io.observe(box.current);
     const onVis = () => setVisible(!document.hidden);
     document.addEventListener("visibilitychange", onVis);
-    return () => { io.disconnect(); document.removeEventListener("visibilitychange", onVis); };
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVis);
+    };
   }, [enabled]);
 
-  return <div ref={box} aria-hidden className={className}>{enabled && <HeroGlow active={visible} />}</div>;
+  return (
+    <div ref={box} aria-hidden className={className}>
+      {enabled && <HeroGlow active={visible} />}
+    </div>
+  );
 }

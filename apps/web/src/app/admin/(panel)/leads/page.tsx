@@ -34,10 +34,10 @@ const tone = (s: LeadStatus) =>
   s === "NEW"
     ? "info"
     : s === "BOOKED" || s === "COMPLETED"
-    ? "good"
-    : s === "LOST"
-    ? "bad"
-    : "warn";
+      ? "good"
+      : s === "LOST"
+        ? "bad"
+        : "warn";
 
 const ago = (d: Date) =>
   d.toLocaleString("en-IN", {
@@ -135,10 +135,12 @@ export default async function LeadsPage(props: PageProps<"/admin/leads">) {
             </span>
             <div>
               <h4 className="text-sm font-bold text-plum-950">
-                {counts.unassigned} Customer Booking{counts.unassigned === 1 ? "" : "s"} Need Beautician Assignment
+                {counts.unassigned} Customer Booking{counts.unassigned === 1 ? "" : "s"} Need
+                Beautician Assignment
               </h4>
               <p className="text-xs text-ink-soft">
-                Match each booking to the nearest verified beautician and dispatch details directly via WhatsApp.
+                Match each booking to the nearest verified beautician and dispatch details directly
+                via WhatsApp.
               </p>
             </div>
           </div>
@@ -573,10 +575,7 @@ async function Board({ outOfArea, q }: { outOfArea: boolean; q?: string }) {
   return (
     <div className="grid auto-cols-[290px] grid-flow-col gap-4 overflow-x-auto pb-4">
       {cols.map((c) => (
-        <section
-          key={c.status}
-          className="rounded-2xl bg-ivory-deep/80 p-3.5 ring-1 ring-black/5"
-        >
+        <section key={c.status} className="rounded-2xl bg-ivory-deep/80 p-3.5 ring-1 ring-black/5">
           <h2 className="mb-3 flex items-center justify-between !text-sm font-bold text-plum-950">
             <span>{STATUS_LABEL[c.status]}</span>
             <Pill tone={tone(c.status)}>{c.total}</Pill>

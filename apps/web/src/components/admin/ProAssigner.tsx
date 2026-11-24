@@ -53,7 +53,9 @@ export function ProAssigner({
   const [isPending, startTransition] = useTransition();
   const [showAll, setShowAll] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterChip, setFilterChip] = useState<"all" | "free" | "nearby" | "skill" | "top" | "coverage">("all");
+  const [filterChip, setFilterChip] = useState<
+    "all" | "free" | "nearby" | "skill" | "top" | "coverage"
+  >("all");
 
   const currentlyAssigned = matches.find((m) => m.id === assignedId);
 
@@ -215,9 +217,7 @@ export function ProAssigner({
                     <MapPin className="size-3" />
                     <span>{currentlyAssigned.distanceLabel}</span>
                   </span>
-                  <span className="text-ink-soft font-mono">
-                    {currentlyAssigned.phone}
-                  </span>
+                  <span className="text-ink-soft font-mono">{currentlyAssigned.phone}</span>
                 </div>
               </div>
             </div>
@@ -251,7 +251,9 @@ export function ProAssigner({
                 Action Required: Assign Nearest Beautician
               </h4>
               <p className="text-xs text-amber-900/80">
-                This customer booking is waiting for an artist assignment. Choose from recommended nearest professionals below. Click any beautician's name to view their full credentials, skills, and coverage areas.
+                This customer booking is waiting for an artist assignment. Choose from recommended
+                nearest professionals below. Click any beautician's name to view their full
+                credentials, skills, and coverage areas.
               </p>
             </div>
           </div>
@@ -270,7 +272,8 @@ export function ProAssigner({
                 </h3>
               </div>
               <p className="text-xs text-ink-soft mt-0.5">
-                Automatically ranked by GPS proximity, sector coverage, and calendar availability. Click any name to open their full details card.
+                Automatically ranked by GPS proximity, sector coverage, and calendar availability.
+                Click any name to open their full details card.
               </p>
             </div>
 
@@ -335,8 +338,8 @@ export function ProAssigner({
                       isThisAssigned
                         ? "border-emerald-300 bg-emerald-50/40 ring-1 ring-emerald-300/60"
                         : isTop
-                        ? "border-gold-300/80 bg-gradient-to-r from-gold-50/40 via-white to-blush-50/30 hover:border-plum-300 shadow-2xs"
-                        : "border-line bg-white hover:border-plum-300 shadow-2xs"
+                          ? "border-gold-300/80 bg-gradient-to-r from-gold-50/40 via-white to-blush-50/30 hover:border-plum-300 shadow-2xs"
+                          : "border-line bg-white hover:border-plum-300 shadow-2xs"
                     )}
                   >
                     {/* Left: Avatar & Profile */}
@@ -349,12 +352,7 @@ export function ProAssigner({
                         title={`Click to view ${m.name}'s profile details`}
                       >
                         {m.photo ? (
-                          <Image
-                            src={m.photo}
-                            alt={m.name}
-                            fill
-                            className="object-cover"
-                          />
+                          <Image src={m.photo} alt={m.name} fill className="object-cover" />
                         ) : (
                           <div className="grid h-full place-items-center font-bold text-plum-900 text-base">
                             {m.name[0]}
@@ -546,7 +544,10 @@ export function ProAssigner({
 
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 id="beautician-modal-title" className="font-serif text-xl sm:text-2xl font-bold text-white truncate">
+                    <h2
+                      id="beautician-modal-title"
+                      className="font-serif text-xl sm:text-2xl font-bold text-white truncate"
+                    >
                       {selectedPro.name}
                     </h2>
                     <span className="inline-flex items-center gap-1 rounded-full bg-gold-400/20 border border-gold-400/50 px-2.5 py-0.5 text-xs font-semibold text-gold-300">
@@ -563,7 +564,9 @@ export function ProAssigner({
 
                   <p className="text-xs sm:text-sm text-blush-200 mt-1 font-medium">
                     {selectedPro.specialization || "Senior Doorstep Beauty Specialist"}
-                    {selectedPro.experienceYears ? ` · ${selectedPro.experienceYears} Years Experience` : ""}
+                    {selectedPro.experienceYears
+                      ? ` · ${selectedPro.experienceYears} Years Experience`
+                      : ""}
                   </p>
 
                   {/* Direct Contact Bar */}
@@ -664,7 +667,10 @@ export function ProAssigner({
                   {selectedPro.matchReasons && selectedPro.matchReasons.length > 0 && (
                     <ul className="mt-2 space-y-1">
                       {selectedPro.matchReasons.map((reason, idx) => (
-                        <li key={idx} className="flex items-center gap-2 text-emerald-900 font-medium">
+                        <li
+                          key={idx}
+                          className="flex items-center gap-2 text-emerald-900 font-medium"
+                        >
                           <Check className="size-3.5 text-emerald-600 shrink-0" />
                           <span>{reason}</span>
                         </li>
@@ -704,7 +710,10 @@ export function ProAssigner({
                     <div className="rounded-xl border border-amber-300 bg-amber-50/70 p-3 text-xs text-amber-950">
                       <p className="font-bold flex items-center gap-1.5">
                         <Clock className="size-4 text-amber-600" />
-                        <span>This beautician has {selectedPro.existingBookings.length} booking(s) scheduled on this date:</span>
+                        <span>
+                          This beautician has {selectedPro.existingBookings.length} booking(s)
+                          scheduled on this date:
+                        </span>
                       </p>
                     </div>
                     <div className="grid gap-2">
@@ -717,11 +726,14 @@ export function ProAssigner({
                             <div className="flex items-center gap-2">
                               <span className="font-bold text-plum-950">{eb.clientName}</span>
                               {eb.bookingRef && (
-                                <span className="font-mono text-[10px] text-ink-soft">#{eb.bookingRef}</span>
+                                <span className="font-mono text-[10px] text-ink-soft">
+                                  #{eb.bookingRef}
+                                </span>
                               )}
                             </div>
                             <p className="text-ink-soft mt-0.5">
-                              ⏰ {eb.timeSlot || "Slot TBC"} · 💆‍♀️ {eb.serviceTitle} · 📍 {eb.location || "Delhi NCR"}
+                              ⏰ {eb.timeSlot || "Slot TBC"} · 💆‍♀️ {eb.serviceTitle} · 📍{" "}
+                              {eb.location || "Delhi NCR"}
                             </p>
                           </div>
                           <Link
@@ -738,9 +750,12 @@ export function ProAssigner({
                   <div className="rounded-xl border border-emerald-300 bg-emerald-50/60 p-3 text-xs text-emerald-950 flex items-center gap-2">
                     <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
                     <div>
-                      <span className="font-bold block">100% Free &amp; Available on this Date</span>
+                      <span className="font-bold block">
+                        100% Free &amp; Available on this Date
+                      </span>
                       <span className="text-[11px] text-emerald-800">
-                        Zero conflicting appointments. Morning, afternoon, and evening slots are all open.
+                        Zero conflicting appointments. Morning, afternoon, and evening slots are all
+                        open.
                       </span>
                     </div>
                   </div>
@@ -756,7 +771,9 @@ export function ProAssigner({
                   <div className="flex items-start gap-2.5">
                     <MapPin className="size-4 text-rose-700 shrink-0 mt-0.5" />
                     <div>
-                      <span className="text-ink-soft block font-medium">Base Station / Address:</span>
+                      <span className="text-ink-soft block font-medium">
+                        Base Station / Address:
+                      </span>
                       <span className="font-semibold text-plum-950">
                         {selectedPro.baseAddress || "Delhi NCR Registered Hub"}
                         {selectedPro.landmark ? `, Near ${selectedPro.landmark}` : ""}
@@ -803,9 +820,7 @@ export function ProAssigner({
                   <h4 className="font-bold text-xs uppercase tracking-wider text-ink-soft">
                     Professional Background &amp; Bio
                   </h4>
-                  <p className="text-xs leading-relaxed text-plum-950">
-                    {selectedPro.bio}
-                  </p>
+                  <p className="text-xs leading-relaxed text-plum-950">{selectedPro.bio}</p>
                 </div>
               )}
 
@@ -822,24 +837,25 @@ export function ProAssigner({
                   )}
                 </div>
 
-                {selectedPro.matchingServiceTitles && selectedPro.matchingServiceTitles.length > 0 && (
-                  <div className="rounded-xl border border-emerald-300/70 bg-emerald-50/60 p-2.5">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-900 block mb-1.5">
-                      Direct Matches for this Booking:
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {selectedPro.matchingServiceTitles.map((title) => (
-                        <span
-                          key={title}
-                          className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 text-white text-xs font-semibold px-2.5 py-1 shadow-2xs"
-                        >
-                          <Check className="size-3" />
-                          <span>{title}</span>
-                        </span>
-                      ))}
+                {selectedPro.matchingServiceTitles &&
+                  selectedPro.matchingServiceTitles.length > 0 && (
+                    <div className="rounded-xl border border-emerald-300/70 bg-emerald-50/60 p-2.5">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-900 block mb-1.5">
+                        Direct Matches for this Booking:
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {selectedPro.matchingServiceTitles.map((title) => (
+                          <span
+                            key={title}
+                            className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 text-white text-xs font-semibold px-2.5 py-1 shadow-2xs"
+                          >
+                            <Check className="size-3" />
+                            <span>{title}</span>
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 <div>
                   <span className="text-[10px] font-semibold text-ink-soft block mb-1.5">

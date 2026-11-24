@@ -44,8 +44,10 @@ async function main() {
       categoryId: waxingCategory.id,
       image: "/images/packages/monthly-grooming-essentials-package.jpg",
       imageAlt: "Monthly Grooming Essentials Package at home in Delhi NCR",
-      seoTitle: "Monthly Salon Package at Home in Delhi NCR | Waxing, Threading & Facial Cleanup | HerrGlow",
-      seoDescription: "Book monthly salon grooming at home across Noida, Delhi & Greater Noida. Full arms & legs waxing, threading, and glow cleanup for ₹999 with 100% Free Doorstep Travel.",
+      seoTitle:
+        "Monthly Salon Package at Home in Delhi NCR | Waxing, Threading & Facial Cleanup | HerrGlow",
+      seoDescription:
+        "Book monthly salon grooming at home across Noida, Delhi & Greater Noida. Full arms & legs waxing, threading, and glow cleanup for ₹999 with 100% Free Doorstep Travel.",
     },
     create: {
       slug: "monthly-grooming-essentials-package",
@@ -77,8 +79,10 @@ async function main() {
       categoryId: waxingCategory.id,
       image: "/images/packages/monthly-grooming-essentials-package.jpg",
       imageAlt: "Monthly Grooming Essentials Package at home in Delhi NCR",
-      seoTitle: "Monthly Salon Package at Home in Delhi NCR | Waxing, Threading & Facial Cleanup | HerrGlow",
-      seoDescription: "Book monthly salon grooming at home across Noida, Delhi & Greater Noida. Full arms & legs waxing, threading, and glow cleanup for ₹999 with 100% Free Doorstep Travel.",
+      seoTitle:
+        "Monthly Salon Package at Home in Delhi NCR | Waxing, Threading & Facial Cleanup | HerrGlow",
+      seoDescription:
+        "Book monthly salon grooming at home across Noida, Delhi & Greater Noida. Full arms & legs waxing, threading, and glow cleanup for ₹999 with 100% Free Doorstep Travel.",
     },
   });
 
@@ -173,8 +177,10 @@ async function main() {
       entityId: monthlyPkg.id,
       isIndexable: true,
       inSitemap: true,
-      seoTitle: "Monthly Salon Package at Home in Delhi NCR | Waxing, Threading & Facial Cleanup | HerrGlow",
-      seoDescription: "Book monthly salon grooming at home across Noida, Delhi & Greater Noida. Full arms & legs waxing, threading, and glow cleanup for ₹999 with 100% Free Doorstep Travel.",
+      seoTitle:
+        "Monthly Salon Package at Home in Delhi NCR | Waxing, Threading & Facial Cleanup | HerrGlow",
+      seoDescription:
+        "Book monthly salon grooming at home across Noida, Delhi & Greater Noida. Full arms & legs waxing, threading, and glow cleanup for ₹999 with 100% Free Doorstep Travel.",
     },
     create: {
       url: "/services/waxing/monthly-grooming-essentials-package",
@@ -182,8 +188,10 @@ async function main() {
       entityId: monthlyPkg.id,
       isIndexable: true,
       inSitemap: true,
-      seoTitle: "Monthly Salon Package at Home in Delhi NCR | Waxing, Threading & Facial Cleanup | HerrGlow",
-      seoDescription: "Book monthly salon grooming at home across Noida, Delhi & Greater Noida. Full arms & legs waxing, threading, and glow cleanup for ₹999 with 100% Free Doorstep Travel.",
+      seoTitle:
+        "Monthly Salon Package at Home in Delhi NCR | Waxing, Threading & Facial Cleanup | HerrGlow",
+      seoDescription:
+        "Book monthly salon grooming at home across Noida, Delhi & Greater Noida. Full arms & legs waxing, threading, and glow cleanup for ₹999 with 100% Free Doorstep Travel.",
     },
   });
 

@@ -30,8 +30,11 @@ export function CalendarView({ schedule }: { schedule: DayScheduleResult }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [filterMode, setFilterMode] = useState<"all" | "free" | "busy">("all");
-  const [selectedSlot, setSelectedSlot] = useState<"all" | "morning" | "afternoon" | "evening">("all");
-  const [selectedBeauticianModal, setSelectedBeauticianModal] = useState<BeauticianDaySchedule | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<"all" | "morning" | "afternoon" | "evening">(
+    "all"
+  );
+  const [selectedBeauticianModal, setSelectedBeauticianModal] =
+    useState<BeauticianDaySchedule | null>(null);
 
   const onDateChange = (newDateStr: string) => {
     router.push(`/admin/calendar?date=${newDateStr}`);
@@ -123,7 +126,9 @@ export function CalendarView({ schedule }: { schedule: DayScheduleResult }) {
           </div>
 
           <div className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-2.5 text-center shadow-2xs">
-            <span className="text-[10px] uppercase font-bold text-emerald-800 block">Available</span>
+            <span className="text-[10px] uppercase font-bold text-emerald-800 block">
+              Available
+            </span>
             <span className="text-sm font-bold text-emerald-900">{schedule.summary.freePros}</span>
           </div>
 
@@ -134,7 +139,9 @@ export function CalendarView({ schedule }: { schedule: DayScheduleResult }) {
 
           <div className="rounded-xl border border-purple-200 bg-purple-50/60 p-2.5 text-center shadow-2xs">
             <span className="text-[10px] uppercase font-bold text-purple-800 block">Bookings</span>
-            <span className="text-sm font-bold text-purple-950">{schedule.summary.totalBookings}</span>
+            <span className="text-sm font-bold text-purple-950">
+              {schedule.summary.totalBookings}
+            </span>
           </div>
         </div>
       </div>
@@ -212,7 +219,9 @@ export function CalendarView({ schedule }: { schedule: DayScheduleResult }) {
         {filteredBeauticians.length === 0 ? (
           <div className="rounded-2xl border border-line bg-white p-12 text-center text-sm text-ink-soft shadow-soft">
             <Users className="mx-auto size-8 text-ink-soft/60 mb-2" />
-            <p className="font-semibold text-plum-950">No beauticians match your filter criteria.</p>
+            <p className="font-semibold text-plum-950">
+              No beauticians match your filter criteria.
+            </p>
             <p className="text-xs mt-1">Try resetting the slot or availability filters above.</p>
           </div>
         ) : (
@@ -289,22 +298,13 @@ export function CalendarView({ schedule }: { schedule: DayScheduleResult }) {
               {/* 3 Slot Columns Matrix: Morning, Afternoon, Evening */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {/* Morning Slot */}
-                <SlotCard
-                  slotLabel="Morning (9:00 AM – 12:00 PM)"
-                  slotData={b.slots.morning}
-                />
+                <SlotCard slotLabel="Morning (9:00 AM – 12:00 PM)" slotData={b.slots.morning} />
 
                 {/* Afternoon Slot */}
-                <SlotCard
-                  slotLabel="Afternoon (12:00 PM – 4:00 PM)"
-                  slotData={b.slots.afternoon}
-                />
+                <SlotCard slotLabel="Afternoon (12:00 PM – 4:00 PM)" slotData={b.slots.afternoon} />
 
                 {/* Evening Slot */}
-                <SlotCard
-                  slotLabel="Evening (4:00 PM – 8:00 PM)"
-                  slotData={b.slots.evening}
-                />
+                <SlotCard slotLabel="Evening (4:00 PM – 8:00 PM)" slotData={b.slots.evening} />
               </div>
 
               {/* Additional custom timed bookings if any */}
@@ -339,7 +339,9 @@ export function CalendarView({ schedule }: { schedule: DayScheduleResult }) {
             <div className="bg-gradient-to-r from-plum-950 via-plum-900 to-plum-950 p-5 text-white flex items-center justify-between">
               <div>
                 <h3 className="font-serif text-xl font-bold">{selectedBeauticianModal.name}</h3>
-                <p className="text-xs text-blush-200 mt-0.5">{selectedBeauticianModal.specialization}</p>
+                <p className="text-xs text-blush-200 mt-0.5">
+                  {selectedBeauticianModal.specialization}
+                </p>
               </div>
               <button
                 type="button"
@@ -352,15 +354,24 @@ export function CalendarView({ schedule }: { schedule: DayScheduleResult }) {
 
             <div className="p-5 space-y-4 overflow-y-auto text-xs text-plum-950">
               <div className="space-y-1">
-                <span className="text-[10px] font-bold uppercase text-ink-soft">Home Base Station:</span>
-                <p className="font-semibold">{selectedBeauticianModal.baseAddress || "Delhi NCR"}</p>
+                <span className="text-[10px] font-bold uppercase text-ink-soft">
+                  Home Base Station:
+                </span>
+                <p className="font-semibold">
+                  {selectedBeauticianModal.baseAddress || "Delhi NCR"}
+                </p>
               </div>
 
               <div className="space-y-1">
-                <span className="text-[10px] font-bold uppercase text-ink-soft">Covered Sectors & Localities:</span>
+                <span className="text-[10px] font-bold uppercase text-ink-soft">
+                  Covered Sectors & Localities:
+                </span>
                 <div className="flex flex-wrap gap-1 max-h-28 overflow-y-auto">
                   {selectedBeauticianModal.coverageAreas.map((a) => (
-                    <span key={a} className="rounded-md bg-blush-50 px-2 py-0.5 text-[11px] border border-line">
+                    <span
+                      key={a}
+                      className="rounded-md bg-blush-50 px-2 py-0.5 text-[11px] border border-line"
+                    >
                       {a}
                     </span>
                   ))}
@@ -368,10 +379,15 @@ export function CalendarView({ schedule }: { schedule: DayScheduleResult }) {
               </div>
 
               <div className="space-y-1">
-                <span className="text-[10px] font-bold uppercase text-ink-soft">Skills & Offerings:</span>
+                <span className="text-[10px] font-bold uppercase text-ink-soft">
+                  Skills & Offerings:
+                </span>
                 <div className="flex flex-wrap gap-1 max-h-28 overflow-y-auto">
                   {selectedBeauticianModal.allServices.map((s) => (
-                    <span key={s} className="rounded-md bg-purple-50 text-purple-900 px-2 py-0.5 text-[11px] border border-purple-200">
+                    <span
+                      key={s}
+                      className="rounded-md bg-purple-50 text-purple-900 px-2 py-0.5 text-[11px] border border-purple-200"
+                    >
                       {s}
                     </span>
                   ))}
@@ -450,9 +466,7 @@ function SlotCard({
               <span className="truncate">{b.address}</span>
             </p>
 
-            <p className="text-plum-900 font-medium text-[11px] truncate">
-              💆‍♀️ {b.serviceTitle}
-            </p>
+            <p className="text-plum-900 font-medium text-[11px] truncate">💆‍♀️ {b.serviceTitle}</p>
 
             {b.finalAmount != null && (
               <p className="text-emerald-800 font-semibold text-[11px]">

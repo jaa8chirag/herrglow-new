@@ -1,6 +1,7 @@
 # Status
 
 ## Done
+
 - P0: monorepo, infra (Postgres :5440, Redis :6390), Prisma schema, legacy content + pros import (dry-run default, no passwords)
 - Service merges applied: 95 → 70 active services, 29 variants, 6 nail-art add-ons, 32 redirects (301)
 - City scope: only Noida, Delhi, Greater Noida active. `City.isActive` toggle. Others keep data, no pages/sitemap/nav (410 via proxy)
@@ -9,6 +10,7 @@
 - 6b design system (packages/ui), 6c SEO foundation, 6d public pages + booking form (lead → DB, out_of_area tag)
 
 ## Since the last update
+
 - Legacy URLs: `/blogs/*` → 301 `/blog/*`; `/services` and `/join-as-beautician` are real pages at the same URL; `/packages`→`/services`, `/testimonials`→`/about#reviews`, `/gallery`→`/` (301)
 - Pro signup (`/join-as-beautician`) → admin Applications → approve → inactive Pro
 - Admin users screen (owner), forced password change, live access checks
@@ -16,6 +18,7 @@
 - Deployment: deploy/ (VPS and Vercel options); runbook and checklist: docs/PRE-LAUNCH.md
 
 ## Admin (/admin, Auth.js credentials, roles owner/manager/content)
+
 - Leads inbox + pipeline board, review queue (drafts, thin services/blogs), artists (profile, services, coverage per city, photo upload, needs-coverage), services (variants, add-ons, slug change → 301), cities (owner launch switch + preview) and areas, SEO manager (index state + reason, manual noindex), redirects (guards against chains/loops/shadowing), blogs (sanitised HTML, link suggestions), media library (alt required), settings (owner only)
 - Create a user: pnpm --filter @herrglow/core create-admin <email> <OWNER|MANAGER|CONTENT> [password]
 - Every server action re-checks the role; every change is written to AuditLog
@@ -23,6 +26,7 @@
 - Uploads: R2 when R2_* env vars are set; otherwise local disk (apps/web/public/media, NEXT_PUBLIC_MEDIA_BASE=/media in dev)
 
 ## Commands
+
 - `pnpm infra:up`, `pnpm dev:web`
 - `pnpm --filter @herrglow/core page-preview | sync-pages | generate-drafts`
 - `pnpm import:legacy --dump <file> [--apply]`
@@ -30,6 +34,7 @@
 - Worker: `pnpm dev:worker` (set OWNER_EMAIL, SMTP_* or EMAIL_TRANSPORT=console, TELEGRAM_* in apps/worker/.env)
 
 ## Before launch
+
 - Set ALLOW_INDEXING=true, NEXT_PUBLIC_SITE_URL, NEXT_PUBLIC_MEDIA_BASE, NEXT_PUBLIC_CF_RESIZING=true, DEPLOY_ENV=production
 - Set whatsapp_number / contact_phone / contact_email in site settings (UI hides them while empty)
 - Upload media to R2 (legacy image paths are stored; images show placeholders until NEXT_PUBLIC_MEDIA_BASE is set)
@@ -39,10 +44,12 @@
 - Rotate the Gmail app password (in the old dump)
 
 ## Admin gaps
+
 - No user-management screen yet (use create-admin). No orphan/internal-link report yet. Uploads go through the server (≤ 8 MB); switch to presigned direct-to-R2 if the host limits request size
 - CLI scripts (sync-pages etc.) do not load apps/web/.env.local: pass NEXT_PUBLIC_MEDIA_BASE inline or run syncs from the admin (SEO manager → Re-sync)
 
 ## Known gaps / findings
+
 - Saree Draping at Home (50 leads, #1 service) has 0 pros mapped to it: map pros or it gets no city pages
 - 13 services have <80-word descriptions → noindex until rewritten; 4 thin blogs noindex
 - 6 active pros without coverage (Garima Gupta, Pays Bhoyar, Vinita Jain, riya sharma, Rupesh, Bharti Mishra)

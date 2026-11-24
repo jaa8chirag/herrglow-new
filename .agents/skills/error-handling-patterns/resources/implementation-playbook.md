@@ -8,13 +8,13 @@ Production-grade error handling patterns in TypeScript and React / Next.js.
 
 ```typescript
 export type ErrorCode =
-  | 'VALIDATION_ERROR'
-  | 'NOT_FOUND'
-  | 'UNAUTHORIZED'
-  | 'FORBIDDEN'
-  | 'CONFLICT'
-  | 'RATE_LIMITED'
-  | 'INTERNAL_ERROR';
+  | "VALIDATION_ERROR"
+  | "NOT_FOUND"
+  | "UNAUTHORIZED"
+  | "FORBIDDEN"
+  | "CONFLICT"
+  | "RATE_LIMITED"
+  | "INTERNAL_ERROR";
 
 export class AppError extends Error {
   public readonly code: ErrorCode;
@@ -43,7 +43,7 @@ export class ValidationError extends AppError {
   constructor(message: string, details?: unknown) {
     super({
       message,
-      code: 'VALIDATION_ERROR',
+      code: "VALIDATION_ERROR",
       statusCode: 400,
       details,
     });
@@ -53,8 +53,8 @@ export class ValidationError extends AppError {
 export class NotFoundError extends AppError {
   constructor(resource: string, identifier?: string | number) {
     super({
-      message: `${resource}${identifier ? ` with id '${identifier}'` : ''} not found.`,
-      code: 'NOT_FOUND',
+      message: `${resource}${identifier ? ` with id '${identifier}'` : ""} not found.`,
+      code: "NOT_FOUND",
       statusCode: 404,
     });
   }
@@ -64,7 +64,7 @@ export class ConflictError extends AppError {
   constructor(message: string) {
     super({
       message,
-      code: 'CONFLICT',
+      code: "CONFLICT",
       statusCode: 409,
     });
   }
@@ -76,9 +76,7 @@ export class ConflictError extends AppError {
 ## 2. Type-Safe Result Pattern (Alternative to Throwing)
 
 ```typescript
-export type Result<T, E = AppError> =
-  | { success: true; data: T }
-  | { success: false; error: E };
+export type Result<T, E = AppError> = { success: true; data: T } | { success: false; error: E };
 
 export const ok = <T>(data: T): Result<T, never> => ({
   success: true,
@@ -100,9 +98,7 @@ export type ActionResponse<T> =
   | { success: true; data: T }
   | { success: false; error: string; fieldErrors?: Record<string, string[]> };
 
-export async function safeAction<T>(
-  action: () => Promise<T>
-): Promise<ActionResponse<T>> {
+export async function safeAction<T>(action: () => Promise<T>): Promise<ActionResponse<T>> {
   try {
     const data = await action();
     return { success: true, data };
@@ -120,10 +116,10 @@ export async function safeAction<T>(
     }
 
     // Programmer / unknown error - log full context securely
-    console.error('Unhandled internal action error:', error);
+    console.error("Unhandled internal action error:", error);
     return {
       success: false,
-      error: 'Something went wrong on our end. Please try again in a moment.',
+      error: "Something went wrong on our end. Please try again in a moment.",
     };
   }
 }
@@ -143,12 +139,7 @@ export async function retryWithBackoff<T>(
     backoffFactor?: number;
   } = {}
 ): Promise<T> {
-  const {
-    maxRetries = 3,
-    initialDelayMs = 500,
-    maxDelayMs = 5000,
-    backoffFactor = 2,
-  } = options;
+  const { maxRetries = 3, initialDelayMs = 500, maxDelayMs = 5000, backoffFactor = 2 } = options;
 
   let delay = initialDelayMs;
 
@@ -167,6 +158,6 @@ export async function retryWithBackoff<T>(
     }
   }
 
-  throw new Error('Unreachable');
+  throw new Error("Unreachable");
 }
 ```

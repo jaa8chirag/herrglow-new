@@ -1,7 +1,22 @@
 import { adminLeadUrl, siteUrl } from "./channels";
 
-const when = (d: Date) => d.toLocaleString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
-const day = (d: Date | null | undefined) => (d ? d.toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric" }) : null);
+const when = (d: Date) =>
+  d.toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+const day = (d: Date | null | undefined) =>
+  d
+    ? d.toLocaleDateString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+    : null;
 
 export interface LeadView {
   id: string;
@@ -26,7 +41,9 @@ export const isOutOfArea = (l: Pick<LeadView, "tags">) => l.tags.includes("out_o
 export function ownerLeadText(l: LeadView): string {
   const serviceLabel = l.services.length
     ? l.services.join(", ")
-    : (l.packageName ? `Package: ${l.packageName}` : "General enquiry");
+    : l.packageName
+      ? `Package: ${l.packageName}`
+      : "General enquiry";
 
   return [
     isOutOfArea(l) ? "OUT OF AREA lead" : "New booking request",
@@ -41,7 +58,9 @@ export function ownerLeadText(l: LeadView): string {
     `Received: ${when(l.createdAt)}`,
     "",
     adminLeadUrl(l.id),
-  ].filter((x) => x !== null).join("\n");
+  ]
+    .filter((x) => x !== null)
+    .join("\n");
 }
 
 export const ownerLeadSubject = (l: LeadView) =>
@@ -53,23 +72,44 @@ export function customerEmail(l: LeadView, siteName = "HerrGlow") {
   const out = isOutOfArea(l);
   const serviceLabel = l.services.length
     ? l.services.join(", ")
-    : (l.packageName ? `Package: ${l.packageName}` : "appointment");
+    : l.packageName
+      ? `Package: ${l.packageName}`
+      : "appointment";
 
   const lines = out
-    ? [`Hi ${first},`, "", `Thank you for your interest in ${siteName}. We do not serve your area yet, but we have saved your request and will let you know as soon as artists are available near you.`]
+    ? [
+        `Hi ${first},`,
+        "",
+        `Thank you for your interest in ${siteName}. We do not serve your area yet, but we have saved your request and will let you know as soon as artists are available near you.`,
+      ]
     : [
         `Hi ${first},`,
         "",
         `Thank you for booking with ${siteName}! We have received your appointment request for ${serviceLabel}.`,
         "",
         l.bookingRef ? `Booking ID: ${l.bookingRef}` : "",
-        l.amount ? `Estimated Total: ₹${Math.round(l.amount).toLocaleString("en-IN")} (10% advance deposit to reserve slot · Balance 90% after service · 100% refund guarantee if artist does not reach)` : "",
+        l.amount
+          ? `Estimated Total: ₹${Math.round(l.amount).toLocaleString("en-IN")} (10% advance deposit to reserve slot · Balance 90% after service · 100% refund guarantee if artist does not reach)`
+          : "",
         day(l.eventDate) ? `Requested date: ${day(l.eventDate)}` : "",
         l.locationText ? `Location: ${l.locationText}` : "",
       ].filter((x) => x !== undefined);
-  const text = [...lines, "", `If anything above is wrong, just reply to this email.`, "", `${siteName}`, siteUrl()].join("\n");
+  const text = [
+    ...lines,
+    "",
+    `If anything above is wrong, just reply to this email.`,
+    "",
+    `${siteName}`,
+    siteUrl(),
+  ].join("\n");
   const html = `<div style="font-family:system-ui,sans-serif;line-height:1.6;color:#2a1f24;max-width:520px">${lines.map((x) => (x ? `<p>${esc(x)}</p>` : "")).join("")}<p style="color:#5e4f55">If anything above is wrong, just reply to this email.</p><p><strong>${esc(siteName)}</strong><br><a href="${siteUrl()}">${siteUrl()}</a></p></div>`;
-  return { subject: out ? `We have noted your request, ${first}` : `Booking Confirmed: ${l.bookingRef ?? first} · ${siteName}`, text, html };
+  return {
+    subject: out
+      ? `We have noted your request, ${first}`
+      : `Booking Confirmed: ${l.bookingRef ?? first} · ${siteName}`,
+    text,
+    html,
+  };
 }
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
 
@@ -79,15 +119,55 @@ export function customerWhatsAppText(l: LeadView) {
     : `Hi ${l.name.split(" ")[0]}, thanks for contacting HerrGlow. We received your request${l.bookingRef ? ` (${l.bookingRef})` : ""} and will confirm the details shortly.`;
 }
 
-export interface Digest { newLast24h: number; outOfArea24h: number; unattended: { id: string; name: string; service: string; where: string; ageHours: number }[]; totalUnattended: number }
-
-export function digestText(d: Digest): string {
-  const head = [`HerrGlow daily summary`, `New leads (24h): ${d.newLast24h}${d.outOfArea24h ? ` (${d.outOfArea24h} out of area)` : ""}`, `Unattended > 2h: ${d.totalUnattended}`];
-  if (!d.unattended.length) return [...head, "", "Nothing is waiting. All recent leads were handled."].join("\n");
-  const rows = d.unattended.map((u) => `• ${u.name} · ${u.service} · ${u.where} · ${u.ageHours >= 48 ? `${Math.round(u.ageHours / 24)}d` : `${Math.round(u.ageHours)}h`} ago\n  ${adminLeadUrl(u.id)}`);
-  return [...head, "", ...rows, d.totalUnattended > d.unattended.length ? `…and ${d.totalUnattended - d.unattended.length} more: ${siteUrl()}/admin/leads?status=NEW` : ""].filter(Boolean).join("\n");
+export interface Digest {
+  newLast24h: number;
+  outOfArea24h: number;
+  unattended: { id: string; name: string; service: string; where: string; ageHours: number }[];
+  totalUnattended: number;
 }
 
-export function applicationText(a: { id: string; name: string; phone: string; city: string; categories: string[]; experienceYears: number | null }) {
-  return [`New artist application`, "", `${a.name} · ${a.phone}`, `City: ${a.city}`, a.categories.length ? `Offers: ${a.categories.join(", ")}` : null, a.experienceYears != null ? `Experience: ${a.experienceYears} years` : null, "", `${siteUrl()}/admin/applications/${a.id}`].filter((x) => x !== null).join("\n");
+export function digestText(d: Digest): string {
+  const head = [
+    `HerrGlow daily summary`,
+    `New leads (24h): ${d.newLast24h}${d.outOfArea24h ? ` (${d.outOfArea24h} out of area)` : ""}`,
+    `Unattended > 2h: ${d.totalUnattended}`,
+  ];
+  if (!d.unattended.length)
+    return [...head, "", "Nothing is waiting. All recent leads were handled."].join("\n");
+  const rows = d.unattended.map(
+    (u) =>
+      `• ${u.name} · ${u.service} · ${u.where} · ${u.ageHours >= 48 ? `${Math.round(u.ageHours / 24)}d` : `${Math.round(u.ageHours)}h`} ago\n  ${adminLeadUrl(u.id)}`
+  );
+  return [
+    ...head,
+    "",
+    ...rows,
+    d.totalUnattended > d.unattended.length
+      ? `…and ${d.totalUnattended - d.unattended.length} more: ${siteUrl()}/admin/leads?status=NEW`
+      : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+export function applicationText(a: {
+  id: string;
+  name: string;
+  phone: string;
+  city: string;
+  categories: string[];
+  experienceYears: number | null;
+}) {
+  return [
+    `New artist application`,
+    "",
+    `${a.name} · ${a.phone}`,
+    `City: ${a.city}`,
+    a.categories.length ? `Offers: ${a.categories.join(", ")}` : null,
+    a.experienceYears != null ? `Experience: ${a.experienceYears} years` : null,
+    "",
+    `${siteUrl()}/admin/applications/${a.id}`,
+  ]
+    .filter((x) => x !== null)
+    .join("\n");
 }

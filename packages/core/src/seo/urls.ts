@@ -5,7 +5,8 @@
 export const urls = {
   home: () => "/",
   category: (slug: string) => `/services/${slug}`,
-  service: (slug: string, categorySlug?: string) => (categorySlug ? `/services/${categorySlug}/${slug}` : `/services/${slug}`),
+  service: (slug: string, categorySlug?: string) =>
+    categorySlug ? `/services/${categorySlug}/${slug}` : `/services/${slug}`,
   cityHub: (citySlug: string) => `/salon-at-home-${citySlug}`,
   categoryCity: (categorySlug: string, citySlug: string) => `/${categorySlug}-at-home-${citySlug}`,
   serviceCity: (serviceSlug: string, citySlug: string) => `/${serviceSlug}-in-${citySlug}`,
@@ -23,5 +24,7 @@ export const urls = {
   terms: () => "/terms",
 } as const;
 
-export const absoluteUrl = (path: string, base = process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "https://herrglow.com") =>
-  base.replace(/\/$/, "") + path;
+export const absoluteUrl = (
+  path: string,
+  base = process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "https://herrglow.com"
+) => base.replace(/\/$/, "") + path;

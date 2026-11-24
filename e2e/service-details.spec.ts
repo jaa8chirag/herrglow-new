@@ -1,7 +1,9 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Service Details Page & Add-on Threshold Protection", () => {
-  test("low-ticket service (< ₹499) displays Amber Add-on box and threshold guidance", async ({ page }) => {
+  test("low-ticket service (< ₹499) displays Amber Add-on box and threshold guidance", async ({
+    page,
+  }) => {
     await page.goto("/services/face-hair-removal/eyebrow-threading");
 
     // Verify service title and low price
@@ -9,7 +11,10 @@ test.describe("Service Details Page & Add-on Threshold Protection", () => {
     await expect(page.getByText("₹49").first()).toBeVisible();
 
     // Verify Amber Add-on Notice Box is rendered
-    const amberNotice = page.locator("div").filter({ hasText: /Add-on Service · Min. Doorstep Visit ₹499/i }).first();
+    const amberNotice = page
+      .locator("div")
+      .filter({ hasText: /Add-on Service · Min. Doorstep Visit ₹499/i })
+      .first();
     await expect(amberNotice).toBeVisible();
     await expect(amberNotice).toContainText(/minimum doorstep booking is ₹499/i);
 
@@ -28,7 +33,10 @@ test.describe("Service Details Page & Add-on Threshold Protection", () => {
     await expect(page.getByText("Hygienic setup & sanitized tools included").first()).toBeVisible();
   });
 
-  test("regular service (>= ₹499) allows instant booking and option customization", async ({ page, isMobile }) => {
+  test("regular service (>= ₹499) allows instant booking and option customization", async ({
+    page,
+    isMobile,
+  }) => {
     await page.goto("/services/waxing/full-body-waxing-at-home");
 
     await expect(page.locator("h1")).toContainText(/Full Body Waxing at Home/i);

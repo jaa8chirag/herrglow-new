@@ -4,23 +4,67 @@ import { Breadcrumbs } from "@/components/parts";
 import { Photo } from "@/components/Photo";
 
 /** Hero for inner pages: soft blush gradient + grain, big serif title, optional image (real photo or designed fallback). */
-export function PageHero({ crumbs, eyebrow, title, intro, image, children, className }: {
-  crumbs: { name: string; path: string }[]; eyebrow?: string; title: ReactNode; intro?: ReactNode;
+export function PageHero({
+  crumbs,
+  eyebrow,
+  title,
+  intro,
+  image,
+  children,
+  className,
+}: {
+  crumbs: { name: string; path: string }[];
+  eyebrow?: string;
+  title: ReactNode;
+  intro?: ReactNode;
   image?: { src: string | null; alt: string; kind?: string; seedKey?: string };
-  children?: ReactNode; className?: string;
+  children?: ReactNode;
+  className?: string;
 }) {
   return (
-    <section className={cn("relative overflow-hidden bg-gradient-to-b from-blush-100 via-blush-50 to-ivory", className)}>
-      <div aria-hidden className="pointer-events-none absolute -right-32 -top-32 size-[28rem] rounded-full bg-gold-300/25 blur-3xl" />
-      <div aria-hidden className="grain pointer-events-none absolute inset-0 opacity-[0.15] mix-blend-multiply" />
+    <section
+      className={cn(
+        "relative overflow-hidden bg-gradient-to-b from-blush-100 via-blush-50 to-ivory",
+        className
+      )}
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-32 -top-32 size-[28rem] rounded-full bg-gold-300/25 blur-3xl"
+      />
+      <div
+        aria-hidden
+        className="grain pointer-events-none absolute inset-0 opacity-[0.15] mix-blend-multiply"
+      />
       <Container className="relative pb-4 pt-4 sm:pb-5 sm:pt-5">
         <Breadcrumbs items={crumbs} />
         <div className={cn("grid items-center gap-4", image && "lg:grid-cols-[1.2fr_0.8fr]")}>
           <div className="max-w-none">
-            {eyebrow && <Rise><p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-rose-700"><span aria-hidden className="h-px w-8 bg-gold-400" />{eyebrow}</p></Rise>}
-            <Rise delay={0.04} soft><h1 className="!text-[clamp(1.75rem,3.8vw,2.85rem)] text-left !text-wrap-pretty">{title}</h1></Rise>
-            {intro && <Rise delay={0.1}><p className="mt-2 max-w-none text-sm sm:text-base leading-relaxed text-ink-soft">{intro}</p></Rise>}
-            {children && <Rise delay={0.16} className="mt-3">{children}</Rise>}
+            {eyebrow && (
+              <Rise>
+                <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-rose-700">
+                  <span aria-hidden className="h-px w-8 bg-gold-400" />
+                  {eyebrow}
+                </p>
+              </Rise>
+            )}
+            <Rise delay={0.04} soft>
+              <h1 className="!text-[clamp(1.75rem,3.8vw,2.85rem)] text-left !text-wrap-pretty">
+                {title}
+              </h1>
+            </Rise>
+            {intro && (
+              <Rise delay={0.1}>
+                <p className="mt-2 max-w-none text-sm sm:text-base leading-relaxed text-ink-soft">
+                  {intro}
+                </p>
+              </Rise>
+            )}
+            {children && (
+              <Rise delay={0.16} className="mt-3">
+                {children}
+              </Rise>
+            )}
           </div>
           {image && (
             <Rise delay={0.08} className="mt-3 block lg:mt-0">

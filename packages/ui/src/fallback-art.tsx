@@ -1,10 +1,34 @@
-import { BookOpen, Brush, Crown, Droplets, Flower2, Gem, MapPin, Palette, Scissors, Sparkles, UserRound, type LucideIcon } from "lucide-react";
+import {
+  BookOpen,
+  Brush,
+  Crown,
+  Droplets,
+  Flower2,
+  Gem,
+  MapPin,
+  Palette,
+  Scissors,
+  Sparkles,
+  UserRound,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "./utils";
 
 /** Line-icon per category/kind. Used when a real photo is missing: a designed placeholder, never bare text. */
 const ICONS: Record<string, LucideIcon> = {
-  makeup: Palette, bridal: Crown, "pre-bridal": Crown, "salon-at-home": Sparkles, "facial-skincare": Droplets,
-  hair: Scissors, nails: Gem, mehndi: Flower2, artist: UserRound, city: MapPin, blog: BookOpen, package: Crown, brush: Brush,
+  makeup: Palette,
+  bridal: Crown,
+  "pre-bridal": Crown,
+  "salon-at-home": Sparkles,
+  "facial-skincare": Droplets,
+  hair: Scissors,
+  nails: Gem,
+  mehndi: Flower2,
+  artist: UserRound,
+  city: MapPin,
+  blog: BookOpen,
+  package: Crown,
+  brush: Brush,
 };
 
 const VARIANTS = [
@@ -18,11 +42,22 @@ const VARIANTS = [
  * Fills its (relatively positioned) parent. Soft brand gradient (blush → ivory), faint gold/rose glows,
  * subtle grain and a large thin line icon. Same box as a photo, so there is no layout shift when a photo is added later.
  */
-export function FallbackArt({ kind = "makeup", seed = 0, className }: { kind?: string; seed?: number; className?: string }) {
+export function FallbackArt({
+  kind = "makeup",
+  seed = 0,
+  className,
+}: {
+  kind?: string;
+  seed?: number;
+  className?: string;
+}) {
   const Icon = ICONS[kind] ?? Sparkles;
   const v = VARIANTS[Math.abs(seed) % VARIANTS.length];
   return (
-    <div aria-hidden className={cn("absolute inset-0 overflow-hidden bg-gradient-to-br", v, className)}>
+    <div
+      aria-hidden
+      className={cn("absolute inset-0 overflow-hidden bg-gradient-to-br", v, className)}
+    >
       <div className="absolute -left-1/4 -top-1/4 size-3/4 rounded-full bg-rose-600/10 blur-3xl" />
       <div className="absolute -bottom-1/3 -right-1/4 size-3/4 rounded-full bg-gold-400/20 blur-3xl" />
       <div className="grain absolute inset-0 opacity-[0.35] mix-blend-multiply" />

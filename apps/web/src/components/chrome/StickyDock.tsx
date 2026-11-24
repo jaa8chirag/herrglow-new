@@ -6,7 +6,15 @@ import { telLink, whatsappLink } from "@/lib/whatsapp";
 import { BookLink } from "./BookLink";
 
 /** Mobile floating dock: Book Now always; WhatsApp / Call only when a number is configured. Suppressed on join-as-beautician, admin, and individual service detail pages (which render their own unified PriceBox action dock). */
-export function StickyDock({ whatsapp, phone, waText }: { whatsapp: string | null; phone: string | null; waText?: string | null }) {
+export function StickyDock({
+  whatsapp,
+  phone,
+  waText,
+}: {
+  whatsapp: string | null;
+  phone: string | null;
+  waText?: string | null;
+}) {
   const pathname = usePathname();
   const isServiceDetailPage = /^\/services\/[^/]+\/[^/]+$/.test(pathname ?? "");
   if (
@@ -18,7 +26,8 @@ export function StickyDock({ whatsapp, phone, waText }: { whatsapp: string | nul
     return null;
   }
 
-  const wa = whatsappLink(whatsapp, waText ?? undefined), tel = telLink(phone);
+  const wa = whatsappLink(whatsapp, waText ?? undefined),
+    tel = telLink(phone);
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex flex-col items-center px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden">
       <div className="pointer-events-auto w-full max-w-md overflow-hidden rounded-2xl border border-gold-400/40 bg-ivory/95 shadow-lift backdrop-blur-xl">
@@ -30,7 +39,10 @@ export function StickyDock({ whatsapp, phone, waText }: { whatsapp: string | nul
 
         {/* Action Row */}
         <div className="flex items-center gap-2 p-2">
-          <BookLink className="flex-1 min-h-12 text-sm font-bold shadow-xs" label="Book Appointment" />
+          <BookLink
+            className="flex-1 min-h-12 text-sm font-bold shadow-xs"
+            label="Book Appointment"
+          />
           {wa && (
             <a
               href={wa}

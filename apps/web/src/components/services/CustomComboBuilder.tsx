@@ -33,54 +33,288 @@ export interface ComboItem {
 
 const POPULAR_COMBO_SERVICES: ComboItem[] = [
   // Face & Grooming
-  { id: "eb-thread", slug: "eyebrow-threading", title: "Eyebrow Threading", category: "face", categoryLabel: "Face & Grooming", price: 49, duration: "10 min", isAddon: true },
-  { id: "ul-thread", slug: "upper-lip-threading", title: "Upper Lip Threading / Wax", category: "face", categoryLabel: "Face & Grooming", price: 49, duration: "5 min", isAddon: true },
-  { id: "fh-thread", slug: "forehead-threading", title: "Forehead Threading", category: "face", categoryLabel: "Face & Grooming", price: 39, duration: "5 min", isAddon: true },
-  { id: "chin-wax", slug: "chin-wax", title: "Chin Wax (Peel-Off)", category: "face", categoryLabel: "Face & Grooming", price: 49, duration: "5 min", isAddon: true },
-  { id: "ff-thread", slug: "full-face-threading", title: "Full Face Threading", category: "face", categoryLabel: "Face & Grooming", price: 179, duration: "25 min" },
-  { id: "ff-wax", slug: "full-face-wax", title: "Full Face Wax (Peel-Off)", category: "face", categoryLabel: "Face & Grooming", price: 279, duration: "30 min" },
+  {
+    id: "eb-thread",
+    slug: "eyebrow-threading",
+    title: "Eyebrow Threading",
+    category: "face",
+    categoryLabel: "Face & Grooming",
+    price: 49,
+    duration: "10 min",
+    isAddon: true,
+  },
+  {
+    id: "ul-thread",
+    slug: "upper-lip-threading",
+    title: "Upper Lip Threading / Wax",
+    category: "face",
+    categoryLabel: "Face & Grooming",
+    price: 49,
+    duration: "5 min",
+    isAddon: true,
+  },
+  {
+    id: "fh-thread",
+    slug: "forehead-threading",
+    title: "Forehead Threading",
+    category: "face",
+    categoryLabel: "Face & Grooming",
+    price: 39,
+    duration: "5 min",
+    isAddon: true,
+  },
+  {
+    id: "chin-wax",
+    slug: "chin-wax",
+    title: "Chin Wax (Peel-Off)",
+    category: "face",
+    categoryLabel: "Face & Grooming",
+    price: 49,
+    duration: "5 min",
+    isAddon: true,
+  },
+  {
+    id: "ff-thread",
+    slug: "full-face-threading",
+    title: "Full Face Threading",
+    category: "face",
+    categoryLabel: "Face & Grooming",
+    price: 179,
+    duration: "25 min",
+  },
+  {
+    id: "ff-wax",
+    slug: "full-face-wax",
+    title: "Full Face Wax (Peel-Off)",
+    category: "face",
+    categoryLabel: "Face & Grooming",
+    price: 279,
+    duration: "30 min",
+  },
 
   // Waxing (Honey Regular & Rica Liposoluble)
-  { id: "ua-wax", slug: "underarms-waxing", title: "Underarms Waxing", category: "waxing", categoryLabel: "Waxing", price: 99, duration: "10 min", isAddon: true },
-  { id: "ua-wax-rica", slug: "underarms-waxing", title: "Rica Underarms Waxing", category: "waxing", categoryLabel: "Waxing", price: 149, duration: "10 min", isAddon: true },
-  { id: "fa-wax", slug: "full-arms-waxing", title: "Full Arms Waxing (Honey)", category: "waxing", categoryLabel: "Waxing", price: 299, duration: "25 min" },
-  { id: "fa-wax-rica", slug: "full-arms-waxing", title: "Full Arms Waxing (Rica White Chocolate)", category: "waxing", categoryLabel: "Waxing", price: 449, duration: "25 min" },
-  { id: "fl-wax", slug: "full-legs-waxing", title: "Full Legs Waxing (Honey)", category: "waxing", categoryLabel: "Waxing", price: 399, duration: "35 min" },
-  { id: "fl-wax-rica", slug: "full-legs-waxing", title: "Full Legs Waxing (Rica White Chocolate)", category: "waxing", categoryLabel: "Waxing", price: 599, duration: "35 min" },
-  { id: "hl-wax", slug: "half-legs-waxing", title: "Half Legs Waxing", category: "waxing", categoryLabel: "Waxing", price: 249, duration: "20 min" },
-  { id: "fb-wax", slug: "full-body-waxing", title: "Full Body Waxing Combo", category: "waxing", categoryLabel: "Waxing", price: 1199, duration: "75 min" },
-  { id: "fb-wax-rica", slug: "full-body-waxing", title: "Rica Liposoluble Full Body Wax", category: "waxing", categoryLabel: "Waxing", price: 1899, duration: "75 min" },
-  { id: "detan-face", slug: "face-neck-detan", title: "Face & Neck Herbal De-Tan Pack", category: "waxing", categoryLabel: "Waxing", price: 299, duration: "20 min" },
+  {
+    id: "ua-wax",
+    slug: "underarms-waxing",
+    title: "Underarms Waxing",
+    category: "waxing",
+    categoryLabel: "Waxing",
+    price: 99,
+    duration: "10 min",
+    isAddon: true,
+  },
+  {
+    id: "ua-wax-rica",
+    slug: "underarms-waxing",
+    title: "Rica Underarms Waxing",
+    category: "waxing",
+    categoryLabel: "Waxing",
+    price: 149,
+    duration: "10 min",
+    isAddon: true,
+  },
+  {
+    id: "fa-wax",
+    slug: "full-arms-waxing",
+    title: "Full Arms Waxing (Honey)",
+    category: "waxing",
+    categoryLabel: "Waxing",
+    price: 299,
+    duration: "25 min",
+  },
+  {
+    id: "fa-wax-rica",
+    slug: "full-arms-waxing",
+    title: "Full Arms Waxing (Rica White Chocolate)",
+    category: "waxing",
+    categoryLabel: "Waxing",
+    price: 449,
+    duration: "25 min",
+  },
+  {
+    id: "fl-wax",
+    slug: "full-legs-waxing",
+    title: "Full Legs Waxing (Honey)",
+    category: "waxing",
+    categoryLabel: "Waxing",
+    price: 399,
+    duration: "35 min",
+  },
+  {
+    id: "fl-wax-rica",
+    slug: "full-legs-waxing",
+    title: "Full Legs Waxing (Rica White Chocolate)",
+    category: "waxing",
+    categoryLabel: "Waxing",
+    price: 599,
+    duration: "35 min",
+  },
+  {
+    id: "hl-wax",
+    slug: "half-legs-waxing",
+    title: "Half Legs Waxing",
+    category: "waxing",
+    categoryLabel: "Waxing",
+    price: 249,
+    duration: "20 min",
+  },
+  {
+    id: "fb-wax",
+    slug: "full-body-waxing",
+    title: "Full Body Waxing Combo",
+    category: "waxing",
+    categoryLabel: "Waxing",
+    price: 1199,
+    duration: "75 min",
+  },
+  {
+    id: "fb-wax-rica",
+    slug: "full-body-waxing",
+    title: "Rica Liposoluble Full Body Wax",
+    category: "waxing",
+    categoryLabel: "Waxing",
+    price: 1899,
+    duration: "75 min",
+  },
+  {
+    id: "detan-face",
+    slug: "face-neck-detan",
+    title: "Face & Neck Herbal De-Tan Pack",
+    category: "waxing",
+    categoryLabel: "Waxing",
+    price: 299,
+    duration: "20 min",
+  },
 
   // Facials & Cleanup
-  { id: "fruit-clean", slug: "fruit-cleanup", title: "Fruit Glow Face Cleanup", category: "facial", categoryLabel: "Facials & Cleanup", price: 399, duration: "35 min" },
-  { id: "antitan-clean", slug: "anti-tan-cleanup", title: "Anti-Tan Brightening Cleanup", category: "facial", categoryLabel: "Facials & Cleanup", price: 449, duration: "40 min" },
-  { id: "kumkumadi-fac", slug: "kumkumadi-ubtan-facial", title: "Kumkumadi Herbal Ubtan Facial", category: "facial", categoryLabel: "Facials & Cleanup", price: 799, duration: "50 min" },
-  { id: "korean-fac", slug: "korean-glass-skin-facial", title: "Korean Glass Skin Facial", category: "facial", categoryLabel: "Facials & Cleanup", price: 1299, duration: "60 min" },
-  { id: "o3-fac", slug: "o3-facial", title: "O3+ Radiance Bridal Glow Facial", category: "facial", categoryLabel: "Facials & Cleanup", price: 1499, duration: "60 min" },
+  {
+    id: "fruit-clean",
+    slug: "fruit-cleanup",
+    title: "Fruit Glow Face Cleanup",
+    category: "facial",
+    categoryLabel: "Facials & Cleanup",
+    price: 399,
+    duration: "35 min",
+  },
+  {
+    id: "antitan-clean",
+    slug: "anti-tan-cleanup",
+    title: "Anti-Tan Brightening Cleanup",
+    category: "facial",
+    categoryLabel: "Facials & Cleanup",
+    price: 449,
+    duration: "40 min",
+  },
+  {
+    id: "kumkumadi-fac",
+    slug: "kumkumadi-ubtan-facial",
+    title: "Kumkumadi Herbal Ubtan Facial",
+    category: "facial",
+    categoryLabel: "Facials & Cleanup",
+    price: 799,
+    duration: "50 min",
+  },
+  {
+    id: "korean-fac",
+    slug: "korean-glass-skin-facial",
+    title: "Korean Glass Skin Facial",
+    category: "facial",
+    categoryLabel: "Facials & Cleanup",
+    price: 1299,
+    duration: "60 min",
+  },
+  {
+    id: "o3-fac",
+    slug: "o3-facial",
+    title: "O3+ Radiance Bridal Glow Facial",
+    category: "facial",
+    categoryLabel: "Facials & Cleanup",
+    price: 1499,
+    duration: "60 min",
+  },
 
   // Hands & Feet
-  { id: "cfp-hands", slug: "cut-file-polish-hands", title: "Cut, File & Polish - Hands", category: "hands-feet", categoryLabel: "Hands & Feet", price: 199, duration: "15 min" },
-  { id: "cfp-feet", slug: "cut-file-polish-feet", title: "Cut, File & Polish - Feet", category: "hands-feet", categoryLabel: "Hands & Feet", price: 249, duration: "20 min" },
-  { id: "spa-mani", slug: "classic-manicure", title: "Classic Spa Manicure", category: "hands-feet", categoryLabel: "Hands & Feet", price: 499, duration: "40 min" },
-  { id: "spa-pedi", slug: "classic-pedicure", title: "Classic Spa Pedicure", category: "hands-feet", categoryLabel: "Hands & Feet", price: 599, duration: "45 min" },
-  { id: "hf-massage", slug: "foot-massage", title: "Relaxing Hand & Foot Massage", category: "hands-feet", categoryLabel: "Hands & Feet", price: 299, duration: "20 min" },
+  {
+    id: "cfp-hands",
+    slug: "cut-file-polish-hands",
+    title: "Cut, File & Polish - Hands",
+    category: "hands-feet",
+    categoryLabel: "Hands & Feet",
+    price: 199,
+    duration: "15 min",
+  },
+  {
+    id: "cfp-feet",
+    slug: "cut-file-polish-feet",
+    title: "Cut, File & Polish - Feet",
+    category: "hands-feet",
+    categoryLabel: "Hands & Feet",
+    price: 249,
+    duration: "20 min",
+  },
+  {
+    id: "spa-mani",
+    slug: "classic-manicure",
+    title: "Classic Spa Manicure",
+    category: "hands-feet",
+    categoryLabel: "Hands & Feet",
+    price: 499,
+    duration: "40 min",
+  },
+  {
+    id: "spa-pedi",
+    slug: "classic-pedicure",
+    title: "Classic Spa Pedicure",
+    category: "hands-feet",
+    categoryLabel: "Hands & Feet",
+    price: 599,
+    duration: "45 min",
+  },
+  {
+    id: "hf-massage",
+    slug: "foot-massage",
+    title: "Relaxing Hand & Foot Massage",
+    category: "hands-feet",
+    categoryLabel: "Hands & Feet",
+    price: 299,
+    duration: "20 min",
+  },
 
   // Hair & Styling
-  { id: "hair-trim", slug: "hair-trim", title: "Hair Trim & Split Ends Cut", category: "hair", categoryLabel: "Hair & Styling", price: 299, duration: "25 min" },
-  { id: "saree-drap", slug: "saree-draping", title: "Saree / Dupatta Draping", category: "hair", categoryLabel: "Hair & Styling", price: 499, duration: "25 min" },
-  { id: "hair-style", slug: "hair-styling", title: "Party Hair Styling (Curls / Waves)", category: "hair", categoryLabel: "Hair & Styling", price: 799, duration: "45 min" },
+  {
+    id: "hair-trim",
+    slug: "hair-trim",
+    title: "Hair Trim & Split Ends Cut",
+    category: "hair",
+    categoryLabel: "Hair & Styling",
+    price: 299,
+    duration: "25 min",
+  },
+  {
+    id: "saree-drap",
+    slug: "saree-draping",
+    title: "Saree / Dupatta Draping",
+    category: "hair",
+    categoryLabel: "Hair & Styling",
+    price: 499,
+    duration: "25 min",
+  },
+  {
+    id: "hair-style",
+    slug: "hair-styling",
+    title: "Party Hair Styling (Curls / Waves)",
+    category: "hair",
+    categoryLabel: "Hair & Styling",
+    price: 799,
+    duration: "45 min",
+  },
 ];
 
 const MINIMUM_ORDER_VALUE = 499;
 const BUNDLE_DISCOUNT_THRESHOLD = 999;
 const BUNDLE_DISCOUNT_PERCENT = 0.1; // 10% off for carts >= 999
 
-export function CustomComboBuilder({
-  cities = [],
-}: {
-  cities?: { slug: string; name: string }[];
-}) {
+export function CustomComboBuilder({ cities = [] }: { cities?: { slug: string; name: string }[] }) {
   const [selectedIds, setSelectedIds] = useState<string[]>(["eb-thread", "fruit-clean"]);
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [showBookingForm, setShowBookingForm] = useState(false);
@@ -108,9 +342,7 @@ export function CustomComboBuilder({
   const progressPercent = Math.min(100, Math.round((subtotal / MINIMUM_ORDER_VALUE) * 100));
 
   const toggleItem = (id: string) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
   const filteredServices = useMemo(() => {
@@ -134,8 +366,14 @@ export function CustomComboBuilder({
     <div className="space-y-10">
       {/* ───────── Hero Value Proposition ───────── */}
       <div className="rounded-3xl border border-gold-400/40 bg-gradient-to-br from-plum-950 via-plum-900 to-plum-950 p-6 sm:p-10 text-ivory shadow-lift text-center relative overflow-hidden">
-        <div aria-hidden className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-gold-400/20 blur-3xl" />
-        <div aria-hidden className="pointer-events-none absolute -left-20 -bottom-20 size-64 rounded-full bg-rose-600/20 blur-3xl" />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-gold-400/20 blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -left-20 -bottom-20 size-64 rounded-full bg-rose-600/20 blur-3xl"
+        />
 
         <span className="inline-flex items-center gap-1.5 rounded-full border border-gold-400/40 bg-white/10 px-4 py-1 text-xs font-semibold text-gold-300 backdrop-blur-md">
           <Sparkles className="size-3.5" /> 100% Flexible Doorstep Pampering
@@ -144,8 +382,10 @@ export function CustomComboBuilder({
           Make Your Own Custom Combo
         </h1>
         <p className="mx-auto mt-3 max-w-2xl text-sm sm:text-base text-blush-100/90 leading-relaxed">
-          Pick any combination of eyebrow threading, waxing, facial cleanups, or mani-pedi treatments.
-          Reach <strong>₹499</strong> to unlock <strong>100% Free Doorstep Visit</strong>, plus get an extra <strong>10% OFF</strong> on combos ₹999+.
+          Pick any combination of eyebrow threading, waxing, facial cleanups, or mani-pedi
+          treatments. Reach <strong>₹499</strong> to unlock{" "}
+          <strong>100% Free Doorstep Visit</strong>, plus get an extra <strong>10% OFF</strong> on
+          combos ₹999+.
         </p>
 
         {/* 3 Guarantees Pills */}
@@ -176,12 +416,16 @@ export function CustomComboBuilder({
                 Monthly Grooming Essentials Package @ ₹999
               </h4>
               <p className="text-[11px] text-blush-100/80 leading-snug">
-                Full Arms + Full Legs + Underarms Waxing, Eyebrow &amp; Upper Lip Threading + Fruit Glow Cleanup.
+                Full Arms + Full Legs + Underarms Waxing, Eyebrow &amp; Upper Lip Threading + Fruit
+                Glow Cleanup.
               </p>
             </div>
             <Link
               href="/services/salon-at-home"
-              className={cn(buttonStyles({ variant: "shimmer", size: "sm" }), "shrink-0 text-xs font-bold w-full sm:w-auto")}
+              className={cn(
+                buttonStyles({ variant: "shimmer", size: "sm" }),
+                "shrink-0 text-xs font-bold w-full sm:w-auto"
+              )}
             >
               View Salon Services →
             </Link>
@@ -321,7 +565,9 @@ export function CustomComboBuilder({
                 <div
                   className={cn(
                     "h-full transition-all duration-500 rounded-full",
-                    isThresholdMet ? "bg-gradient-to-r from-emerald-500 to-emerald-600" : "bg-gradient-to-r from-rose-500 to-amber-500"
+                    isThresholdMet
+                      ? "bg-gradient-to-r from-emerald-500 to-emerald-600"
+                      : "bg-gradient-to-r from-rose-500 to-amber-500"
                   )}
                   style={{ width: `${progressPercent}%` }}
                 />
@@ -335,7 +581,8 @@ export function CustomComboBuilder({
                 </p>
               ) : (
                 <p className="text-[11px] font-medium text-rose-800">
-                  Add <strong>₹{remainingForThreshold}</strong> more to meet the ₹499 minimum doorstep visit.
+                  Add <strong>₹{remainingForThreshold}</strong> more to meet the ₹499 minimum
+                  doorstep visit.
                 </p>
               )}
             </div>
@@ -365,7 +612,10 @@ export function CustomComboBuilder({
             ) : (
               <div className="max-h-56 overflow-y-auto space-y-2 pr-1 divide-y divide-line/40">
                 {selectedItems.map((item) => (
-                  <div key={item.id} className="pt-2 flex items-center justify-between text-xs gap-2">
+                  <div
+                    key={item.id}
+                    className="pt-2 flex items-center justify-between text-xs gap-2"
+                  >
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-plum-950 truncate">{item.title}</p>
                       <p className="text-[10px] text-ink-soft">{item.duration}</p>
@@ -408,7 +658,8 @@ export function CustomComboBuilder({
                   <span className="text-lg">₹{finalAmount.toLocaleString("en-IN")}</span>
                 </div>
                 <p className="text-[11px] text-emerald-800 font-medium pt-1">
-                  Only 10% Advance Deposit (₹{Math.round(finalAmount * 0.1).toLocaleString("en-IN")}) to lock your artist.
+                  Only 10% Advance Deposit (₹{Math.round(finalAmount * 0.1).toLocaleString("en-IN")}
+                  ) to lock your artist.
                 </p>
               </div>
             )}
@@ -421,7 +672,8 @@ export function CustomComboBuilder({
               className={cn(
                 buttonStyles({ variant: isThresholdMet ? "shimmer" : "outline", size: "lg" }),
                 "w-full font-bold text-sm",
-                !isThresholdMet && "opacity-60 cursor-not-allowed bg-stone-100 border-stone-300 text-stone-500"
+                !isThresholdMet &&
+                  "opacity-60 cursor-not-allowed bg-stone-100 border-stone-300 text-stone-500"
               )}
             >
               {isThresholdMet
@@ -470,7 +722,8 @@ export function CustomComboBuilder({
               Finalize Your Custom Combo Booking
             </h2>
             <p className="mt-1 text-xs sm:text-sm text-ink-soft">
-              Enter your address and preferred time slot. We will assign the nearest verified female beautician.
+              Enter your address and preferred time slot. We will assign the nearest verified female
+              beautician.
             </p>
           </div>
 

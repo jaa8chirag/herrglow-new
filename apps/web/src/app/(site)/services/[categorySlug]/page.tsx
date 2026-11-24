@@ -27,12 +27,19 @@ const LEGACY_CAT_REDIRECTS: Record<string, string> = {
   "draping-eye-mehndi": "mehndi",
 };
 
-export async function generateMetadata({ params }: { params: Promise<CategoryPageParams> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<CategoryPageParams>;
+}): Promise<Metadata> {
   const { categorySlug } = await params;
   const canonicalCat = LEGACY_CAT_REDIRECTS[categorySlug] || categorySlug;
   const cat = await getCategoryPage(canonicalCat);
   if (!cat) {
-    const svc = await prisma.service.findFirst({ where: { slug: categorySlug, mergedIntoId: null }, include: { category: true } });
+    const svc = await prisma.service.findFirst({
+      where: { slug: categorySlug, mergedIntoId: null },
+      include: { category: true },
+    });
     if (svc) {
       return buildMetadata({
         title: `${svc.title} at Home | HerrGlow`,
@@ -44,7 +51,10 @@ export async function generateMetadata({ params }: { params: Promise<CategoryPag
   }
 
   const title = cat.seoTitle || `${cat.name} at Home in Delhi, Noida & Greater Noida | HerrGlow`;
-  const description = cat.seoDescription || cat.shortDescription || `Explore our premium doorstep ${cat.name.toLowerCase()} services. 100% verified female beauticians, sanitized tools & authentic products, and 10% advance deposit.`;
+  const description =
+    cat.seoDescription ||
+    cat.shortDescription ||
+    `Explore our premium doorstep ${cat.name.toLowerCase()} services. 100% verified female beauticians, sanitized tools & authentic products, and 10% advance deposit.`;
 
   return buildMetadata({
     title,
@@ -59,19 +69,23 @@ const num = (v: unknown) => (v == null ? null : Number(v));
 const DEFAULT_CAT_FAQS = [
   {
     question: "Are your beauticians 100% female and background-verified?",
-    answer: "Yes, absolutely. HerrGlow strictly dispatches verified female beauticians and makeup artists who have undergone rigorous background checks, document verification, and trade skill testing.",
+    answer:
+      "Yes, absolutely. HerrGlow strictly dispatches verified female beauticians and makeup artists who have undergone rigorous background checks, document verification, and trade skill testing.",
   },
   {
     question: "Do I need to arrange any equipment or products at home?",
-    answer: "No. Our visiting beauty professional brings everything needed, including sterilized tools, clean sheets, and authentic salon-grade products. You only need a comfortable chair and access to a normal power outlet.",
+    answer:
+      "No. Our visiting beauty professional brings everything needed, including sterilized tools, clean sheets, and authentic salon-grade products. You only need a comfortable chair and access to a normal power outlet.",
   },
   {
     question: "What are your payment terms and cancellation policies?",
-    answer: "We collect only a nominal 10% advance deposit to lock your artist's travel slot. The remaining 90% is payable after your service is completed to your satisfaction. You can cancel or reschedule for free up to 2 hours prior to your slot.",
+    answer:
+      "We collect only a nominal 10% advance deposit to lock your artist's travel slot. The remaining 90% is payable after your service is completed to your satisfaction. You can cancel or reschedule for free up to 2 hours prior to your slot.",
   },
   {
     question: "Which areas do you serve in Delhi NCR?",
-    answer: "We provide doorstep beauty and salon services across all sectors of Noida, Greater Noida (including Noida Extension / Gaur City), and South, West & Central Delhi.",
+    answer:
+      "We provide doorstep beauty and salon services across all sectors of Noida, Greater Noida (including Noida Extension / Gaur City), and South, West & Central Delhi.",
   },
 ];
 
@@ -100,7 +114,19 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
   }
 
   const faqs = asFaqs(cat.faqs);
-  const displayFaqs = faqs.length >= 4 ? faqs : [...faqs, ...DEFAULT_CAT_FAQS.filter((df) => !faqs.some((f) => f.question.toLowerCase().slice(0, 15) === df.question.toLowerCase().slice(0, 15)))];
+  const displayFaqs =
+    faqs.length >= 4
+      ? faqs
+      : [
+          ...faqs,
+          ...DEFAULT_CAT_FAQS.filter(
+            (df) =>
+              !faqs.some(
+                (f) =>
+                  f.question.toLowerCase().slice(0, 15) === df.question.toLowerCase().slice(0, 15)
+              )
+          ),
+        ];
 
   const subcats = cat.subcategories || [];
   const servicesWithoutSubcat = cat.services.filter((s) => !s.subCategoryId);
@@ -124,7 +150,8 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
               {cat.name} at Home
             </h1>
             <p className="mt-2.5 text-sm sm:text-base leading-relaxed text-ink-soft">
-              {cat.shortDescription || `Professional doorstep ${cat.name.toLowerCase()} treatments delivered by certified female specialists across Delhi, Noida, and Greater Noida.`}
+              {cat.shortDescription ||
+                `Professional doorstep ${cat.name.toLowerCase()} treatments delivered by certified female specialists across Delhi, Noida, and Greater Noida.`}
             </p>
 
             {/* Micro Trust Indicators */}
@@ -174,19 +201,29 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
                 <div>
                   <h2 className="font-serif text-2xl font-bold text-plum-950">{sub.name}</h2>
                   <p className="text-xs text-ink-soft">
-                    Doorstep treatments for {cat.name} · Verified specialists &amp; authentic products
+                    Doorstep treatments for {cat.name} · Verified specialists &amp; authentic
+                    products
                   </p>
                 </div>
-                <Badge tone="plum">{sub.services.length} {sub.services.length === 1 ? "Option" : "Options"}</Badge>
+                <Badge tone="plum">
+                  {sub.services.length} {sub.services.length === 1 ? "Option" : "Options"}
+                </Badge>
               </div>
 
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {sub.services.map((svc) => {
                   const image = realImage(keys, svc.image);
-                  const allPrices = [svc.offerPrice ?? svc.price, ...(svc.variants || []).map((v) => v.offerPrice ?? v.price)]
+                  const allPrices = [
+                    svc.offerPrice ?? svc.price,
+                    ...(svc.variants || []).map((v) => v.offerPrice ?? v.price),
+                  ]
                     .map((n) => (n == null ? NaN : Number(n)))
                     .filter((n) => Number.isFinite(n) && n > 0);
-                  const lowPrice = allPrices.length ? Math.min(...allPrices) : (svc.price != null ? Number(svc.price) : null);
+                  const lowPrice = allPrices.length
+                    ? Math.min(...allPrices)
+                    : svc.price != null
+                      ? Number(svc.price)
+                      : null;
                   const highPrice = allPrices.length > 1 ? Math.max(...allPrices) : null;
                   const hasRange = lowPrice != null && highPrice != null && highPrice > lowPrice;
                   const isP2 = svc.status === "COMING_SOON";
@@ -198,7 +235,10 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
                     >
                       {/* Image */}
                       <div className="relative aspect-[4/3] w-full overflow-hidden bg-ivory-deep">
-                        <Link href={`/services/${cat.slug}/${svc.slug}`} className="block h-full w-full">
+                        <Link
+                          href={`/services/${cat.slug}/${svc.slug}`}
+                          className="block h-full w-full"
+                        >
                           <Photo
                             src={image}
                             alt={svc.imageAlt || svc.title}
@@ -211,7 +251,9 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
                           <Badge tone="plum" className="absolute left-3 top-3 shadow-soft">
                             Coming Soon
                           </Badge>
-                        ) : svc.offerPrice && svc.price && Number(svc.price) > Number(svc.offerPrice) ? (
+                        ) : svc.offerPrice &&
+                          svc.price &&
+                          Number(svc.price) > Number(svc.offerPrice) ? (
                           <Badge tone="gold" className="absolute left-3 top-3 shadow-soft">
                             Special Offer
                           </Badge>
@@ -232,7 +274,10 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
                           )}
                         </div>
 
-                        <Link href={`/services/${cat.slug}/${svc.slug}`} className="group-hover:text-rose-700 transition">
+                        <Link
+                          href={`/services/${cat.slug}/${svc.slug}`}
+                          className="group-hover:text-rose-700 transition"
+                        >
                           <h3 className="font-serif text-base font-bold text-plum-950 line-clamp-2">
                             {svc.title}
                           </h3>
@@ -249,13 +294,24 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
                           <ShieldCheck className="size-3.5 shrink-0 text-emerald-600" />
                           <span className="truncate">
                             {cat.slug === "makeup" && "100% Genuine MAC/Huda · Doorstep Artist"}
-                            {cat.slug === "salon-at-home" && "Italian Rica Wax · Sanitized Disposables"}
-                            {cat.slug === "facial-skincare" && "O3+ Glow Range · Extraction & Massage"}
+                            {cat.slug === "salon-at-home" &&
+                              "Italian Rica Wax · Sanitized Disposables"}
+                            {cat.slug === "facial-skincare" &&
+                              "O3+ Glow Range · Extraction & Massage"}
                             {cat.slug === "hair" && "L'Oreal & Keratin · Advanced Styling"}
                             {cat.slug === "nails" && "Non-Toxic Gel · Cuticle Care & Shine"}
                             {cat.slug === "mehndi" && "100% Herbal Henna · Deep Dark Stain"}
-                            {cat.slug === "pre-bridal" && "All-in-One Luxury Routine · High Savings"}
-                            {!["makeup", "salon-at-home", "facial-skincare", "hair", "nails", "mehndi", "pre-bridal"].includes(cat.slug) && "100% Verified Female Beautician"}
+                            {cat.slug === "pre-bridal" &&
+                              "All-in-One Luxury Routine · High Savings"}
+                            {![
+                              "makeup",
+                              "salon-at-home",
+                              "facial-skincare",
+                              "hair",
+                              "nails",
+                              "mehndi",
+                              "pre-bridal",
+                            ].includes(cat.slug) && "100% Verified Female Beautician"}
                           </span>
                         </div>
 
@@ -293,20 +349,27 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
                                     ? `₹${Math.round(lowPrice).toLocaleString("en-IN")} - ₹${Math.round(highPrice!).toLocaleString("en-IN")}`
                                     : `₹${Math.round(lowPrice).toLocaleString("en-IN")}`}
                                 </span>
-                                {svc.offerPrice && svc.price && Number(svc.price) > Number(svc.offerPrice) && (
-                                  <s className="text-xs text-ink-soft">
-                                    ₹{Math.round(Number(svc.price)).toLocaleString("en-IN")}
-                                  </s>
-                                )}
+                                {svc.offerPrice &&
+                                  svc.price &&
+                                  Number(svc.price) > Number(svc.offerPrice) && (
+                                    <s className="text-xs text-ink-soft">
+                                      ₹{Math.round(Number(svc.price)).toLocaleString("en-IN")}
+                                    </s>
+                                  )}
                               </div>
                             ) : (
-                              <span className="text-xs font-semibold text-rose-700">Custom Quote</span>
+                              <span className="text-xs font-semibold text-rose-700">
+                                Custom Quote
+                              </span>
                             )}
                           </div>
 
                           <Link
                             href={`/services/${cat.slug}/${svc.slug}`}
-                            className={cn(buttonStyles({ variant: "shimmer", size: "sm" }), "text-xs px-3.5 h-8")}
+                            className={cn(
+                              buttonStyles({ variant: "shimmer", size: "sm" }),
+                              "text-xs px-3.5 h-8"
+                            )}
                           >
                             {isP2 ? "Details" : "Book Now"}
                           </Link>
@@ -323,14 +386,23 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
         {/* Services without subcategories (if any) */}
         {servicesWithoutSubcat.length > 0 && (
           <section className="space-y-6">
-            <h2 className="font-serif text-2xl font-bold text-plum-950">Additional {cat.name} Options</h2>
+            <h2 className="font-serif text-2xl font-bold text-plum-950">
+              Additional {cat.name} Options
+            </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {servicesWithoutSubcat.map((svc) => {
                 const image = realImage(keys, svc.image);
-                const allPrices = [svc.offerPrice ?? svc.price, ...(svc.variants || []).map((v) => v.offerPrice ?? v.price)]
+                const allPrices = [
+                  svc.offerPrice ?? svc.price,
+                  ...(svc.variants || []).map((v) => v.offerPrice ?? v.price),
+                ]
                   .map((n) => (n == null ? NaN : Number(n)))
                   .filter((n) => Number.isFinite(n) && n > 0);
-                const lowPrice = allPrices.length ? Math.min(...allPrices) : (svc.price != null ? Number(svc.price) : null);
+                const lowPrice = allPrices.length
+                  ? Math.min(...allPrices)
+                  : svc.price != null
+                    ? Number(svc.price)
+                    : null;
                 const highPrice = allPrices.length > 1 ? Math.max(...allPrices) : null;
                 const hasRange = lowPrice != null && highPrice != null && highPrice > lowPrice;
 
@@ -340,7 +412,10 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
                     className="group flex h-full flex-col overflow-hidden border border-line bg-white shadow-soft transition-all duration-300 hover:border-rose-300 hover:shadow-lift"
                   >
                     <div className="relative aspect-[4/3] w-full overflow-hidden bg-ivory-deep">
-                      <Link href={`/services/${cat.slug}/${svc.slug}`} className="block h-full w-full">
+                      <Link
+                        href={`/services/${cat.slug}/${svc.slug}`}
+                        className="block h-full w-full"
+                      >
                         <Photo
                           src={image}
                           alt={svc.imageAlt || svc.title}
@@ -362,7 +437,10 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
                           </span>
                         )}
                       </div>
-                      <Link href={`/services/${cat.slug}/${svc.slug}`} className="group-hover:text-rose-700 transition">
+                      <Link
+                        href={`/services/${cat.slug}/${svc.slug}`}
+                        className="group-hover:text-rose-700 transition"
+                      >
                         <h3 className="font-serif text-base font-bold text-plum-950 line-clamp-2">
                           {svc.title}
                         </h3>
@@ -384,12 +462,17 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
                                 : `₹${Math.round(lowPrice).toLocaleString("en-IN")}`}
                             </span>
                           ) : (
-                            <span className="text-xs font-semibold text-rose-700">Custom Quote</span>
+                            <span className="text-xs font-semibold text-rose-700">
+                              Custom Quote
+                            </span>
                           )}
                         </div>
                         <Link
                           href={`/services/${cat.slug}/${svc.slug}`}
-                          className={cn(buttonStyles({ variant: "shimmer", size: "sm" }), "text-xs px-3.5 h-8")}
+                          className={cn(
+                            buttonStyles({ variant: "shimmer", size: "sm" }),
+                            "text-xs px-3.5 h-8"
+                          )}
                         >
                           Book Now
                         </Link>
@@ -415,18 +498,24 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
               <span className="grid size-10 place-items-center rounded-full bg-emerald-100 text-emerald-700 mb-3">
                 <ShieldCheck className="size-5" />
               </span>
-              <h3 className="font-serif text-base font-bold text-plum-950">Verified Professionals</h3>
+              <h3 className="font-serif text-base font-bold text-plum-950">
+                Verified Professionals
+              </h3>
               <p className="mt-2 text-xs leading-relaxed text-ink-soft">
-                Government ID verified, police cleared, and trade skill evaluated senior female beauticians.
+                Government ID verified, police cleared, and trade skill evaluated senior female
+                beauticians.
               </p>
             </div>
             <div className="rounded-2xl border border-line bg-white p-5 shadow-soft">
               <span className="grid size-10 place-items-center rounded-full bg-gold-100 text-gold-700 mb-3">
                 <Sparkles className="size-5" />
               </span>
-              <h3 className="font-serif text-base font-bold text-plum-950">Sanitized Tools &amp; Clean Setup</h3>
+              <h3 className="font-serif text-base font-bold text-plum-950">
+                Sanitized Tools &amp; Clean Setup
+              </h3>
               <p className="mt-2 text-xs leading-relaxed text-ink-soft">
-                Every appointment uses thoroughly sanitized tools, clean towels, and authentic salon-grade products.
+                Every appointment uses thoroughly sanitized tools, clean towels, and authentic
+                salon-grade products.
               </p>
             </div>
             <div className="rounded-2xl border border-line bg-white p-5 shadow-soft">
@@ -435,7 +524,8 @@ export default async function CategoryPage({ params }: { params: Promise<Categor
               </span>
               <h3 className="font-serif text-base font-bold text-plum-950">10% Advance Security</h3>
               <p className="mt-2 text-xs leading-relaxed text-ink-soft">
-                Pay only 10% advance to lock your date and slot. 100% full refund guarantee if the beautician does not reach you.
+                Pay only 10% advance to lock your date and slot. 100% full refund guarantee if the
+                beautician does not reach you.
               </p>
             </div>
           </div>

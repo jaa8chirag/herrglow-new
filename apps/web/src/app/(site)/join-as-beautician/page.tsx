@@ -7,7 +7,8 @@ export const revalidate = 600;
 
 export const metadata: Metadata = buildMetadata({
   title: "Join HerrGlow as a Beautician or Makeup Artist",
-  description: "Are you a professional beautician or makeup artist in Delhi NCR? Apply to join HerrGlow and receive booking requests from customers near you.",
+  description:
+    "Are you a professional beautician or makeup artist in Delhi NCR? Apply to join HerrGlow and receive booking requests from customers near you.",
   path: "/join-as-beautician",
 });
 

@@ -9,10 +9,10 @@ Production patterns for Next.js 16 App Router technical SEO, Schema.org structur
 Every public route in `app/(site)/` must implement `generateMetadata` using the centralized `buildMetadata` helper.
 
 ```typescript
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { buildMetadata } from '@/lib/seo/metadata';
-import { urls } from '@/lib/site';
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { buildMetadata } from "@/lib/seo/metadata";
+import { urls } from "@/lib/site";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -26,10 +26,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return buildMetadata({
     title: `${service.title} at Home in Delhi NCR`, // Truncated cleanly to <= 60 chars by fitTitle
-    description: service.shortDescription || `Book verified ${service.title} at home in Delhi NCR. 100% female verified beauticians, pay after service.`, // Truncated to <= 155 chars
+    description:
+      service.shortDescription ||
+      `Book verified ${service.title} at home in Delhi NCR. 100% female verified beauticians, pay after service.`, // Truncated to <= 155 chars
     path: urls.service(slug), // Canonical URL without query strings
-    image: service.image ?? '/hero/bridal-glam.jpg',
-    type: 'website',
+    image: service.image ?? "/hero/bridal-glam.jpg",
+    type: "website",
   });
 }
 ```
@@ -41,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 Always provide search engines with machine-readable entities using the `<JsonLd>` component from `@/lib/seo/jsonld`.
 
 ```tsx
-import { JsonLd, serviceLd, faqLd, breadcrumbLd } from '@/lib/seo/jsonld';
+import { JsonLd, serviceLd, faqLd, breadcrumbLd } from "@/lib/seo/jsonld";
 
 export default async function ServicePage({ params }: PageProps) {
   const { slug } = await params;
@@ -49,7 +51,7 @@ export default async function ServicePage({ params }: PageProps) {
 
   const path = urls.service(slug);
   const breadcrumbs = [
-    { name: 'Home', path: '/' },
+    { name: "Home", path: "/" },
     { name: service.category.name, path: urls.category(service.category.slug) },
     { name: service.title, path },
   ];
@@ -65,7 +67,7 @@ export default async function ServicePage({ params }: PageProps) {
           image: service.image,
           category: service.category.name,
           price: service.offerPrice ?? service.price,
-          areaServed: ['Delhi', 'Noida', 'Greater Noida', 'Gurgaon', 'Ghaziabad'],
+          areaServed: ["Delhi", "Noida", "Greater Noida", "Gurgaon", "Ghaziabad"],
         })}
       />
 
@@ -73,9 +75,7 @@ export default async function ServicePage({ params }: PageProps) {
       <JsonLd data={breadcrumbLd(breadcrumbs)} />
 
       {/* 3. FAQPage Schema (enables Google Rich FAQ Accordions) */}
-      {service.faqs?.length > 0 && (
-        <JsonLd data={faqLd(service.faqs)} />
-      )}
+      {service.faqs?.length > 0 && <JsonLd data={faqLd(service.faqs)} />}
 
       <main>
         {/* Semantic H1 with primary search target */}
@@ -168,6 +168,7 @@ Search engines evaluate anchor text to understand what the target page is about:
 ## 6. Local Delhi NCR SEO Rules
 
 For local beauty services, search engines reward precise location signals:
-1. **Neighborhood entity mentions**: Reference specific localities (e.g. *Sector 62, Gaur City, Dwarka, Saket, Indirapuram*) in page text, FAQs, and service area lists.
+
+1. **Neighborhood entity mentions**: Reference specific localities (e.g. _Sector 62, Gaur City, Dwarka, Saket, Indirapuram_) in page text, FAQs, and service area lists.
 2. **LocalBusiness NAP consistency**: Ensure business Name, Address/Area Served, and Phone are standardized across the site footer and JSON-LD.
 3. **No-Index Staging Protection**: Ensure staging/preview environments always enforce `noindex` via `ALLOW_INDEXING` environment variable (verified by `pnpm test:seo`).

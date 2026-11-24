@@ -8,7 +8,8 @@ async function main() {
     where: { slug: "monthly-grooming-essentials-package" },
     data: {
       image: "/images/packages/monthly-grooming-essentials-package.jpg",
-      imageAlt: "Monthly Grooming Essentials Package at home with waxing, threading and fruit cleanup",
+      imageAlt:
+        "Monthly Grooming Essentials Package at home with waxing, threading and fruit cleanup",
     },
   });
   console.log("Updated monthly-grooming-essentials-package image.");

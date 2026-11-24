@@ -12,7 +12,9 @@ test.describe("Custom Combo Builder (/custom-combo)", () => {
     await expect(page.getByRole("button", { name: "All Services", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Face & Threading", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Waxing", exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Facials & Cleanup", exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Facials & Cleanup", exact: true })
+    ).toBeVisible();
     await expect(page.getByRole("button", { name: "Hands & Feet", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Hair & Styling", exact: true })).toBeVisible();
   });
@@ -28,7 +30,9 @@ test.describe("Custom Combo Builder (/custom-combo)", () => {
     await expect(page.getByText("Full Legs Waxing (Honey)").first()).toBeVisible();
   });
 
-  test("enforces ₹499 minimum doorstep visit threshold with live progress bar", async ({ page }) => {
+  test("enforces ₹499 minimum doorstep visit threshold with live progress bar", async ({
+    page,
+  }) => {
     // Clear all items to start fresh
     const clearBtn = page.getByRole("button", { name: /Clear All/i });
     if (await clearBtn.isVisible()) {
@@ -43,14 +47,18 @@ test.describe("Custom Combo Builder (/custom-combo)", () => {
 
     // Subtotal should be ₹49, deficit should be ₹450
     await expect(page.getByText(/₹49 \/ ₹499/)).toBeVisible();
-    await expect(page.getByText(/Add ₹450 more to meet the ₹499 minimum doorstep visit/i)).toBeVisible();
+    await expect(
+      page.getByText(/Add ₹450 more to meet the ₹499 minimum doorstep visit/i)
+    ).toBeVisible();
 
     // Booking CTA should be disabled
     const disabledBtn = page.getByRole("button", { name: /Add ₹450 More to Book/i });
     await expect(disabledBtn).toBeDisabled();
   });
 
-  test("unlocks booking button and free doorstep travel when subtotal exceeds ₹499", async ({ page }) => {
+  test("unlocks booking button and free doorstep travel when subtotal exceeds ₹499", async ({
+    page,
+  }) => {
     // Clear all items first
     const clearBtn = page.getByRole("button", { name: /Clear All/i });
     if (await clearBtn.isVisible()) {

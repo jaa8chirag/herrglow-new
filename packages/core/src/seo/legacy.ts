@@ -12,9 +12,7 @@
  *   statics: /services /packages /packages/{slug} /beauticians /makeover-artists /gallery /testimonials /blogs /join-as-beautician
  */
 export type LegacyDecision =
-  | { kind: "pass" }
-  | { kind: "redirect"; to: string; code: 301 }
-  | { kind: "gone"; reason: string };
+  { kind: "pass" } | { kind: "redirect"; to: string; code: 301 } | { kind: "gone"; reason: string };
 
 export interface LegacyContext {
   /** every Page.url that exists on the new site (rendered, indexable or not) */
@@ -43,7 +41,10 @@ export function decideLegacy(rawPath: string, ctx: LegacyContext): LegacyDecisio
   const path = normalizePath(rawPath);
 
   const rule = ctx.redirects.get(path);
-  if (rule) return rule.code === "GONE_410" || !rule.to ? { kind: "gone", reason: "redirect rule: gone" } : { kind: "redirect", to: rule.to, code: 301 };
+  if (rule)
+    return rule.code === "GONE_410" || !rule.to
+      ? { kind: "gone", reason: "redirect rule: gone" }
+      : { kind: "redirect", to: rule.to, code: 301 };
 
   const stat = LEGACY_STATIC_REDIRECTS[path];
   if (stat) return { kind: "redirect", to: stat, code: 301 };
@@ -55,17 +56,21 @@ export function decideLegacy(rawPath: string, ctx: LegacyContext): LegacyDecisio
   const artist = /^\/(?:beauticians|makeover-artists)\/([^/]+)$/.exec(path);
   if (artist) {
     const to = ctx.proByLegacySlug.get(artist[1]!);
-    return to ? { kind: "redirect", to, code: 301 } : { kind: "gone", reason: "artist has no page on the new site" };
+    return to
+      ? { kind: "redirect", to, code: 301 }
+      : { kind: "gone", reason: "artist has no page on the new site" };
   }
 
   const blog = /^\/blogs\/([^/]+)$/.exec(path);
   if (blog) return { kind: "redirect", to: `/blog/${blog[1]}`, code: 301 };
 
   if (GONE_EXACT.has(path)) return { kind: "gone", reason: "legacy listing page" };
-  if (GONE_PREFIXES.some((p) => path.startsWith(p))) return { kind: "gone", reason: "legacy section removed" };
+  if (GONE_PREFIXES.some((p) => path.startsWith(p)))
+    return { kind: "gone", reason: "legacy section removed" };
 
   // any other single-segment "…-in-…" URL is an old area / service-local page that did not make it to the new site
-  if (!path.slice(1).includes("/") && /-in-[a-z0-9]/.test(path)) return { kind: "gone", reason: "old area/service-local page not on the new site" };
+  if (!path.slice(1).includes("/") && /-in-[a-z0-9]/.test(path))
+    return { kind: "gone", reason: "old area/service-local page not on the new site" };
 
   return { kind: "pass" };
 }

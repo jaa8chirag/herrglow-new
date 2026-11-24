@@ -1,15 +1,15 @@
-import { prisma, Status } from '../src/index.js';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { prisma, Status } from "../src/index.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function main() {
-  console.log('Seeding full 105-service production catalogue to database...');
-  const jsonPath = path.join(__dirname, 'full-production-seed.json');
-  const data = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+  console.log("Seeding full 105-service production catalogue to database...");
+  const jsonPath = path.join(__dirname, "full-production-seed.json");
+  const data = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
 
   const { categories, services } = data;
 
@@ -135,4 +135,6 @@ async function main() {
   console.log("✓ Default admin credentials ensured: admin@herrglow.com");
 }
 
-main().catch(console.error).finally(() => process.exit(0));
+main()
+  .catch(console.error)
+  .finally(() => process.exit(0));

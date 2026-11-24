@@ -21,8 +21,18 @@ export const applicationInput = z
       .or(z.literal(""))
       .transform((v) => v || undefined),
     artistType: z.enum(["FREELANCER", "PARLOUR_OWNER"]).default("FREELANCER"),
-    parlourName: z.string().trim().max(120).optional().transform((v) => v || undefined),
-    parlourAddress: z.string().trim().max(250).optional().transform((v) => v || undefined),
+    parlourName: z
+      .string()
+      .trim()
+      .max(120)
+      .optional()
+      .transform((v) => v || undefined),
+    parlourAddress: z
+      .string()
+      .trim()
+      .max(250)
+      .optional()
+      .transform((v) => v || undefined),
     area: z.string().trim().max(150).optional(),
     operatingAreas: z.string().trim().max(1000).optional(),
     city: z.string().trim().max(150).optional(),
@@ -38,29 +48,39 @@ export const applicationInput = z
       .max(180)
       .optional()
       .transform((v) => (v != null && !Number.isNaN(v) ? v : undefined)),
-    travelRadius: z.coerce
-      .number()
-      .int()
-      .min(1)
-      .max(100)
-      .optional()
-      .default(10),
+    travelRadius: z.coerce.number().int().min(1).max(100).optional().default(10),
     categories: z.array(z.string().max(40)).max(10).default([]),
-    servicesText: z.string().trim().max(500).optional().transform((v) => v || undefined),
+    servicesText: z
+      .string()
+      .trim()
+      .max(500)
+      .optional()
+      .transform((v) => v || undefined),
     experienceYears: z
       .string()
       .trim()
       .optional()
       .transform((v) => (v ? Number(v) : undefined))
-      .refine((n) => n === undefined || (Number.isInteger(n) && n >= 0 && n <= 60), "Enter whole years (0 to 60)"),
+      .refine(
+        (n) => n === undefined || (Number.isInteger(n) && n >= 0 && n <= 60),
+        "Enter whole years (0 to 60)"
+      ),
     portfolioUrl: z
       .string()
       .trim()
       .max(300)
       .optional()
       .transform((v) => v || undefined)
-      .refine((v) => !v || /^https?:\/\/\S+\.\S+/.test(v), "Enter a full link starting with https://"),
-    message: z.string().trim().max(1000).optional().transform((v) => v || undefined),
+      .refine(
+        (v) => !v || /^https?:\/\/\S+\.\S+/.test(v),
+        "Enter a full link starting with https://"
+      ),
+    message: z
+      .string()
+      .trim()
+      .max(1000)
+      .optional()
+      .transform((v) => v || undefined),
     website: z.string().optional(), // honeypot
   })
   .superRefine((data, ctx) => {
@@ -74,7 +94,8 @@ export const applicationInput = z
     if (!data.operatingAreas) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Please tell us which areas you operate in (e.g. Noida Sectors 50-76, Indirapuram)",
+        message:
+          "Please tell us which areas you operate in (e.g. Noida Sectors 50-76, Indirapuram)",
         path: ["operatingAreas"],
       });
     }
@@ -123,24 +144,33 @@ export async function createApplication(
 
   let photoKey: string | undefined;
   if (photo && photo.body.length > 0) {
-    if (photo.body.length > MAX_APPLICATION_PHOTO) return { ok: false, errors: { photo: "Photo must be under 5 MB" } };
+    if (photo.body.length > MAX_APPLICATION_PHOTO)
+      return { ok: false, errors: { photo: "Photo must be under 5 MB" } };
     const mime = sniffMime(photo.body);
-    if (!mime) return { ok: false, errors: { photo: "Photo must be a JPEG, PNG, WebP or AVIF image" } };
+    if (!mime)
+      return { ok: false, errors: { photo: "Photo must be a JPEG, PNG, WebP or AVIF image" } };
     photoKey = newMediaKey(photo.filename, mime, "applications");
     await putObject(photoKey, photo.body, mime, localRoot);
   }
 
   let idProofKey: string | undefined;
   if (idProof && idProof.body.length > 0) {
-    if (idProof.body.length > MAX_APPLICATION_PHOTO) return { ok: false, errors: { idProof: "ID proof must be under 5 MB" } };
+    if (idProof.body.length > MAX_APPLICATION_PHOTO)
+      return { ok: false, errors: { idProof: "ID proof must be under 5 MB" } };
     const mime = sniffMime(idProof.body);
-    if (!mime) return { ok: false, errors: { idProof: "ID proof must be a JPEG, PNG, WebP, AVIF image or PDF document" } };
+    if (!mime)
+      return {
+        ok: false,
+        errors: { idProof: "ID proof must be a JPEG, PNG, WebP, AVIF image or PDF document" },
+      };
     idProofKey = newMediaKey(idProof.filename, mime, "applications");
     await putObject(idProofKey, idProof.body, mime, localRoot);
   }
 
   // one open application per phone per day
-  const dup = await prisma.proApplication.findFirst({ where: { phone: d.phone, status: "NEW", createdAt: { gt: new Date(Date.now() - 86_400_000) } } });
+  const dup = await prisma.proApplication.findFirst({
+    where: { phone: d.phone, status: "NEW", createdAt: { gt: new Date(Date.now() - 86_400_000) } },
+  });
   if (dup) return { ok: true };
 
   // Store area and operating areas in city column for DB compatibility and admin visibility
@@ -175,5 +205,10 @@ export async function createApplication(
 
 // late-bound so applications.ts does not hard-depend on the queue module (avoids a cycle and keeps tests light)
 async function enqueueSafe(kind: "new-application", id: string) {
-  try { const q = await import("../notify/queue"); await q.enqueue(kind, id); } catch { /* the worker sweep picks it up */ }
+  try {
+    const q = await import("../notify/queue");
+    await q.enqueue(kind, id);
+  } catch {
+    /* the worker sweep picks it up */
+  }
 }

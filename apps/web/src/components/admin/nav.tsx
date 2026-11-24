@@ -101,9 +101,7 @@ export function AdminSidebarNav({
                 {group.items.map((item) => {
                   const Icon = ICON_MAP[item.icon] ?? LayoutDashboard;
                   const isActive =
-                    item.href === "/admin"
-                      ? pathname === "/admin"
-                      : pathname.startsWith(item.href);
+                    item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href);
 
                   return (
                     <li key={item.href}>

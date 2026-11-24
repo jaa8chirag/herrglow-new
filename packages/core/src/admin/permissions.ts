@@ -1,5 +1,17 @@
 export type Role = "OWNER" | "MANAGER" | "CONTENT";
-export type Perm = "leads" | "drafts" | "pros" | "catalog" | "cities" | "cities.toggle" | "seo" | "redirects" | "blogs" | "media" | "settings" | "users";
+export type Perm =
+  | "leads"
+  | "drafts"
+  | "pros"
+  | "catalog"
+  | "cities"
+  | "cities.toggle"
+  | "seo"
+  | "redirects"
+  | "blogs"
+  | "media"
+  | "settings"
+  | "users";
 
 /** Role matrix. Enforced in the admin layout AND re-checked inside every server action. */
 const ALL: Role[] = ["OWNER", "MANAGER", "CONTENT"];
@@ -17,4 +29,5 @@ const MATRIX: Record<Perm, Role[]> = {
   settings: ["OWNER"],
   users: ["OWNER"],
 };
-export const can = (role: Role | undefined | null, perm: Perm) => !!role && MATRIX[perm].includes(role);
+export const can = (role: Role | undefined | null, perm: Perm) =>
+  !!role && MATRIX[perm].includes(role);

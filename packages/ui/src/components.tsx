@@ -21,14 +21,24 @@ export const buttonStyles = cva(
       size: { sm: "px-4 text-sm", md: "px-6 text-[0.95rem]", lg: "px-8 text-base min-h-12" },
     },
     defaultVariants: { variant: "primary", size: "md" },
-  },
+  }
 );
 export type ButtonVariants = VariantProps<typeof buttonStyles>;
 
-export function Button({ variant, size, className, ...p }: ButtonHTMLAttributes<HTMLButtonElement> & ButtonVariants) {
+export function Button({
+  variant,
+  size,
+  className,
+  ...p
+}: ButtonHTMLAttributes<HTMLButtonElement> & ButtonVariants) {
   return <button className={cn(buttonStyles({ variant, size }), className)} {...p} />;
 }
-export function ButtonLink({ variant, size, className, ...p }: AnchorHTMLAttributes<HTMLAnchorElement> & ButtonVariants) {
+export function ButtonLink({
+  variant,
+  size,
+  className,
+  ...p
+}: AnchorHTMLAttributes<HTMLAnchorElement> & ButtonVariants) {
   return <a className={cn(buttonStyles({ variant, size }), className)} {...p} />;
 }
 
@@ -37,21 +47,38 @@ export function Container({ className, ...p }: HTMLAttributes<HTMLDivElement>) {
   return <div className={cn("mx-auto w-full max-w-[1400px] px-5 sm:px-8", className)} {...p} />;
 }
 
-export function Section({ className, tone = "plain", ...p }: HTMLAttributes<HTMLElement> & { tone?: "plain" | "blush" | "deep" }) {
+export function Section({
+  className,
+  tone = "plain",
+  ...p
+}: HTMLAttributes<HTMLElement> & { tone?: "plain" | "blush" | "deep" }) {
   return (
     <section
       className={cn(
         "py-14 sm:py-20",
         tone === "blush" && "bg-blush-50",
-        tone === "deep" && "bg-plum-900 text-ivory [&_h2]:text-ivory [&_h3]:text-ivory [&_p]:text-blush-100",
-        className,
+        tone === "deep" &&
+          "bg-plum-900 text-ivory [&_h2]:text-ivory [&_h3]:text-ivory [&_p]:text-blush-100",
+        className
       )}
       {...p}
     />
   );
 }
 
-export function SectionHeading({ eyebrow, title, intro, align = "left", as: Tag = "h2" }: { eyebrow?: string; title: ReactNode; intro?: ReactNode; align?: "left" | "center"; as?: "h1" | "h2" }) {
+export function SectionHeading({
+  eyebrow,
+  title,
+  intro,
+  align = "left",
+  as: Tag = "h2",
+}: {
+  eyebrow?: string;
+  title: ReactNode;
+  intro?: ReactNode;
+  align?: "left" | "center";
+  as?: "h1" | "h2";
+}) {
   return (
     <div className={cn("mb-10 max-w-2xl", align === "center" && "mx-auto text-center")}>
       {eyebrow && (
@@ -68,10 +95,22 @@ export function SectionHeading({ eyebrow, title, intro, align = "left", as: Tag 
 
 /* ───────── Card / Badge ───────── */
 export function Card({ className, ...p }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("rounded-[var(--radius-card)] border border-line bg-white/90 text-ink shadow-soft transition-shadow duration-300 hover:shadow-lift [&_h1]:!text-plum-800 [&_h2]:!text-plum-800 [&_h3]:!text-plum-800 [&_p]:!text-ink-soft", className)} {...p} />;
+  return (
+    <div
+      className={cn(
+        "rounded-[var(--radius-card)] border border-line bg-white/90 text-ink shadow-soft transition-shadow duration-300 hover:shadow-lift [&_h1]:!text-plum-800 [&_h2]:!text-plum-800 [&_h3]:!text-plum-800 [&_p]:!text-ink-soft",
+        className
+      )}
+      {...p}
+    />
+  );
 }
 
-export function Badge({ className, tone = "blush", ...p }: HTMLAttributes<HTMLSpanElement> & { tone?: "blush" | "gold" | "plum" }) {
+export function Badge({
+  className,
+  tone = "blush",
+  ...p
+}: HTMLAttributes<HTMLSpanElement> & { tone?: "blush" | "gold" | "plum" }) {
   return (
     <span
       className={cn(
@@ -79,7 +118,7 @@ export function Badge({ className, tone = "blush", ...p }: HTMLAttributes<HTMLSp
         tone === "blush" && "bg-blush-100 text-plum-800",
         tone === "gold" && "bg-gold-300/40 text-plum-900 ring-1 ring-gold-400/60",
         tone === "plum" && "bg-plum-800 text-ivory",
-        className,
+        className
       )}
       {...p}
     />
@@ -87,7 +126,17 @@ export function Badge({ className, tone = "blush", ...p }: HTMLAttributes<HTMLSp
 }
 
 /** Price: strike-through list price + offer price. Renders nothing when there is no price. */
-export function Price({ price, offerPrice, label, className }: { price?: number | null; offerPrice?: number | null; label?: string | null; className?: string }) {
+export function Price({
+  price,
+  offerPrice,
+  label,
+  className,
+}: {
+  price?: number | null;
+  offerPrice?: number | null;
+  label?: string | null;
+  className?: string;
+}) {
   const fmt = (n: number) => "₹" + Math.round(n).toLocaleString("en-IN");
   const now = offerPrice ?? price;
   if (now == null) return null;
@@ -95,7 +144,9 @@ export function Price({ price, offerPrice, label, className }: { price?: number 
     <span className={cn("inline-flex items-baseline gap-2", className)}>
       {label && <span className="text-xs text-ink-soft">{label}</span>}
       <span className="text-lg font-semibold text-plum-800">{fmt(now)}</span>
-      {offerPrice != null && price != null && price > offerPrice && <s className="text-sm text-ink-soft">{fmt(price)}</s>}
+      {offerPrice != null && price != null && price > offerPrice && (
+        <s className="text-sm text-ink-soft">{fmt(price)}</s>
+      )}
     </span>
   );
 }
@@ -104,6 +155,23 @@ export function Price({ price, offerPrice, label, className }: { price?: number 
  * Above-the-fold reveal done in CSS only: the content is visible in the server HTML and animates without waiting for
  * JavaScript, so it never delays LCP. Use BlurFade for below-the-fold sections. soft = no opacity change (for the LCP headline).
  */
-export function Rise({ children, delay = 0, className, soft = false }: { children: ReactNode; delay?: number; className?: string; soft?: boolean }) {
-  return <div className={cn(soft ? "animate-rise-soft" : "animate-rise", className)} style={{ animationDelay: `${delay}s` }}>{children}</div>;
+export function Rise({
+  children,
+  delay = 0,
+  className,
+  soft = false,
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+  soft?: boolean;
+}) {
+  return (
+    <div
+      className={cn(soft ? "animate-rise-soft" : "animate-rise", className)}
+      style={{ animationDelay: `${delay}s` }}
+    >
+      {children}
+    </div>
+  );
 }

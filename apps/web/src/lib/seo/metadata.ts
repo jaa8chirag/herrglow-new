@@ -36,7 +36,11 @@ export const fitDescription = (d: string) => cut(d, DESC_MAX);
 
 export const robotsMeta = (indexable = true): NonNullable<Metadata["robots"]> => {
   const index = indexable && indexingAllowed();
-  return { index, follow: true, googleBot: { index, follow: true, "max-image-preview": "large", "max-snippet": -1 } };
+  return {
+    index,
+    follow: true,
+    googleBot: { index, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  };
 };
 
 export function buildMetadata(i: SeoInput): Metadata {
@@ -50,9 +54,20 @@ export function buildMetadata(i: SeoInput): Metadata {
     robots: robotsMeta(i.indexable ?? true),
     openGraph: {
       type: i.type === "article" ? "article" : i.type === "profile" ? "profile" : "website",
-      url, siteName: SITE_NAME, title, description, locale: "en_IN",
-      ...(i.image ? { images: [{ url: i.image.startsWith("http") ? i.image : abs(i.image) }] } : {}),
-      ...(i.type === "article" ? { publishedTime: i.publishedTime?.toISOString(), modifiedTime: i.modifiedTime?.toISOString() } : {}),
+      url,
+      siteName: SITE_NAME,
+      title,
+      description,
+      locale: "en_IN",
+      ...(i.image
+        ? { images: [{ url: i.image.startsWith("http") ? i.image : abs(i.image) }] }
+        : {}),
+      ...(i.type === "article"
+        ? {
+            publishedTime: i.publishedTime?.toISOString(),
+            modifiedTime: i.modifiedTime?.toISOString(),
+          }
+        : {}),
     },
     twitter: { card: i.image ? "summary_large_image" : "summary", title, description },
   };

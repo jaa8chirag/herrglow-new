@@ -11,7 +11,8 @@ import { buildMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = buildMetadata({
   title: "All Services: Makeup, Salon, Facial, Nails & More at Home",
-  description: "Browse every HerrGlow service: bridal and party makeup, salon, facials, nails, hair, mehndi and pre-bridal packages at your home.",
+  description:
+    "Browse every HerrGlow service: bridal and party makeup, salon, facials, nails, hair, mehndi and pre-bridal packages at your home.",
   path: "/services",
 });
 
@@ -25,7 +26,9 @@ async function ServicesGrid() {
     getLiveCities(),
   ]);
   const items = all.map((s) => {
-    const prices = [s.offerPrice ?? s.price, ...s.variants.map((v) => v.offerPrice ?? v.price)].map((n) => (n == null ? NaN : Number(n))).filter((n) => Number.isFinite(n) && n > 0);
+    const prices = [s.offerPrice ?? s.price, ...s.variants.map((v) => v.offerPrice ?? v.price)]
+      .map((n) => (n == null ? NaN : Number(n)))
+      .filter((n) => Number.isFinite(n) && n > 0);
     const minPrice = prices.length ? Math.min(...prices) : num(s.price);
     const maxPrice = prices.length > 1 ? Math.max(...prices) : null;
     return {
@@ -67,7 +70,9 @@ export default function ServicesIndex() {
         title="Everything we offer, at your home"
         intro="Bridal and party makeup, salon, facials, nails, hair, mehndi and packages. Filter by category or search by name."
       />
-      <Suspense fallback={<GridSkeleton />}><ServicesGrid /></Suspense>
+      <Suspense fallback={<GridSkeleton />}>
+        <ServicesGrid />
+      </Suspense>
     </>
   );
 }

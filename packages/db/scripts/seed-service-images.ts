@@ -6,16 +6,16 @@ import { prisma } from "../src/index.js";
 
 const CATEGORY_IMAGE_DEFAULTS: Record<string, string> = {
   "face-hair-removal": "/images/services/facial-at-home.jpg",
-  "waxing": "/images/services/full-body-waxing-at-home.jpg",
+  waxing: "/images/services/full-body-waxing-at-home.jpg",
   "bleach-detan": "/images/services/facial-at-home.jpg",
-  "facials": "/images/services/facial-at-home.jpg",
+  facials: "/images/services/facial-at-home.jpg",
   "manicure-pedicure": "/images/services/classic-manicure-pedicure.jpg",
   "nail-studio": "/images/services/gel-nail-extensions.jpg",
-  "hair": "/images/services/hair-spa-at-home.jpg",
-  "makeup": "/images/services/party-makeup-and-hair.jpg",
-  "mehendi": "/images/packages/sangeet-family-glam-package.jpg",
+  hair: "/images/services/hair-spa-at-home.jpg",
+  makeup: "/images/services/party-makeup-and-hair.jpg",
+  mehendi: "/images/packages/sangeet-family-glam-package.jpg",
   "body-care-spa": "/images/packages/pre-bridal-glow-package.jpg",
-  "bridal": "/images/services/bridal-makeup-artist.jpg",
+  bridal: "/images/services/bridal-makeup-artist.jpg",
 };
 
 const SPECIFIC_SERVICE_IMAGES: Record<string, string> = {
@@ -87,7 +87,9 @@ const SPECIFIC_SERVICE_IMAGES: Record<string, string> = {
 };
 
 async function main() {
-  console.log("Assigning curated high-resolution photos to all services across the master catalogue...");
+  console.log(
+    "Assigning curated high-resolution photos to all services across the master catalogue..."
+  );
   const services = await prisma.service.findMany({
     where: { mergedIntoId: null },
     include: { category: true },
@@ -111,7 +113,9 @@ async function main() {
     }
   }
 
-  console.log(`\nSuccessfully assigned images to ${assignedCount} services! Every single service now has a real photo.`);
+  console.log(
+    `\nSuccessfully assigned images to ${assignedCount} services! Every single service now has a real photo.`
+  );
 }
 
 main()

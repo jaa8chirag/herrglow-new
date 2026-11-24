@@ -176,7 +176,9 @@ export function JoinBeauticianView({
                   Home
                 </Link>
               </li>
-              <li aria-hidden className="text-gold-500">/</li>
+              <li aria-hidden className="text-gold-500">
+                /
+              </li>
               <li aria-current="page" className="font-medium text-plum-800">
                 {isHi ? "Beautician / Artist banein" : "Join as an artist"}
               </li>
@@ -191,9 +193,7 @@ export function JoinBeauticianView({
               onClick={() => handleLangChange("en")}
               className={cn(
                 "rounded-lg px-3 py-1.5 font-semibold transition cursor-pointer",
-                !isHi
-                  ? "bg-plum-700 text-ivory shadow-xs"
-                  : "text-ink-soft hover:text-plum-950"
+                !isHi ? "bg-plum-700 text-ivory shadow-xs" : "text-ink-soft hover:text-plum-950"
               )}
             >
               English
@@ -222,13 +222,23 @@ export function JoinBeauticianView({
             <div className="space-y-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-gold-300/80 bg-blush-50/80 px-3 py-1 text-[11px] font-semibold tracking-wide text-rose-800 shadow-2xs">
                 <Sparkles className="size-3 text-gold-600" />
-                <span>{isHi ? "HerrGlow Elite Partner Network · Delhi NCR" : "HerrGlow Elite Partner Network · Delhi NCR"}</span>
+                <span>
+                  {isHi
+                    ? "HerrGlow Elite Partner Network · Delhi NCR"
+                    : "HerrGlow Elite Partner Network · Delhi NCR"}
+                </span>
               </div>
               <h1 className="font-serif text-2xl sm:text-3xl lg:text-[1.95rem] xl:text-[2.2rem] font-bold text-plum-950 leading-[1.22] tracking-tight">
                 {isHi ? (
-                  <>HerrGlow ke saath apna <span className="text-rose-700">beauty &amp; makeup</span> business badhaiye</>
+                  <>
+                    HerrGlow ke saath apna{" "}
+                    <span className="text-rose-700">beauty &amp; makeup</span> business badhaiye
+                  </>
                 ) : (
-                  <>Grow your <span className="text-rose-700">beauty &amp; makeup</span> business with HerrGlow</>
+                  <>
+                    Grow your <span className="text-rose-700">beauty &amp; makeup</span> business
+                    with HerrGlow
+                  </>
                 )}
               </h1>
               <p className="text-xs sm:text-sm text-ink-soft leading-relaxed">
@@ -246,7 +256,9 @@ export function JoinBeauticianView({
                 </span>
                 <div className="min-w-0">
                   <p className="font-bold text-plum-950 truncate">75%–80%</p>
-                  <p className="text-[10px] text-ink-soft truncate">{isHi ? "Seedha UPI Payout" : "Direct UPI Payout"}</p>
+                  <p className="text-[10px] text-ink-soft truncate">
+                    {isHi ? "Seedha UPI Payout" : "Direct UPI Payout"}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-2.5 rounded-2xl border border-blush-200 bg-white p-2.5 sm:p-3 shadow-xs">
@@ -254,8 +266,12 @@ export function JoinBeauticianView({
                   📍
                 </span>
                 <div className="min-w-0">
-                  <p className="font-bold text-plum-950 truncate">{isHi ? "Aapka Area" : "Your Sectors"}</p>
-                  <p className="text-[10px] text-ink-soft truncate">{isHi ? "Sirf paas ke orders" : "Hyperlocal radius"}</p>
+                  <p className="font-bold text-plum-950 truncate">
+                    {isHi ? "Aapka Area" : "Your Sectors"}
+                  </p>
+                  <p className="text-[10px] text-ink-soft truncate">
+                    {isHi ? "Sirf paas ke orders" : "Hyperlocal radius"}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-2.5 rounded-2xl border border-blush-200 bg-white p-2.5 sm:p-3 shadow-xs">
@@ -263,8 +279,12 @@ export function JoinBeauticianView({
                   🛡️
                 </span>
                 <div className="min-w-0">
-                  <p className="font-bold text-plum-950 truncate">{isHi ? "100% Female" : "100% Female"}</p>
-                  <p className="text-[10px] text-ink-soft truncate">{isHi ? "Verified surakshit ghar" : "Verified clients"}</p>
+                  <p className="font-bold text-plum-950 truncate">
+                    {isHi ? "100% Female" : "100% Female"}
+                  </p>
+                  <p className="text-[10px] text-ink-soft truncate">
+                    {isHi ? "Verified surakshit ghar" : "Verified clients"}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-2.5 rounded-2xl border border-blush-200 bg-white p-2.5 sm:p-3 shadow-xs">
@@ -272,8 +292,12 @@ export function JoinBeauticianView({
                   ⏰
                 </span>
                 <div className="min-w-0">
-                  <p className="font-bold text-plum-950 truncate">{isHi ? "Azaad Time" : "Own Hours"}</p>
-                  <p className="text-[10px] text-ink-soft truncate">{isHi ? "Jab chahein kaam karein" : "Zero penalty"}</p>
+                  <p className="font-bold text-plum-950 truncate">
+                    {isHi ? "Azaad Time" : "Own Hours"}
+                  </p>
+                  <p className="text-[10px] text-ink-soft truncate">
+                    {isHi ? "Jab chahein kaam karein" : "Zero penalty"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -300,8 +324,14 @@ export function JoinBeauticianView({
               {/* 4 Luxury Benefit Items */}
               <ul className="space-y-2.5">
                 {points.map((p) => (
-                  <li key={p.title} className="flex gap-3 rounded-2xl border border-line/60 bg-white/80 p-3 shadow-xs hover:border-plum-300 transition">
-                    <span aria-hidden className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-lg bg-gold-100 text-gold-700 text-xs font-bold">
+                  <li
+                    key={p.title}
+                    className="flex gap-3 rounded-2xl border border-line/60 bg-white/80 p-3 shadow-xs hover:border-plum-300 transition"
+                  >
+                    <span
+                      aria-hidden
+                      className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-lg bg-gold-100 text-gold-700 text-xs font-bold"
+                    >
                       ✦
                     </span>
                     <div>
@@ -358,7 +388,9 @@ export function JoinBeauticianView({
                         {isHi ? "WhatsApp par seedhi Onboarding" : "Fast-Track WhatsApp Onboarding"}
                       </h3>
                       <p className="text-[0.72rem] text-emerald-800">
-                        {isHi ? "Hiring Manager se direct baat karein" : "Instant registration & same-day review"}
+                        {isHi
+                          ? "Hiring Manager se direct baat karein"
+                          : "Instant registration & same-day review"}
                       </p>
                     </div>
                   </div>
@@ -369,7 +401,9 @@ export function JoinBeauticianView({
                     className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#1f8f4e] py-2.5 text-xs font-semibold text-white shadow-soft transition hover:bg-[#187a41] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
                   >
                     <MessageCircle className="size-4" />{" "}
-                    {isHi ? "Hiring Manager ko WhatsApp Karein" : "Message Hiring Manager on WhatsApp"}
+                    {isHi
+                      ? "Hiring Manager ko WhatsApp Karein"
+                      : "Message Hiring Manager on WhatsApp"}
                   </a>
                 </div>
               )}
@@ -416,7 +450,9 @@ export function JoinBeauticianView({
                   <span className="ml-1 text-[11px] font-bold text-plum-950">5.0</span>
                 </div>
                 <h4 className="text-sm font-bold text-plum-950 truncate">Sunita Rawat</h4>
-                <p className="text-xs text-ink-soft">Senior Aesthetician &amp; Pre-Bridal Pro · Noida</p>
+                <p className="text-xs text-ink-soft">
+                  Senior Aesthetician &amp; Pre-Bridal Pro · Noida
+                </p>
               </div>
             </div>
             <p className="text-xs sm:text-sm text-ink-soft italic leading-relaxed border-t border-line/60 pt-3">
@@ -433,7 +469,10 @@ export function JoinBeauticianView({
             </h2>
             <div className="grid gap-3.5 sm:grid-cols-2">
               {points.map((p) => (
-                <div key={p.title} className="flex items-start gap-3 rounded-2xl border border-blush-200/70 bg-white p-3.5 shadow-xs">
+                <div
+                  key={p.title}
+                  className="flex items-start gap-3 rounded-2xl border border-blush-200/70 bg-white p-3.5 shadow-xs"
+                >
                   <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-gold-100 text-gold-700 font-bold text-xs mt-0.5">
                     ✦
                   </span>
@@ -486,7 +525,9 @@ export function JoinBeauticianView({
                 {isHi ? "Aam Taur Par Puchhe Jane Wale Sawal (FAQs)" : "Frequently Asked Questions"}
               </h2>
               <p className="text-xs sm:text-sm text-ink-soft">
-                {isHi ? "Earnings, joining process aur terms se jude jawab" : "Everything you need to know about earnings, safety, and schedules"}
+                {isHi
+                  ? "Earnings, joining process aur terms se jude jawab"
+                  : "Everything you need to know about earnings, safety, and schedules"}
               </p>
             </div>
           </div>
@@ -499,7 +540,12 @@ export function JoinBeauticianView({
                   className="flex w-full items-center justify-between gap-3 text-left font-medium text-xs sm:text-base text-plum-950 hover:text-rose-700 transition cursor-pointer"
                 >
                   <span>{f.q}</span>
-                  <ChevronDown className={cn("size-4 shrink-0 transition-transform text-ink-soft", openFaq === idx && "rotate-180")} />
+                  <ChevronDown
+                    className={cn(
+                      "size-4 shrink-0 transition-transform text-ink-soft",
+                      openFaq === idx && "rotate-180"
+                    )}
+                  />
                 </button>
                 {openFaq === idx && (
                   <p className="mt-2.5 text-xs sm:text-sm text-ink-soft leading-relaxed pr-6">

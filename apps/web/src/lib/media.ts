@@ -6,12 +6,18 @@
 export function mediaUrl(path: string | null | undefined): string | null {
   if (!path) return null;
   if (/^https?:\/\//.test(path) || path.startsWith("/")) return path;
-  const base = (process.env.MEDIA_BASE ?? process.env.NEXT_PUBLIC_MEDIA_BASE ?? "").replace(/\/$/, "");
+  const base = (process.env.MEDIA_BASE ?? process.env.NEXT_PUBLIC_MEDIA_BASE ?? "").replace(
+    /\/$/,
+    ""
+  );
   return base ? `${base}/${path.replace(/^\//, "")}` : null;
 }
 
 /** URL for a stored media key, but ONLY if the file really exists in the media library (or is an absolute URL or local public path). */
-export function realImage(keys: ReadonlySet<string>, path: string | null | undefined): string | null {
+export function realImage(
+  keys: ReadonlySet<string>,
+  path: string | null | undefined
+): string | null {
   if (!path) return null;
   if (/^https?:\/\//.test(path) || path.startsWith("/")) return path;
   return keys.has(path) ? mediaUrl(path) : null;

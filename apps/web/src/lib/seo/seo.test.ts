@@ -11,11 +11,16 @@ import { CANONICAL_HOST, SITE_URL } from "../site";
 const src = (p: string) => readFileSync(new URL(p, import.meta.url), "utf8");
 
 test("home page is indexable when production indexing is enabled", () => {
-  const m = buildMetadata({ title: "Makeup Artist at Home in Delhi NCR", description: "Book a verified makeup artist at home.", path: "/" });
+  const m = buildMetadata({
+    title: "Makeup Artist at Home in Delhi NCR",
+    description: "Book a verified makeup artist at home.",
+    path: "/",
+  });
   const prev = process.env.ALLOW_INDEXING;
   process.env.ALLOW_INDEXING = "true";
   const on = buildMetadata({ title: "x", description: "y", path: "/" });
-  if (prev === undefined) delete process.env.ALLOW_INDEXING; else process.env.ALLOW_INDEXING = prev;
+  if (prev === undefined) delete process.env.ALLOW_INDEXING;
+  else process.env.ALLOW_INDEXING = prev;
   assert.equal((on.robots as { index: boolean }).index, true);
   assert.equal(m.alternates?.canonical, `${SITE_URL}/`);
 });
@@ -30,13 +35,21 @@ test("without ALLOW_INDEXING (staging/preview) everything is noindex", () => {
 
 test("DEPLOY GUARD: a production deploy must have ALLOW_INDEXING=true", () => {
   if (process.env.DEPLOY_ENV === "production")
-    assert.equal(process.env.ALLOW_INDEXING, "true", "production build without ALLOW_INDEXING=true would noindex the whole site");
+    assert.equal(
+      process.env.ALLOW_INDEXING,
+      "true",
+      "production build without ALLOW_INDEXING=true would noindex the whole site"
+    );
 });
 
 test("root layout and home page never hard-code noindex", () => {
   for (const f of ["../../app/layout.tsx", "../../app/page.tsx"]) {
     let text = "";
-    try { text = src(f); } catch { continue; }
+    try {
+      text = src(f);
+    } catch {
+      continue;
+    }
     assert.ok(!/index:\s*false|noindex|indexable:\s*false/.test(text), `${f} must not set noindex`);
   }
 });
@@ -45,7 +58,9 @@ test("robots.txt: canonical host allows crawling, blocks admin/api, lists sitema
   const r = buildRobots(CANONICAL_HOST, true);
   const rule = (Array.isArray(r.rules) ? r.rules[0] : r.rules)!;
   assert.equal(rule.allow, "/");
-  assert.ok((rule.disallow as string[]).includes("/admin") && (rule.disallow as string[]).includes("/api"));
+  assert.ok(
+    (rule.disallow as string[]).includes("/admin") && (rule.disallow as string[]).includes("/api")
+  );
   assert.ok(!(rule.disallow as string[]).includes("/"));
   assert.equal(r.sitemap, `${SITE_URL}/sitemap.xml`);
 });
@@ -58,7 +73,11 @@ test("robots.txt: other hosts and disabled indexing block everything", () => {
 });
 
 test("title ≤ 60 and description ≤ 155", () => {
-  assert.ok(fitTitle("A very long service title for bridal makeup artists in Greater Noida and nearby areas").length <= 60);
+  assert.ok(
+    fitTitle(
+      "A very long service title for bridal makeup artists in Greater Noida and nearby areas"
+    ).length <= 60
+  );
   assert.ok(fitDescription("word ".repeat(80)).length <= 155);
   assert.ok(fitTitle("HD Bridal Makeup").endsWith("| HerrGlow"));
 });
@@ -68,12 +87,27 @@ import { decideLegacy, type LegacyContext } from "@herrglow/core/src/seo/legacy"
 import { proIsIndexable, proNoindexReason } from "@herrglow/core/src/seo/pros";
 
 const ctx = (over: Partial<LegacyContext> = {}): LegacyContext => ({
-  pageUrls: new Set(["/makeup-artist-in-gaur-city-1", "/hd-bridal-makeup-in-noida", "/services/hd-bridal-makeup", "/salon-at-home-noida", "/contact", "/"]),
-  redirects: new Map([["/services/hd-engagement-makeup", { to: "/services/engagement-makeup-artist", code: "MOVED_301" as const }]]),
-  proByLegacySlug: new Map([["best-makeover-artist-in-gaur-city-pritibha-singh", "/artists/pritibha-singh"]]),
+  pageUrls: new Set([
+    "/makeup-artist-in-gaur-city-1",
+    "/hd-bridal-makeup-in-noida",
+    "/services/hd-bridal-makeup",
+    "/salon-at-home-noida",
+    "/contact",
+    "/",
+  ]),
+  redirects: new Map([
+    [
+      "/services/hd-engagement-makeup",
+      { to: "/services/engagement-makeup-artist", code: "MOVED_301" as const },
+    ],
+  ]),
+  proByLegacySlug: new Map([
+    ["best-makeover-artist-in-gaur-city-pritibha-singh", "/artists/pritibha-singh"],
+  ]),
   ...over,
 });
-const eq = (path: string, expected: object, c = ctx()) => assert.deepEqual(decideLegacy(path, c), expected, path);
+const eq = (path: string, expected: object, c = ctx()) =>
+  assert.deepEqual(decideLegacy(path, c), expected, path);
 const gone = (path: string, c = ctx()) => assert.equal(decideLegacy(path, c).kind, "gone", path);
 
 test("legacy /makeup-artist-in-{area}: area page that exists keeps the SAME URL (200)", () => {
@@ -83,9 +117,14 @@ test("legacy /makeup-artist-in-{area}: area page that exists keeps the SAME URL 
 test("legacy /makeup-artist-in-{city}: city hub redirect (301) to /salon-at-home-{city}", () => {
   eq("/makeup-artist-in-delhi", { kind: "redirect", to: "/salon-at-home-delhi", code: 301 });
   eq("/makeup-artist-in-noida", { kind: "redirect", to: "/salon-at-home-noida", code: 301 });
-  eq("/makeup-artist-in-greater-noida", { kind: "redirect", to: "/salon-at-home-greater-noida", code: 301 });
+  eq("/makeup-artist-in-greater-noida", {
+    kind: "redirect",
+    to: "/salon-at-home-greater-noida",
+    code: 301,
+  });
 });
-test("legacy /makeup-artist-in-{area}: area without a page on the new site → 410", () => gone("/makeup-artist-in-some-textonly-area"));
+test("legacy /makeup-artist-in-{area}: area without a page on the new site → 410", () =>
+  gone("/makeup-artist-in-some-textonly-area"));
 test("legacy /bridal-makeup-in-{area} → 410", () => gone("/bridal-makeup-in-gaur-city-1"));
 test("legacy /salon-at-home-in-{area} → 410", () => gone("/salon-at-home-in-gaur-city-1"));
 test("legacy /{service}-in-{area} (service_local): 410, unless the same URL exists as a new service×city page", () => {
@@ -94,10 +133,18 @@ test("legacy /{service}-in-{area} (service_local): 410, unless the same URL exis
 });
 test("legacy /services/{slug}: live = same URL; merged/renamed = 301", () => {
   eq("/services/hd-bridal-makeup", { kind: "pass" });
-  eq("/services/hd-engagement-makeup", { kind: "redirect", to: "/services/engagement-makeup-artist", code: 301 });
+  eq("/services/hd-engagement-makeup", {
+    kind: "redirect",
+    to: "/services/engagement-makeup-artist",
+    code: 301,
+  });
 });
 test("legacy /blogs/{slug} → 301 /blog/{slug}; /blogs → 301 /blog", () => {
-  eq("/blogs/gaur-city-bridal-makeup-artist-booking-guide", { kind: "redirect", to: "/blog/gaur-city-bridal-makeup-artist-booking-guide", code: 301 });
+  eq("/blogs/gaur-city-bridal-makeup-artist-booking-guide", {
+    kind: "redirect",
+    to: "/blog/gaur-city-bridal-makeup-artist-booking-guide",
+    code: 301,
+  });
   eq("/blogs", { kind: "redirect", to: "/blog", code: 301 });
 });
 test("legacy /beauticians/{slug} and /makeover-artists/{slug} → 301 to the new artist slug; unknown artist → 410", () => {
@@ -106,9 +153,19 @@ test("legacy /beauticians/{slug} and /makeover-artists/{slug} → 301 to the new
   eq("/makeover-artists/best-makeover-artist-in-gaur-city-pritibha-singh", to);
   gone("/beauticians/someone-without-a-page");
 });
-test("legacy /beauty-pro-card/{slug} → 410", () => gone("/beauty-pro-card/best-makeover-artist-in-gaur-city-pritibha-singh"));
+test("legacy /beauty-pro-card/{slug} → 410", () =>
+  gone("/beauty-pro-card/best-makeover-artist-in-gaur-city-pritibha-singh"));
 test("legacy static pages: built pages keep the URL, retired sections 301, listings 410", () => {
-  const c = ctx({ pageUrls: new Set(["/", "/contact", "/services", "/join-as-beautician", "/packages", "/packages/luxe-party-glam-package"]) });
+  const c = ctx({
+    pageUrls: new Set([
+      "/",
+      "/contact",
+      "/services",
+      "/join-as-beautician",
+      "/packages",
+      "/packages/luxe-party-glam-package",
+    ]),
+  });
   eq("/join-as-beautician", { kind: "pass" }, c);
   eq("/services", { kind: "pass" }, c);
   eq("/packages", { kind: "pass" }, c); // built page, same URL
@@ -120,7 +177,8 @@ test("legacy static pages: built pages keep the URL, retired sections 301, listi
   eq("/contact", { kind: "pass" }, c);
   eq("/", { kind: "pass" }, c);
 });
-test("unrelated unknown URLs are not marked gone (normal 404)", () => eq("/some-random-page", { kind: "pass" }));
+test("unrelated unknown URLs are not marked gone (normal 404)", () =>
+  eq("/some-random-page", { kind: "pass" }));
 
 /* ───────── artist quality gate: real photo AND ≥ 50 words of bio ───────── */
 const bio = (n: number) => Array.from({ length: n }, () => "glow").join(" ");
@@ -130,14 +188,31 @@ test("artist indexable only with a real photo AND ≥ 50 words of bio", () => {
   delete process.env.NEXT_PUBLIC_MEDIA_BASE;
   delete process.env.MEDIA_BASE;
   const keys = new Set(["beauticians/x.jpg"]);
-  assert.equal(proIsIndexable({ photo: "beauticians/x.jpg", bio: bio(80) }, keys), false, "stored path but media not configured = placeholder");
+  assert.equal(
+    proIsIndexable({ photo: "beauticians/x.jpg", bio: bio(80) }, keys),
+    false,
+    "stored path but media not configured = placeholder"
+  );
   assert.equal(proIsIndexable({ photo: "https://media.herrglow.com/x.jpg", bio: bio(80) }), true);
   process.env.NEXT_PUBLIC_MEDIA_BASE = "https://media.herrglow.com";
-  assert.equal(proIsIndexable({ photo: "beauticians/x.jpg", bio: bio(50) }, keys), true, "real photo (in media library) + 50 words");
+  assert.equal(
+    proIsIndexable({ photo: "beauticians/x.jpg", bio: bio(50) }, keys),
+    true,
+    "real photo (in media library) + 50 words"
+  );
   assert.equal(proIsIndexable({ photo: "beauticians/x.jpg", bio: bio(49) }, keys), false);
-  assert.equal(proIsIndexable({ photo: "beauticians/legacy-missing.jpg", bio: bio(80) }, keys), false, "legacy path that was never uploaded is not a real photo");
+  assert.equal(
+    proIsIndexable({ photo: "beauticians/legacy-missing.jpg", bio: bio(80) }, keys),
+    false,
+    "legacy path that was never uploaded is not a real photo"
+  );
   assert.equal(proIsIndexable({ photo: null, bio: bio(80) }), false);
-  assert.match(proNoindexReason({ photo: null, bio: bio(10) }, keys)!, /no photo; bio 10\/50 words/);
-  if (prev === undefined) delete process.env.NEXT_PUBLIC_MEDIA_BASE; else process.env.NEXT_PUBLIC_MEDIA_BASE = prev;
-  if (prevRuntime === undefined) delete process.env.MEDIA_BASE; else process.env.MEDIA_BASE = prevRuntime;
+  assert.match(
+    proNoindexReason({ photo: null, bio: bio(10) }, keys)!,
+    /no photo; bio 10\/50 words/
+  );
+  if (prev === undefined) delete process.env.NEXT_PUBLIC_MEDIA_BASE;
+  else process.env.NEXT_PUBLIC_MEDIA_BASE = prev;
+  if (prevRuntime === undefined) delete process.env.MEDIA_BASE;
+  else process.env.MEDIA_BASE = prevRuntime;
 });

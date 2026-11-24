@@ -13,7 +13,9 @@ export async function approveAction(fd: FormData) {
   if (!res.ok) redirect(`/admin/applications/${id}?err=${encodeURIComponent(res.error)}`);
   await log(me, "application.approve", "ProApplication", id, { proId: res.proId });
   revalidatePath("/admin/applications");
-  redirect(`/admin/pros/${res.proId}?ok=${encodeURIComponent("Artist created as inactive. Complete the profile, then set status to Active.")}`);
+  redirect(
+    `/admin/pros/${res.proId}?ok=${encodeURIComponent("Artist created as inactive. Complete the profile, then set status to Active.")}`
+  );
 }
 
 export async function rejectAction(fd: FormData) {

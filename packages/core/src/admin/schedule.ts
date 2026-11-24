@@ -165,13 +165,31 @@ export async function getBeauticianSchedule(dateStr?: string): Promise<DaySchedu
 
     for (const b of scheduledBookings) {
       const slot = (b.timeSlot || "").toLowerCase();
-      if (slot.includes("morn") || slot.includes("9am") || slot.includes("10am") || slot.includes("11am")) {
+      if (
+        slot.includes("morn") ||
+        slot.includes("9am") ||
+        slot.includes("10am") ||
+        slot.includes("11am")
+      ) {
         if (!morningBooking) morningBooking = b;
         else customBookings.push(b);
-      } else if (slot.includes("after") || slot.includes("12pm") || slot.includes("1pm") || slot.includes("2pm") || slot.includes("3pm")) {
+      } else if (
+        slot.includes("after") ||
+        slot.includes("12pm") ||
+        slot.includes("1pm") ||
+        slot.includes("2pm") ||
+        slot.includes("3pm")
+      ) {
         if (!afternoonBooking) afternoonBooking = b;
         else customBookings.push(b);
-      } else if (slot.includes("even") || slot.includes("4pm") || slot.includes("5pm") || slot.includes("6pm") || slot.includes("7pm") || slot.includes("8pm")) {
+      } else if (
+        slot.includes("even") ||
+        slot.includes("4pm") ||
+        slot.includes("5pm") ||
+        slot.includes("6pm") ||
+        slot.includes("7pm") ||
+        slot.includes("8pm")
+      ) {
         if (!eveningBooking) eveningBooking = b;
         else customBookings.push(b);
       } else {
@@ -195,7 +213,9 @@ export async function getBeauticianSchedule(dateStr?: string): Promise<DaySchedu
     ];
 
     if (scheduledBookings.length === 0) {
-      dispatchLines.push(`✅ No appointments assigned for today yet. You are currently on standby.`);
+      dispatchLines.push(
+        `✅ No appointments assigned for today yet. You are currently on standby.`
+      );
     } else {
       scheduledBookings.forEach((b, idx) => {
         dispatchLines.push(
@@ -207,10 +227,13 @@ export async function getBeauticianSchedule(dateStr?: string): Promise<DaySchedu
           ``
         );
       });
-      dispatchLines.push(`Please carry your sanitized tools, clean setup and reach 10 mins prior to ETA.`);
+      dispatchLines.push(
+        `Please carry your sanitized tools, clean setup and reach 10 mins prior to ETA.`
+      );
     }
 
-    const dayWhatsAppSummaryUrl = whatsappLink(proPhone, dispatchLines.filter(Boolean).join("\n")) || "";
+    const dayWhatsAppSummaryUrl =
+      whatsappLink(proPhone, dispatchLines.filter(Boolean).join("\n")) || "";
 
     return {
       id: p.id,

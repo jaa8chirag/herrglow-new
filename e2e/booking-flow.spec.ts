@@ -19,14 +19,20 @@ test.describe("Interactive Booking Flow & Step Progression", () => {
     await continueBtn.click();
 
     // Step 1: Address step - fill required doorstep location fields
-    await expect(page.locator('button[aria-label="Step 2: Address"]')).toHaveAttribute("aria-current", "step");
+    await expect(page.locator('button[aria-label="Step 2: Address"]')).toHaveAttribute(
+      "aria-current",
+      "step"
+    );
     await page.locator("#booking-flat").fill("Flat 402, 4th Floor");
     await page.locator("#booking-society").fill("Sunshine Greens Society");
     await page.locator("#booking-area").fill("Sector 62, Noida");
 
     // Proceed to Step 2: Date & slot
     await continueBtn.click();
-    await expect(page.locator('button[aria-label="Step 3: Date & slot"]')).toHaveAttribute("aria-current", "step");
+    await expect(page.locator('button[aria-label="Step 3: Date & slot"]')).toHaveAttribute(
+      "aria-current",
+      "step"
+    );
 
     // Step 2: Date & slot - choose a quick date if visible
     const quickDateBtn = page.locator('button:has-text("Tomorrow")').first();
@@ -36,7 +42,10 @@ test.describe("Interactive Booking Flow & Step Progression", () => {
 
     // Proceed to Step 3: Details
     await continueBtn.click();
-    await expect(page.locator('button[aria-label="Step 4: Details"]')).toHaveAttribute("aria-current", "step");
+    await expect(page.locator('button[aria-label="Step 4: Details"]')).toHaveAttribute(
+      "aria-current",
+      "step"
+    );
 
     // Step 3: Verify contact details inputs are rendered
     await expect(page.locator("#booking-name")).toBeVisible();

@@ -1,11 +1,18 @@
 import { Queue } from "bullmq";
 
 export const QUEUE_NAME = "notifications";
-export type JobKind = "new-lead" | "customer-confirmation" | "new-application" | "daily-digest" | "sweep";
+export type JobKind =
+  "new-lead" | "customer-confirmation" | "new-application" | "daily-digest" | "sweep";
 
 export const redisConnection = () => {
   const url = new URL(process.env.REDIS_URL ?? "redis://localhost:6390");
-  return { host: url.hostname, port: Number(url.port || 6379), password: url.password || undefined, username: url.username || undefined, tls: url.protocol === "rediss:" ? {} : undefined };
+  return {
+    host: url.hostname,
+    port: Number(url.port || 6379),
+    password: url.password || undefined,
+    username: url.username || undefined,
+    tls: url.protocol === "rediss:" ? {} : undefined,
+  };
 };
 
 export const JOB_DEFAULTS = {
@@ -16,7 +23,11 @@ export const JOB_DEFAULTS = {
 };
 
 let queue: Queue | null = null;
-export const getQueue = () => (queue ??= new Queue(QUEUE_NAME, { connection: { ...redisConnection(), enableOfflineQueue: false, maxRetriesPerRequest: 1 }, defaultJobOptions: JOB_DEFAULTS }));
+export const getQueue = () =>
+  (queue ??= new Queue(QUEUE_NAME, {
+    connection: { ...redisConnection(), enableOfflineQueue: false, maxRetriesPerRequest: 1 },
+    defaultJobOptions: JOB_DEFAULTS,
+  }));
 
 /** Never blocks or fails the caller for long: if Redis is unreachable the worker's sweep re-queues the item. */
 export async function enqueue(kind: JobKind, id: string): Promise<boolean> {

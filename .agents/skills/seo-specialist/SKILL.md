@@ -27,9 +27,9 @@ Ensure every page, component, and route built in this application is engineered 
 ## Instructions
 
 1. **Verify Metadata**: Every public page MUST export `generateMetadata` using `@/lib/seo/metadata` (`buildMetadata`). Enforce title $\le$ 60 chars, description $\le$ 155 chars, and strict canonical URLs.
-2. **Single `<h1>` Rule**: Every page must have exactly ONE `<h1>` tag containing the primary search intent and location target (e.g., *"Bridal Makeup Artist at Home in Noida"*).
+2. **Single `<h1>` Rule**: Every page must have exactly ONE `<h1>` tag containing the primary search intent and location target (e.g., _"Bridal Makeup Artist at Home in Noida"_).
 3. **Structured Data**: Always embed `<JsonLd>` with appropriate Schema.org schemas (`Service`, `LocalBusiness`, `FAQPage`, `BreadcrumbList`).
-4. **Descriptive Anchor Text**: Never write generic link labels like "Click Here", "Read More", or "View All". Always use descriptive semantic anchors (e.g., *"Explore Bridal Makeup Packages in Delhi NCR"*).
+4. **Descriptive Anchor Text**: Never write generic link labels like "Click Here", "Read More", or "View All". Always use descriptive semantic anchors (e.g., _"Explore Bridal Makeup Packages in Delhi NCR"_).
 5. **Contextual Image Alt Text**: Never use empty or generic `alt` attributes (`alt="image"`). Describe the subject, style, technique, and location.
 6. **Core Web Vitals**: Prevent Cumulative Layout Shift (CLS) by giving all images and media containers explicit aspect ratios or dimensions. Use `priority` on the primary LCP hero image only.
 7. Refer to `resources/implementation-playbook.md` for complete code templates, JSON-LD schemas, and programmatic SEO checklists.
@@ -37,15 +37,18 @@ Ensure every page, component, and route built in this application is engineered 
 ## Core Rules for HerrGlow (Delhi NCR At-Home Salon)
 
 ### 1. Local Search Optimization
+
 - Weave primary location entities (Delhi NCR, Noida, Greater Noida, South Delhi, Dwarka, Gurgaon) into page titles, `<h1>` headings, breadcrumbs, and FAQ questions.
 - Maintain programmatic threshold guards: do not index city-service pages if active professional count is below threshold (`MIN_PROS_FOR_SERVICE_CITY`).
 
 ### 2. Schema.org Hierarchy
+
 - **Service Pages**: Must include `serviceLd`, `breadcrumbLd`, and `faqLd` (if FAQs exist).
 - **Home Page**: Must include `localBusinessLd` and `websiteLd`.
 - **Blog Posts**: Must include `articleLd` and `breadcrumbLd`.
 
 ### 3. Build & Deploy Guards
+
 - Never hardcode `noindex` on root layouts or public pages.
 - Ensure all tests in `pnpm test:seo` pass cleanly before finalizing tasks.
 

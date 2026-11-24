@@ -446,7 +446,9 @@ async function main() {
       },
     });
 
-    console.log("✓ karva-chauth-makeup retired into /services/party-makeup-and-hair with 301 redirect!");
+    console.log(
+      "✓ karva-chauth-makeup retired into /services/party-makeup-and-hair with 301 redirect!"
+    );
   }
 
   // 2. Populate features for each active service

@@ -9,7 +9,13 @@ import { prisma } from "../src/index.js";
 interface MergeDefinition {
   parentSlug: string;
   childSlugs: string[];
-  ensureVariants?: { name: string; price: number; offerPrice?: number; duration?: string; sortOrder: number }[];
+  ensureVariants?: {
+    name: string;
+    price: number;
+    offerPrice?: number;
+    duration?: string;
+    sortOrder: number;
+  }[];
 }
 
 const MERGE_RULES: MergeDefinition[] = [
@@ -26,11 +32,41 @@ const MERGE_RULES: MergeDefinition[] = [
       "o3-brightening-mani-pedi-spa",
     ],
     ensureVariants: [
-      { name: "Express Mani-Pedi Combo", price: 999, offerPrice: 899, duration: "60 mins", sortOrder: 1 },
-      { name: "Classic Rose Spa Mani-Pedi", price: 1499, offerPrice: 1299, duration: "75 mins", sortOrder: 2 },
-      { name: "Aroma Spa Relaxing Mani-Pedi", price: 1699, offerPrice: 1499, duration: "90 mins", sortOrder: 3 },
-      { name: "O3+ Luxury Brightening Mani-Pedi", price: 1999, offerPrice: 1699, duration: "90 mins", sortOrder: 4 },
-      { name: "FYC Jelly Luxury Spa Pedicure", price: 1299, offerPrice: 1099, duration: "60 mins", sortOrder: 5 },
+      {
+        name: "Express Mani-Pedi Combo",
+        price: 999,
+        offerPrice: 899,
+        duration: "60 mins",
+        sortOrder: 1,
+      },
+      {
+        name: "Classic Rose Spa Mani-Pedi",
+        price: 1499,
+        offerPrice: 1299,
+        duration: "75 mins",
+        sortOrder: 2,
+      },
+      {
+        name: "Aroma Spa Relaxing Mani-Pedi",
+        price: 1699,
+        offerPrice: 1499,
+        duration: "90 mins",
+        sortOrder: 3,
+      },
+      {
+        name: "O3+ Luxury Brightening Mani-Pedi",
+        price: 1999,
+        offerPrice: 1699,
+        duration: "90 mins",
+        sortOrder: 4,
+      },
+      {
+        name: "FYC Jelly Luxury Spa Pedicure",
+        price: 1299,
+        offerPrice: 1099,
+        duration: "60 mins",
+        sortOrder: 5,
+      },
     ],
   },
 
@@ -39,10 +75,34 @@ const MERGE_RULES: MergeDefinition[] = [
     parentSlug: "gel-nail-extensions",
     childSlugs: ["nail-extensions-gel-art"],
     ensureVariants: [
-      { name: "Acrylic Extensions with Gel Polish", price: 2499, offerPrice: 2199, duration: "120 mins", sortOrder: 1 },
-      { name: "UV Gel Nail Extensions", price: 2799, offerPrice: 2499, duration: "120 mins", sortOrder: 2 },
-      { name: "Polygel Sculpting Extensions", price: 2999, offerPrice: 2699, duration: "120 mins", sortOrder: 3 },
-      { name: "Express Soft Gel Press-ons", price: 1799, offerPrice: 1499, duration: "60 mins", sortOrder: 4 },
+      {
+        name: "Acrylic Extensions with Gel Polish",
+        price: 2499,
+        offerPrice: 2199,
+        duration: "120 mins",
+        sortOrder: 1,
+      },
+      {
+        name: "UV Gel Nail Extensions",
+        price: 2799,
+        offerPrice: 2499,
+        duration: "120 mins",
+        sortOrder: 2,
+      },
+      {
+        name: "Polygel Sculpting Extensions",
+        price: 2999,
+        offerPrice: 2699,
+        duration: "120 mins",
+        sortOrder: 3,
+      },
+      {
+        name: "Express Soft Gel Press-ons",
+        price: 1799,
+        offerPrice: 1499,
+        duration: "60 mins",
+        sortOrder: 4,
+      },
     ],
   },
 
@@ -51,11 +111,41 @@ const MERGE_RULES: MergeDefinition[] = [
     parentSlug: "facial-at-home",
     childSlugs: ["professional-facial", "premium-glow-facial"],
     ensureVariants: [
-      { name: "Fruit / Herbal Glow Facial", price: 999, offerPrice: 849, duration: "60 mins", sortOrder: 1 },
-      { name: "Cheryl's Cosmeceuticals Glow Facial", price: 1499, offerPrice: 1299, duration: "75 mins", sortOrder: 2 },
-      { name: "O3+ Bridal Brightening & De-Tan", price: 1999, offerPrice: 1699, duration: "90 mins", sortOrder: 3 },
-      { name: "24K Gold Luxury Radiance Facial", price: 2499, offerPrice: 2099, duration: "90 mins", sortOrder: 4 },
-      { name: "Diamond Illuminating Anti-Ageing Facial", price: 2999, offerPrice: 2499, duration: "90 mins", sortOrder: 5 },
+      {
+        name: "Fruit / Herbal Glow Facial",
+        price: 999,
+        offerPrice: 849,
+        duration: "60 mins",
+        sortOrder: 1,
+      },
+      {
+        name: "Cheryl's Cosmeceuticals Glow Facial",
+        price: 1499,
+        offerPrice: 1299,
+        duration: "75 mins",
+        sortOrder: 2,
+      },
+      {
+        name: "O3+ Bridal Brightening & De-Tan",
+        price: 1999,
+        offerPrice: 1699,
+        duration: "90 mins",
+        sortOrder: 3,
+      },
+      {
+        name: "24K Gold Luxury Radiance Facial",
+        price: 2499,
+        offerPrice: 2099,
+        duration: "90 mins",
+        sortOrder: 4,
+      },
+      {
+        name: "Diamond Illuminating Anti-Ageing Facial",
+        price: 2999,
+        offerPrice: 2499,
+        duration: "90 mins",
+        sortOrder: 5,
+      },
     ],
   },
 
@@ -64,8 +154,20 @@ const MERGE_RULES: MergeDefinition[] = [
     parentSlug: "classic-cleanup",
     childSlugs: ["professional-face-cleanup"],
     ensureVariants: [
-      { name: "Classic Herbal Cleanup", price: 599, offerPrice: 499, duration: "40 mins", sortOrder: 1 },
-      { name: "Professional Deep Pore & De-Tan Cleanup", price: 799, offerPrice: 699, duration: "50 mins", sortOrder: 2 },
+      {
+        name: "Classic Herbal Cleanup",
+        price: 599,
+        offerPrice: 499,
+        duration: "40 mins",
+        sortOrder: 1,
+      },
+      {
+        name: "Professional Deep Pore & De-Tan Cleanup",
+        price: 799,
+        offerPrice: 699,
+        duration: "50 mins",
+        sortOrder: 2,
+      },
     ],
   },
 
@@ -79,10 +181,34 @@ const MERGE_RULES: MergeDefinition[] = [
       "luxe-glam-up-makeup",
     ],
     ensureVariants: [
-      { name: "Soft Daylight Glam Party Look", price: 2499, offerPrice: 1999, duration: "75 mins", sortOrder: 1 },
-      { name: "HD Celebrity Party Makeup & Hair", price: 3499, offerPrice: 2999, duration: "90 mins", sortOrder: 2 },
-      { name: "Airbrush High-Def Party Glam", price: 4499, offerPrice: 3999, duration: "90 mins", sortOrder: 3 },
-      { name: "Cocktail & Sangeet Evening Glam", price: 4999, offerPrice: 4499, duration: "100 mins", sortOrder: 4 },
+      {
+        name: "Soft Daylight Glam Party Look",
+        price: 2499,
+        offerPrice: 1999,
+        duration: "75 mins",
+        sortOrder: 1,
+      },
+      {
+        name: "HD Celebrity Party Makeup & Hair",
+        price: 3499,
+        offerPrice: 2999,
+        duration: "90 mins",
+        sortOrder: 2,
+      },
+      {
+        name: "Airbrush High-Def Party Glam",
+        price: 4499,
+        offerPrice: 3999,
+        duration: "90 mins",
+        sortOrder: 3,
+      },
+      {
+        name: "Cocktail & Sangeet Evening Glam",
+        price: 4999,
+        offerPrice: 4499,
+        duration: "100 mins",
+        sortOrder: 4,
+      },
     ],
   },
 
@@ -91,9 +217,27 @@ const MERGE_RULES: MergeDefinition[] = [
     parentSlug: "engagement-makeup",
     childSlugs: ["hd-engagement-makeup", "airbrush-engagement-makeup"],
     ensureVariants: [
-      { name: "Classic Radiance Engagement Look", price: 4499, offerPrice: 3999, duration: "120 mins", sortOrder: 1 },
-      { name: "HD Ring Ceremony Engagement Glam", price: 6999, offerPrice: 5999, duration: "150 mins", sortOrder: 2 },
-      { name: "Ultra Airbrush Engagement Perfection", price: 8999, offerPrice: 7999, duration: "150 mins", sortOrder: 3 },
+      {
+        name: "Classic Radiance Engagement Look",
+        price: 4499,
+        offerPrice: 3999,
+        duration: "120 mins",
+        sortOrder: 1,
+      },
+      {
+        name: "HD Ring Ceremony Engagement Glam",
+        price: 6999,
+        offerPrice: 5999,
+        duration: "150 mins",
+        sortOrder: 2,
+      },
+      {
+        name: "Ultra Airbrush Engagement Perfection",
+        price: 8999,
+        offerPrice: 7999,
+        duration: "150 mins",
+        sortOrder: 3,
+      },
     ],
   },
 
@@ -102,8 +246,20 @@ const MERGE_RULES: MergeDefinition[] = [
     parentSlug: "bridal-makeup-artist",
     childSlugs: ["classic-bridal-makeup"],
     ensureVariants: [
-      { name: "Classic Bridal Radiance Look", price: 9999, offerPrice: 8499, duration: "180 mins", sortOrder: 1 },
-      { name: "Signature Royal Heritage Bridal Look", price: 12000, offerPrice: 10999, duration: "210 mins", sortOrder: 2 },
+      {
+        name: "Classic Bridal Radiance Look",
+        price: 9999,
+        offerPrice: 8499,
+        duration: "180 mins",
+        sortOrder: 1,
+      },
+      {
+        name: "Signature Royal Heritage Bridal Look",
+        price: 12000,
+        offerPrice: 10999,
+        duration: "210 mins",
+        sortOrder: 2,
+      },
     ],
   },
 
@@ -112,10 +268,34 @@ const MERGE_RULES: MergeDefinition[] = [
     parentSlug: "bridal-hair-styling",
     childSlugs: ["bridal-hairstyling-advanced-hairdo"],
     ensureVariants: [
-      { name: "Festive Textured Bun or Braid", price: 1799, offerPrice: 1499, duration: "45 mins", sortOrder: 1 },
-      { name: "Classic Floral Bridal Bun", price: 2499, offerPrice: 2199, duration: "60 mins", sortOrder: 2 },
-      { name: "Hollywood Glam Waves / Advanced Hairdo", price: 2999, offerPrice: 2599, duration: "75 mins", sortOrder: 3 },
-      { name: "Traditional South Indian Jadai & Floral Styling", price: 3499, offerPrice: 2999, duration: "90 mins", sortOrder: 4 },
+      {
+        name: "Festive Textured Bun or Braid",
+        price: 1799,
+        offerPrice: 1499,
+        duration: "45 mins",
+        sortOrder: 1,
+      },
+      {
+        name: "Classic Floral Bridal Bun",
+        price: 2499,
+        offerPrice: 2199,
+        duration: "60 mins",
+        sortOrder: 2,
+      },
+      {
+        name: "Hollywood Glam Waves / Advanced Hairdo",
+        price: 2999,
+        offerPrice: 2599,
+        duration: "75 mins",
+        sortOrder: 3,
+      },
+      {
+        name: "Traditional South Indian Jadai & Floral Styling",
+        price: 3499,
+        offerPrice: 2999,
+        duration: "90 mins",
+        sortOrder: 4,
+      },
     ],
   },
 
@@ -130,8 +310,20 @@ const MERGE_RULES: MergeDefinition[] = [
     parentSlug: "full-back-waxing",
     childSlugs: ["half-back-waxing"],
     ensureVariants: [
-      { name: "Full Back Rica Waxing", price: 349, offerPrice: 299, duration: "25 mins", sortOrder: 1 },
-      { name: "Half Back Rica Waxing", price: 249, offerPrice: 199, duration: "15 mins", sortOrder: 2 },
+      {
+        name: "Full Back Rica Waxing",
+        price: 349,
+        offerPrice: 299,
+        duration: "25 mins",
+        sortOrder: 1,
+      },
+      {
+        name: "Half Back Rica Waxing",
+        price: 249,
+        offerPrice: 199,
+        duration: "15 mins",
+        sortOrder: 2,
+      },
     ],
   },
 ];
@@ -158,7 +350,14 @@ async function main() {
     for (const childSlug of rule.childSlugs) {
       const child = await prisma.service.findUnique({
         where: { slug: childSlug },
-        select: { id: true, title: true, slug: true, leadCount: true, status: true, mergedIntoId: true },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          leadCount: true,
+          status: true,
+          mergedIntoId: true,
+        },
       });
 
       if (!child) {
@@ -183,13 +382,24 @@ async function main() {
 
       await prisma.redirect.upsert({
         where: { fromPath },
-        update: { toPath, code: "MOVED_301", note: `Merged duplicate "${child.title}" into "${parent.title}"` },
-        create: { fromPath, toPath, code: "MOVED_301", note: `Merged duplicate "${child.title}" into "${parent.title}"` },
+        update: {
+          toPath,
+          code: "MOVED_301",
+          note: `Merged duplicate "${child.title}" into "${parent.title}"`,
+        },
+        create: {
+          fromPath,
+          toPath,
+          code: "MOVED_301",
+          note: `Merged duplicate "${child.title}" into "${parent.title}"`,
+        },
       });
 
       redirectsCreated++;
       mergedCount++;
-      console.log(`✓ Merged: "${child.title}" (/services/${child.slug}) -> "${parent.title}" (/services/${parent.slug})`);
+      console.log(
+        `✓ Merged: "${child.title}" (/services/${child.slug}) -> "${parent.title}" (/services/${parent.slug})`
+      );
     }
 
     // Roll up leads and ensure parent is active

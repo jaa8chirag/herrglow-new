@@ -109,16 +109,16 @@ const DEFAULT_COORDS: Record<string, { lat: number; lng: number }> = {
   "76": { lat: 28.567, lng: 77.382 },
   "137": { lat: 28.513, lng: 77.4042 },
   "gaur city": { lat: 28.608, lng: 77.429 },
-  "dwarka": { lat: 28.5921, lng: 77.046 },
-  "rohini": { lat: 28.7495, lng: 77.0565 },
+  dwarka: { lat: 28.5921, lng: 77.046 },
+  rohini: { lat: 28.7495, lng: 77.0565 },
   "south delhi": { lat: 28.5244, lng: 77.2167 },
-  "saket": { lat: 28.5244, lng: 77.2167 },
+  saket: { lat: 28.5244, lng: 77.2167 },
   "vasant kunj": { lat: 28.5293, lng: 77.1539 },
   "lajpat nagar": { lat: 28.5677, lng: 77.2433 },
-  "indirapuram": { lat: 28.6415, lng: 77.3713 },
-  "vaishali": { lat: 28.6445, lng: 77.34 },
-  "vasundhara": { lat: 28.6603, lng: 77.3729 },
-  "gurgaon": { lat: 28.4817, lng: 77.089 },
+  indirapuram: { lat: 28.6415, lng: 77.3713 },
+  vaishali: { lat: 28.6445, lng: 77.34 },
+  vasundhara: { lat: 28.6603, lng: 77.3729 },
+  gurgaon: { lat: 28.4817, lng: 77.089 },
 };
 
 function resolveEstimatedCoords(text: string): { lat: number; lng: number } | null {
@@ -198,9 +198,7 @@ export async function findMatchingBeauticiansForLead(
   }
 
   const primaryServiceTitle =
-    lead.package?.title ||
-    requestedServiceTitles.join(", ") ||
-    "Beauty & Makeup Service";
+    lead.package?.title || requestedServiceTitles.join(", ") || "Beauty & Makeup Service";
 
   // Query all active pros with coverage, offered services, and private contact
   const pros = await prisma.pro.findMany({
@@ -267,14 +265,14 @@ export async function findMatchingBeauticiansForLead(
     const coverageAreaNames = p.coverage.map((c) => c.area.name);
     const coversAreaDirectly = Boolean(
       (lead.areaId && p.coverage.some((c) => c.area.id === lead.areaId)) ||
-        p.coverage.some((c) => {
-          const aName = c.area.name.toLowerCase();
-          const aSlug = c.area.slug.toLowerCase();
-          return (
-            leadLocationText.toLowerCase().includes(aName) ||
-            leadLocationText.toLowerCase().includes(aSlug.replace(/-/g, " "))
-          );
-        })
+      p.coverage.some((c) => {
+        const aName = c.area.name.toLowerCase();
+        const aSlug = c.area.slug.toLowerCase();
+        return (
+          leadLocationText.toLowerCase().includes(aName) ||
+          leadLocationText.toLowerCase().includes(aSlug.replace(/-/g, " "))
+        );
+      })
     );
 
     // 3. Service / Skill Capabilities
@@ -292,7 +290,8 @@ export async function findMatchingBeauticiansForLead(
       const primaryLower = primaryServiceTitle.toLowerCase();
       if (
         (primaryLower.includes("bridal") && specLower.includes("bridal")) ||
-        (primaryLower.includes("facial") && (specLower.includes("facial") || specLower.includes("skincare"))) ||
+        (primaryLower.includes("facial") &&
+          (specLower.includes("facial") || specLower.includes("skincare"))) ||
         (primaryLower.includes("hair") && specLower.includes("hair")) ||
         (primaryLower.includes("nail") && specLower.includes("nail")) ||
         (primaryLower.includes("wax") && specLower.includes("wax"))
@@ -438,7 +437,10 @@ export async function findMatchingBeauticiansForLead(
         bookingRef: b.bookingRef,
         clientName: b.name,
         timeSlot: b.timeSlot,
-        serviceTitle: b.package?.title || b.services.map((s) => s.service.title).join(", ") || "Doorstep Service",
+        serviceTitle:
+          b.package?.title ||
+          b.services.map((s) => s.service.title).join(", ") ||
+          "Doorstep Service",
         location: b.address || b.locationText || null,
       })),
       matchScore: score,

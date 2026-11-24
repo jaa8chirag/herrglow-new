@@ -1,12 +1,24 @@
 "use client";
 
 import { useActionState, useEffect, useMemo, useRef, useState } from "react";
-import { Check, CheckCircle2, ChevronDown, Loader2, MapPin, MessageCircle, Plus, Search, Sparkles, X } from "lucide-react";
+import {
+  Check,
+  CheckCircle2,
+  ChevronDown,
+  Loader2,
+  MapPin,
+  MessageCircle,
+  Plus,
+  Search,
+  Sparkles,
+  X,
+} from "lucide-react";
 import { Button, Card, cn } from "@herrglow/ui";
 import { submitApplication, type ApplyState } from "@/app/actions-apply";
 import { whatsappLink } from "@/lib/whatsapp";
 
-const fieldCls = "w-full min-h-12 rounded-xl border border-line bg-white px-4 py-2.5 text-[0.95rem] text-ink placeholder:text-ink-soft/60 focus:border-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-600/20";
+const fieldCls =
+  "w-full min-h-12 rounded-xl border border-line bg-white px-4 py-2.5 text-[0.95rem] text-ink placeholder:text-ink-soft/60 focus:border-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-600/20";
 
 const DEFAULT_AREAS = [
   "Indirapuram",
@@ -35,10 +47,34 @@ const DEFAULT_AREAS = [
 ];
 
 const TRAVEL_DISTANCES = [
-  { value: 5, enLabel: "Up to 5 km", hiLabel: "5 km tak", enDesc: "Hyperlocal (nearby sectors)", hiDesc: "Sirf paas ke sectors" },
-  { value: 10, enLabel: "Up to 10 km", hiLabel: "10 km tak", enDesc: "Standard (comfortable commute)", hiDesc: "Normal aane-jaane ki doori" },
-  { value: 20, enLabel: "Up to 20 km", hiLabel: "20 km tak", enDesc: "Wide (entire city / across sectors)", hiDesc: "Pore city mein kahin bhi" },
-  { value: 40, enLabel: "All Delhi NCR", hiLabel: "Pura Delhi NCR", enDesc: "Bridal, Party & VIP appointments", hiDesc: "Bridal aur VIP party bookings" },
+  {
+    value: 5,
+    enLabel: "Up to 5 km",
+    hiLabel: "5 km tak",
+    enDesc: "Hyperlocal (nearby sectors)",
+    hiDesc: "Sirf paas ke sectors",
+  },
+  {
+    value: 10,
+    enLabel: "Up to 10 km",
+    hiLabel: "10 km tak",
+    enDesc: "Standard (comfortable commute)",
+    hiDesc: "Normal aane-jaane ki doori",
+  },
+  {
+    value: 20,
+    enLabel: "Up to 20 km",
+    hiLabel: "20 km tak",
+    enDesc: "Wide (entire city / across sectors)",
+    hiDesc: "Pore city mein kahin bhi",
+  },
+  {
+    value: 40,
+    enLabel: "All Delhi NCR",
+    hiLabel: "Pura Delhi NCR",
+    enDesc: "Bridal, Party & VIP appointments",
+    hiDesc: "Bridal aur VIP party bookings",
+  },
 ];
 
 export interface AreaClusterItem {
@@ -122,7 +158,9 @@ export function ApplyForm({
 }: ApplyFormProps) {
   const [internalLang, setInternalLang] = useState<"en" | "hi">(initialLang);
   const lang = controlledLang ?? internalLang;
-  const [state, action, pending] = useActionState<ApplyState, FormData>(submitApplication, { status: "idle" });
+  const [state, action, pending] = useActionState<ApplyState, FormData>(submitApplication, {
+    status: "idle",
+  });
 
   const handleAction = (formData: FormData) => {
     if (!coords) {
@@ -205,7 +243,8 @@ export function ApplyForm({
       if (k === "portfolioUrl") return "Poora web link https:// ke sath daalein";
       if (k === "photo") return "Photo 5 MB se choti aur sahi format (JPG, PNG) mein honi chahiye";
       if (k === "idProof") return "Govt ID photo ya PDF 5 MB se kam size ki honi chahiye";
-      if (k === "form") return "Bahut saari requests aayi hain. Kripya thodi der baad koshish karein.";
+      if (k === "form")
+        return "Bahut saari requests aayi hain. Kripya thodi der baad koshish karein.";
     }
     return msg;
   };
@@ -232,9 +271,12 @@ export function ApplyForm({
         setLocationRequiredErr("");
         // Reverse-geocode via OpenStreetMap for friendly locality name if user hasn't typed one
         try {
-          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`, {
-            headers: { "Accept-Language": "en" },
-          });
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+            {
+              headers: { "Accept-Language": "en" },
+            }
+          );
           if (res.ok) {
             const data = await res.json();
             const place =
@@ -281,20 +323,55 @@ export function ApplyForm({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const detectedRegion = useMemo<"Noida" | "Greater Noida" | "Ghaziabad" | "Delhi" | "Gurgaon">(() => {
+  const detectedRegion = useMemo<
+    "Noida" | "Greater Noida" | "Ghaziabad" | "Delhi" | "Gurgaon"
+  >(() => {
     const text = areaValue.toLowerCase();
-    if (text.includes("noida") && !text.includes("greater") && !text.includes("ext")) return "Noida";
-    if (text.includes("indirapuram") || text.includes("vaishali") || text.includes("vasundhara") || text.includes("ghaziabad") || text.includes("kaushambi")) return "Ghaziabad";
-    if (text.includes("gaur city") || text.includes("greater noida") || text.includes("pari chowk") || text.includes("noida ext") || text.includes("beta") || text.includes("alpha")) return "Greater Noida";
-    if (text.includes("delhi") || text.includes("dwarka") || text.includes("saket") || text.includes("rohini") || text.includes("lajpat") || text.includes("vasant") || text.includes("hauz") || text.includes("janakpuri")) return "Delhi";
-    if (text.includes("gurgaon") || text.includes("gurugram") || text.includes("dlf") || text.includes("sohna") || text.includes("golf course")) return "Gurgaon";
+    if (text.includes("noida") && !text.includes("greater") && !text.includes("ext"))
+      return "Noida";
+    if (
+      text.includes("indirapuram") ||
+      text.includes("vaishali") ||
+      text.includes("vasundhara") ||
+      text.includes("ghaziabad") ||
+      text.includes("kaushambi")
+    )
+      return "Ghaziabad";
+    if (
+      text.includes("gaur city") ||
+      text.includes("greater noida") ||
+      text.includes("pari chowk") ||
+      text.includes("noida ext") ||
+      text.includes("beta") ||
+      text.includes("alpha")
+    )
+      return "Greater Noida";
+    if (
+      text.includes("delhi") ||
+      text.includes("dwarka") ||
+      text.includes("saket") ||
+      text.includes("rohini") ||
+      text.includes("lajpat") ||
+      text.includes("vasant") ||
+      text.includes("hauz") ||
+      text.includes("janakpuri")
+    )
+      return "Delhi";
+    if (
+      text.includes("gurgaon") ||
+      text.includes("gurugram") ||
+      text.includes("dlf") ||
+      text.includes("sohna") ||
+      text.includes("golf course")
+    )
+      return "Gurgaon";
 
     if (coords) {
       if (coords.lng > 77.44 && coords.lat < 28.52) return "Greater Noida";
-      if (coords.lng > 77.30 && coords.lat > 28.60) return "Ghaziabad";
-      if (coords.lng > 77.28 && coords.lat <= 28.60) return "Noida";
+      if (coords.lng > 77.3 && coords.lat > 28.6) return "Ghaziabad";
+      if (coords.lng > 77.28 && coords.lat <= 28.6) return "Noida";
       if (coords.lng < 77.12 && coords.lat < 28.52) return "Gurgaon";
-      if (coords.lng >= 77.00 && coords.lng <= 77.30) return "Delhi";
+      if (coords.lng >= 77.0 && coords.lng <= 77.3) return "Delhi";
     }
 
     return "Noida";
@@ -302,19 +379,28 @@ export function ApplyForm({
 
   const nearbyAreas = useMemo(() => {
     if (detectedRegion === "Ghaziabad") {
-      return ALL_AREAS.filter((a) => a.region === "Ghaziabad" || a.name.includes("Sector 62") || a.name.includes("Sector 50"));
+      return ALL_AREAS.filter(
+        (a) =>
+          a.region === "Ghaziabad" || a.name.includes("Sector 62") || a.name.includes("Sector 50")
+      );
     }
     if (detectedRegion === "Noida") {
-      return ALL_AREAS.filter((a) => a.region === "Noida" || a.name.includes("Indirapuram") || a.name.includes("Gaur City"));
+      return ALL_AREAS.filter(
+        (a) =>
+          a.region === "Noida" || a.name.includes("Indirapuram") || a.name.includes("Gaur City")
+      );
     }
     return ALL_AREAS.filter((a) => a.region === detectedRegion);
   }, [detectedRegion]);
 
   const toggleArea = (name: string) => {
-    setSelectedAreas((prev) => (prev.includes(name) ? prev.filter((a) => a !== name) : [...prev, name]));
+    setSelectedAreas((prev) =>
+      prev.includes(name) ? prev.filter((a) => a !== name) : [...prev, name]
+    );
   };
 
-  const allNearbySelected = nearbyAreas.length > 0 && nearbyAreas.every((a) => selectedAreas.includes(a.name));
+  const allNearbySelected =
+    nearbyAreas.length > 0 && nearbyAreas.every((a) => selectedAreas.includes(a.name));
 
   const toggleAllNearby = () => {
     if (allNearbySelected) {
@@ -370,7 +456,10 @@ export function ApplyForm({
     return (
       <Card id="apply" className="p-8">
         <h2 className="text-2xl font-serif text-plum-900">
-          {t("Thank you, we have received your application", "Dhanyawaad! Aapki application hume mil gayi hai 🎉")}
+          {t(
+            "Thank you, we have received your application",
+            "Dhanyawaad! Aapki application hume mil gayi hai 🎉"
+          )}
         </h2>
         <p className="mt-3 text-ink-soft">
           {t(
@@ -423,7 +512,7 @@ export function ApplyForm({
                 "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer",
                 lang === "hi"
                   ? "bg-plum-700 text-ivory shadow-xs font-bold"
-                : "text-ink-soft hover:text-plum-950"
+                  : "text-ink-soft hover:text-plum-950"
               )}
               aria-pressed={lang === "hi"}
             >
@@ -442,7 +531,10 @@ export function ApplyForm({
             </div>
             <div className="min-w-0">
               <p className="text-sm font-semibold text-emerald-950">
-                {t("Prefer applying via WhatsApp?", "Kya aap seedhe WhatsApp par apply karna chahti hain?")}
+                {t(
+                  "Prefer applying via WhatsApp?",
+                  "Kya aap seedhe WhatsApp par apply karna chahti hain?"
+                )}
               </p>
               <p className="text-xs text-emerald-800">
                 {t(
@@ -483,7 +575,10 @@ export function ApplyForm({
         noValidate
       >
         <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
-          <label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
+          <label>
+            Website
+            <input name="website" tabIndex={-1} autoComplete="off" />
+          </label>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 min-w-0">
@@ -643,9 +738,16 @@ export function ApplyForm({
                     value={parlourName}
                     onChange={(e) => setParlourName(e.target.value)}
                     className={cn(fieldCls, err("parlourName") && "border-rose-600")}
-                    placeholder={t("e.g. Priya Beauty Parlour & Makeover", "Jaise: Priya Beauty Parlour & Makeover")}
+                    placeholder={t(
+                      "e.g. Priya Beauty Parlour & Makeover",
+                      "Jaise: Priya Beauty Parlour & Makeover"
+                    )}
                   />
-                  {err("parlourName") && <span className="text-xs text-rose-700 normal-case font-normal">{err("parlourName")}</span>}
+                  {err("parlourName") && (
+                    <span className="text-xs text-rose-700 normal-case font-normal">
+                      {err("parlourName")}
+                    </span>
+                  )}
                 </label>
 
                 <label className="grid gap-1.5 text-xs font-semibold uppercase tracking-wider text-plum-900 min-w-0">
@@ -659,9 +761,16 @@ export function ApplyForm({
                     value={parlourAddress}
                     onChange={(e) => setParlourAddress(e.target.value)}
                     className={cn(fieldCls, err("parlourAddress") && "border-rose-600")}
-                    placeholder={t("e.g. Shop 4, Main Market, Sector 12, Noida", "Jaise: Shop 4, Main Market, Sector 12, Noida")}
+                    placeholder={t(
+                      "e.g. Shop 4, Main Market, Sector 12, Noida",
+                      "Jaise: Shop 4, Main Market, Sector 12, Noida"
+                    )}
                   />
-                  {err("parlourAddress") && <span className="text-xs text-rose-700 normal-case font-normal">{err("parlourAddress")}</span>}
+                  {err("parlourAddress") && (
+                    <span className="text-xs text-rose-700 normal-case font-normal">
+                      {err("parlourAddress")}
+                    </span>
+                  )}
                 </label>
               </div>
             )}
@@ -672,10 +781,16 @@ export function ApplyForm({
             <div className="flex flex-wrap items-center justify-between gap-2 min-w-0">
               <div>
                 <h4 className="text-sm font-semibold text-plum-950">
-                  {t("Your Home Address (Where you live)", "Aapka Ghar ka Address (Jahan aap rehti hain)")}
+                  {t(
+                    "Your Home Address (Where you live)",
+                    "Aapka Ghar ka Address (Jahan aap rehti hain)"
+                  )}
                 </h4>
                 <p className="text-xs text-ink-soft">
-                  {t("For artist verification and assigning clients near your home", "Verification aur paas ke orders dene ke liye zaroori hai")}
+                  {t(
+                    "For artist verification and assigning clients near your home",
+                    "Verification aur paas ke orders dene ke liye zaroori hai"
+                  )}
                 </p>
               </div>
               <button
@@ -695,26 +810,37 @@ export function ApplyForm({
                 {geoStatus === "detecting" ? (
                   <>
                     <Loader2 className="size-3.5 animate-spin shrink-0" />{" "}
-                    <span className="truncate">{t("Detecting GPS…", "GPS detect ho raha hai…")}</span>
+                    <span className="truncate">
+                      {t("Detecting GPS…", "GPS detect ho raha hai…")}
+                    </span>
                   </>
                 ) : coords ? (
                   <>
                     <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0" />{" "}
                     <span className="truncate">
-                      {t("Live GPS Verified", "Live GPS Verified ✓")} ({coords.lat.toFixed(4)}, {coords.lng.toFixed(4)})
+                      {t("Live GPS Verified", "Live GPS Verified ✓")} ({coords.lat.toFixed(4)},{" "}
+                      {coords.lng.toFixed(4)})
                     </span>
                   </>
                 ) : (
                   <>
                     <MapPin className="size-3.5 text-rose-600 shrink-0" />{" "}
-                    <span className="truncate font-bold">{t("Share Live Location (GPS) *", "📍 Live Location Share Karein (Zaroori) *")}</span>
+                    <span className="truncate font-bold">
+                      {t(
+                        "Share Live Location (GPS) *",
+                        "📍 Live Location Share Karein (Zaroori) *"
+                      )}
+                    </span>
                   </>
                 )}
               </button>
             </div>
 
             {(locationRequiredErr || err("location")) && (
-              <p className="flex items-center gap-1.5 rounded-xl border border-rose-300 bg-rose-50/90 px-3 py-2 text-xs font-medium text-rose-800" role="alert">
+              <p
+                className="flex items-center gap-1.5 rounded-xl border border-rose-300 bg-rose-50/90 px-3 py-2 text-xs font-medium text-rose-800"
+                role="alert"
+              >
                 <MapPin className="size-4 shrink-0 text-rose-600" />
                 <span>{locationRequiredErr || err("location")}</span>
               </p>
@@ -723,32 +849,48 @@ export function ApplyForm({
             {/* Row 1: Flat/House No. & Society/Apartment */}
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="grid gap-1.5 text-xs font-semibold uppercase tracking-wider text-plum-900 min-w-0">
-                <span>{t("Flat / House No. & Floor", "Flat / Makaan No. aur Floor")} <span className="text-rose-700">*</span></span>
+                <span>
+                  {t("Flat / House No. & Floor", "Flat / Makaan No. aur Floor")}{" "}
+                  <span className="text-rose-700">*</span>
+                </span>
                 <input
                   required
                   value={flatValue}
                   onChange={(e) => setFlatValue(e.target.value)}
                   className={fieldCls}
-                  placeholder={t("e.g. Flat 204, 2nd Floor / House #12", "Jaise: Flat 204, 2nd Floor / House #12")}
+                  placeholder={t(
+                    "e.g. Flat 204, 2nd Floor / House #12",
+                    "Jaise: Flat 204, 2nd Floor / House #12"
+                  )}
                 />
               </label>
 
               <label className="grid gap-1.5 text-xs font-semibold uppercase tracking-wider text-plum-900 min-w-0">
-                <span>{t("Society / Building / Colony", "Society / Apartment / Colony")} <span className="text-rose-700">*</span></span>
+                <span>
+                  {t("Society / Building / Colony", "Society / Apartment / Colony")}{" "}
+                  <span className="text-rose-700">*</span>
+                </span>
                 <input
                   required
                   value={societyValue}
                   onChange={(e) => setSocietyValue(e.target.value)}
                   className={fieldCls}
-                  placeholder={t("e.g. Cleo County / Gaur City / Stellar", "Jaise: Cleo County / Gaur City / Stellar")}
+                  placeholder={t(
+                    "e.g. Cleo County / Gaur City / Stellar",
+                    "Jaise: Cleo County / Gaur City / Stellar"
+                  )}
                 />
               </label>
             </div>
 
             {/* Row 2: Locality / Sector */}
             <div className="grid gap-1.5 min-w-0">
-              <label htmlFor="apply-area-input" className="text-xs font-semibold uppercase tracking-wider text-plum-900">
-                {t("Locality / Sector (City)", "Area / Sector / Shahar")} <span className="text-rose-700">*</span>
+              <label
+                htmlFor="apply-area-input"
+                className="text-xs font-semibold uppercase tracking-wider text-plum-900"
+              >
+                {t("Locality / Sector (City)", "Area / Sector / Shahar")}{" "}
+                <span className="text-rose-700">*</span>
               </label>
               <input
                 id="apply-area-input"
@@ -757,7 +899,10 @@ export function ApplyForm({
                 onChange={(e) => setAreaValue(e.target.value)}
                 list="apply-areas"
                 className={cn(fieldCls, (err("area") || err("city")) && "border-rose-600")}
-                placeholder={t("e.g. Sector 62, Indirapuram, Dwarka", "Jaise: Sector 62, Indirapuram, Dwarka")}
+                placeholder={t(
+                  "e.g. Sector 62, Indirapuram, Dwarka",
+                  "Jaise: Sector 62, Indirapuram, Dwarka"
+                )}
               />
               <datalist id="apply-areas">
                 {areaSuggestions.map((a, idx) => (
@@ -783,7 +928,9 @@ export function ApplyForm({
                 </p>
               )}
 
-              {(err("area") || err("city")) && <span className="text-xs text-rose-700">{err("area") || err("city")}</span>}
+              {(err("area") || err("city")) && (
+                <span className="text-xs text-rose-700">{err("area") || err("city")}</span>
+              )}
 
               {/* Combined full address for backend */}
               <input
@@ -799,9 +946,17 @@ export function ApplyForm({
           <div className="grid gap-2 sm:col-span-2 min-w-0" ref={dropdownRef}>
             <div className="flex flex-wrap items-center justify-between gap-1.5 min-w-0">
               <label className="text-sm font-medium text-plum-900">
-                {t("Which areas do you operate in?", "Aap kin-kin areas mein service de sakti hain?")}{" "}
+                {t(
+                  "Which areas do you operate in?",
+                  "Aap kin-kin areas mein service de sakti hain?"
+                )}{" "}
                 <span className="font-normal text-ink-soft">
-                  ({t("select all localities you cover", "Operating Areas - jahan aap ja sakti hain")})
+                  (
+                  {t(
+                    "select all localities you cover",
+                    "Operating Areas - jahan aap ja sakti hain"
+                  )}
+                  )
                 </span>
               </label>
               {selectedAreas.length > 0 && (
@@ -810,7 +965,10 @@ export function ApplyForm({
                   onClick={() => setSelectedAreas([])}
                   className="text-xs text-rose-700 underline hover:text-rose-800 transition cursor-pointer shrink-0"
                 >
-                  {t(`Clear all (${selectedAreas.length})`, `Sabhi hatayein (${selectedAreas.length})`)}
+                  {t(
+                    `Clear all (${selectedAreas.length})`,
+                    `Sabhi hatayein (${selectedAreas.length})`
+                  )}
                 </button>
               )}
             </div>
@@ -820,7 +978,12 @@ export function ApplyForm({
               <div className="flex flex-wrap items-center justify-between gap-2 min-w-0">
                 <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-rose-700 min-w-0">
                   <Sparkles className="size-3.5 text-gold-500 shrink-0" />
-                  <span className="truncate">{t(`Quick-Select Sectors in ${detectedRegion}`, `Aapke paas ke sectors (${detectedRegion})`)}</span>
+                  <span className="truncate">
+                    {t(
+                      `Quick-Select Sectors in ${detectedRegion}`,
+                      `Aapke paas ke sectors (${detectedRegion})`
+                    )}
+                  </span>
                 </span>
                 <button
                   type="button"
@@ -829,7 +992,10 @@ export function ApplyForm({
                 >
                   {allNearbySelected
                     ? t("Deselect all nearby", "Sabhi paas ke areas hatayein")
-                    : t(`+ Select all ${nearbyAreas.length} nearby areas`, `+ Paas ke sabhi ${nearbyAreas.length} areas chunein`)}
+                    : t(
+                        `+ Select all ${nearbyAreas.length} nearby areas`,
+                        `+ Paas ke sabhi ${nearbyAreas.length} areas chunein`
+                      )}
                 </button>
               </div>
 
@@ -849,7 +1015,11 @@ export function ApplyForm({
                           : "border-line bg-white text-plum-900 hover:border-plum-400 hover:bg-blush-100"
                       )}
                     >
-                      {isSelected ? <Check className="size-3 shrink-0" /> : <Plus className="size-3 text-ink-soft shrink-0" />}
+                      {isSelected ? (
+                        <Check className="size-3 shrink-0" />
+                      ) : (
+                        <Plus className="size-3 text-ink-soft shrink-0" />
+                      )}
                       <span className="truncate">{item.name}</span>
                     </button>
                   );
@@ -869,12 +1039,28 @@ export function ApplyForm({
                   err("operatingAreas") && selectedAreas.length === 0 && "border-rose-600"
                 )}
               >
-                <span className={cn("truncate min-w-0", selectedAreas.length === 0 ? "text-ink-soft/70" : "text-plum-950 font-medium")}>
+                <span
+                  className={cn(
+                    "truncate min-w-0",
+                    selectedAreas.length === 0 ? "text-ink-soft/70" : "text-plum-950 font-medium"
+                  )}
+                >
                   {selectedAreas.length === 0
-                    ? t("Choose operating areas from dropdown (or tap above)…", "List mein se apne service areas chunein (ya upar tap karein)…")
-                    : t(`${selectedAreas.length} operating areas selected`, `${selectedAreas.length} service areas chune gaye hain`)}
+                    ? t(
+                        "Choose operating areas from dropdown (or tap above)…",
+                        "List mein se apne service areas chunein (ya upar tap karein)…"
+                      )
+                    : t(
+                        `${selectedAreas.length} operating areas selected`,
+                        `${selectedAreas.length} service areas chune gaye hain`
+                      )}
                 </span>
-                <ChevronDown className={cn("size-4 text-ink-soft shrink-0 transition-transform", dropdownOpen && "rotate-180")} />
+                <ChevronDown
+                  className={cn(
+                    "size-4 text-ink-soft shrink-0 transition-transform",
+                    dropdownOpen && "rotate-180"
+                  )}
+                />
               </button>
 
               {/* Dropdown Menu */}
@@ -888,7 +1074,10 @@ export function ApplyForm({
                         type="text"
                         value={areaSearch}
                         onChange={(e) => setAreaSearch(e.target.value)}
-                        placeholder={t("Search sectors, societies (e.g. Sector 62, Dwarka, Gaur City)...", "Area ya society ka naam search karein (jaise Sector 62, Gaur City)...")}
+                        placeholder={t(
+                          "Search sectors, societies (e.g. Sector 62, Dwarka, Gaur City)...",
+                          "Area ya society ka naam search karein (jaise Sector 62, Gaur City)..."
+                        )}
                         className="w-full rounded-xl border border-line bg-blush-50/50 pl-9 pr-3 py-2 text-xs text-ink placeholder:text-ink-soft/60 focus:border-rose-600 focus:outline-none focus:ring-1 focus:ring-rose-600"
                       />
                     </div>
@@ -896,7 +1085,10 @@ export function ApplyForm({
                     <div className="flex flex-wrap gap-1.5 min-w-0">
                       {[
                         { id: "All", label: t("All", "Sabhi") },
-                        { id: "Recommended", label: t(`✨ ${detectedRegion}`, `✨ Paas ke (${detectedRegion})`) },
+                        {
+                          id: "Recommended",
+                          label: t(`✨ ${detectedRegion}`, `✨ Paas ke (${detectedRegion})`),
+                        },
                         { id: "Noida", label: "Noida" },
                         { id: "Ghaziabad", label: "Ghaziabad" },
                         { id: "Greater Noida", label: "Gr. Noida" },
@@ -924,7 +1116,10 @@ export function ApplyForm({
                   <div className="max-h-[200px] overflow-y-auto py-2 divide-y divide-line/40 min-w-0">
                     {filteredAreas.length === 0 ? (
                       <p className="py-4 text-center text-xs text-ink-soft">
-                        {t("No matching areas found.", "Koi area nahi mila. Aap neeche se apna area jodh sakti hain.")}
+                        {t(
+                          "No matching areas found.",
+                          "Koi area nahi mila. Aap neeche se apna area jodh sakti hain."
+                        )}
                       </p>
                     ) : (
                       filteredAreas.map((item) => {
@@ -943,7 +1138,9 @@ export function ApplyForm({
                               />
                               <span className="truncate">{item.name}</span>
                             </span>
-                            <span className="text-[0.68rem] text-ink-soft font-normal shrink-0">{item.region}</span>
+                            <span className="text-[0.68rem] text-ink-soft font-normal shrink-0">
+                              {item.region}
+                            </span>
                           </label>
                         );
                       })
@@ -957,7 +1154,9 @@ export function ApplyForm({
                         type="text"
                         value={customArea}
                         onChange={(e) => setCustomArea(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustomArea())}
+                        onKeyDown={(e) =>
+                          e.key === "Enter" && (e.preventDefault(), addCustomArea())
+                        }
                         placeholder={t("Other society/sector...", "Koi aur society ya sector...")}
                         className="flex-1 min-w-0 rounded-lg border border-line px-2.5 py-1.5 text-xs text-ink placeholder:text-ink-soft/60"
                       />
@@ -1007,7 +1206,9 @@ export function ApplyForm({
             <input type="hidden" name="operatingAreas" value={selectedAreas.join(", ")} />
 
             {err("operatingAreas") && (
-              <span className="text-xs text-rose-700" role="alert">{err("operatingAreas")}</span>
+              <span className="text-xs text-rose-700" role="alert">
+                {err("operatingAreas")}
+              </span>
             )}
           </div>
 
@@ -1053,8 +1254,16 @@ export function ApplyForm({
           </legend>
           <div className="flex flex-wrap gap-2 min-w-0">
             {categories.map((c) => (
-              <label key={c.slug} className="flex min-h-11 items-center gap-2 rounded-full border border-line bg-white px-4 text-sm hover:border-plum-400 transition cursor-pointer">
-                <input type="checkbox" name="categories" value={c.slug} className="accent-[var(--color-plum-700)] size-4 cursor-pointer" />
+              <label
+                key={c.slug}
+                className="flex min-h-11 items-center gap-2 rounded-full border border-line bg-white px-4 text-sm hover:border-plum-400 transition cursor-pointer"
+              >
+                <input
+                  type="checkbox"
+                  name="categories"
+                  value={c.slug}
+                  className="accent-[var(--color-plum-700)] size-4 cursor-pointer"
+                />
                 <span>{c.name}</span>
               </label>
             ))}
@@ -1069,7 +1278,10 @@ export function ApplyForm({
           <input
             name="servicesText"
             className={fieldCls}
-            placeholder={t("e.g. HD Bridal, Airbrush, Rica Waxing, Korean Glass Skin", "Jaise: HD Bridal, Airbrush, Rica Waxing, Korean Facial, Hair Spa")}
+            placeholder={t(
+              "e.g. HD Bridal, Airbrush, Rica Waxing, Korean Glass Skin",
+              "Jaise: HD Bridal, Airbrush, Rica Waxing, Korean Facial, Hair Spa"
+            )}
           />
         </label>
 
@@ -1082,7 +1294,9 @@ export function ApplyForm({
               className={cn(fieldCls, err("experienceYears") && "border-rose-600")}
               placeholder={t("e.g. 4", "Jaise: 3 ya 5")}
             />
-            {err("experienceYears") && <span className="text-xs text-rose-700">{err("experienceYears")}</span>}
+            {err("experienceYears") && (
+              <span className="text-xs text-rose-700">{err("experienceYears")}</span>
+            )}
           </label>
 
           <label className="grid gap-1.5 text-sm font-medium text-plum-900 min-w-0">
@@ -1094,9 +1308,14 @@ export function ApplyForm({
               name="portfolioUrl"
               type="url"
               className={cn(fieldCls, err("portfolioUrl") && "border-rose-600")}
-              placeholder={t("https://instagram.com/yourhandle", "https://instagram.com/yourhandle ya @username")}
+              placeholder={t(
+                "https://instagram.com/yourhandle",
+                "https://instagram.com/yourhandle ya @username"
+              )}
             />
-            {err("portfolioUrl") && <span className="text-xs text-rose-700">{err("portfolioUrl")}</span>}
+            {err("portfolioUrl") && (
+              <span className="text-xs text-rose-700">{err("portfolioUrl")}</span>
+            )}
           </label>
         </div>
 
@@ -1127,7 +1346,10 @@ export function ApplyForm({
                 {t("Govt ID proof (Aadhaar / Voter ID / DL)", "Govt ID Proof (Aadhaar / Voter ID)")}
               </p>
               <p className="text-[0.72rem] text-ink-soft">
-                {t("Used to verify our “100% Female Verified” badge", "Sirf “100% Verified Artist” badge ke liye")}
+                {t(
+                  "Used to verify our “100% Female Verified” badge",
+                  "Sirf “100% Verified Artist” badge ke liye"
+                )}
               </p>
             </div>
             <label className="flex items-center gap-2 cursor-pointer rounded-xl border border-dashed border-plum-300 bg-white px-3 py-2 text-xs font-medium text-plum-900 hover:bg-blush-50 transition min-w-0">
@@ -1144,7 +1366,10 @@ export function ApplyForm({
 
         <label className="grid gap-1.5 text-sm font-medium text-plum-900 min-w-0">
           <span>
-            {t("Anything else you would like us to know?", "Koi aur baat jo aap hume batana chahein?")}{" "}
+            {t(
+              "Anything else you would like us to know?",
+              "Koi aur baat jo aap hume batana chahein?"
+            )}{" "}
             <span className="font-normal text-ink-soft">({t("optional", "zaroori nahi")})</span>
           </span>
           <textarea
@@ -1158,7 +1383,11 @@ export function ApplyForm({
           />
         </label>
 
-        {err("form") && <p className="text-sm text-rose-700" role="alert">{err("form")}</p>}
+        {err("form") && (
+          <p className="text-sm text-rose-700" role="alert">
+            {err("form")}
+          </p>
+        )}
 
         <Button
           type="submit"

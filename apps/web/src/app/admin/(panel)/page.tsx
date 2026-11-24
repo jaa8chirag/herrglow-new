@@ -35,10 +35,10 @@ const tone = (s: LeadStatus) =>
   s === "NEW"
     ? "info"
     : s === "BOOKED" || s === "COMPLETED"
-    ? "good"
-    : s === "LOST"
-    ? "bad"
-    : "warn";
+      ? "good"
+      : s === "LOST"
+        ? "bad"
+        : "warn";
 
 const formatPrice = (amt: unknown) => {
   if (amt == null) return "—";
@@ -122,9 +122,7 @@ export default async function Dashboard(props: PageProps<"/admin">) {
   const newCount = leadsSummary.byStatus.NEW ?? 0;
   const unassignedCount = leadsSummary.unassigned ?? 0;
   const bookedCount = leadsSummary.byStatus.BOOKED ?? 0;
-  const confirmedRev = Number(
-    revenueAgg._sum.finalAmount ?? revenueAgg._sum.amount ?? 0
-  );
+  const confirmedRev = Number(revenueAgg._sum.finalAmount ?? revenueAgg._sum.amount ?? 0);
 
   return (
     <div className="space-y-8">
@@ -135,7 +133,8 @@ export default async function Dashboard(props: PageProps<"/admin">) {
             Welcome back, {me.name || "Manager"} 👋
           </h1>
           <p className="mt-1 text-sm text-ink-soft">
-            HerrGlow Salon &amp; Beautician Operations. Easily match bookings to the nearest artists and manage appointments.
+            HerrGlow Salon &amp; Beautician Operations. Easily match bookings to the nearest artists
+            and manage appointments.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -179,9 +178,7 @@ export default async function Dashboard(props: PageProps<"/admin">) {
               <Zap className="size-4 text-gold-600 fill-gold-600" />
             </span>
           </div>
-          <p className="mt-3 font-serif text-3xl font-bold text-plum-950">
-            {unassignedCount}
-          </p>
+          <p className="mt-3 font-serif text-3xl font-bold text-plum-950">{unassignedCount}</p>
           <p className="mt-1 flex items-center gap-1 text-xs text-rose-600 font-bold">
             <span>Awaiting nearest artist</span>
             <ArrowRight className="size-3 transition group-hover:translate-x-0.5" />
@@ -201,9 +198,7 @@ export default async function Dashboard(props: PageProps<"/admin">) {
               <CheckCircle2 className="size-4" />
             </span>
           </div>
-          <p className="mt-3 font-serif text-3xl font-bold text-plum-950">
-            {bookedCount}
-          </p>
+          <p className="mt-3 font-serif text-3xl font-bold text-plum-950">{bookedCount}</p>
           <p className="mt-1 text-xs text-ink-soft">
             {leadsSummary.total} total customer enquiries
           </p>
@@ -222,9 +217,7 @@ export default async function Dashboard(props: PageProps<"/admin">) {
           <p className="mt-3 font-serif text-3xl font-bold text-plum-950">
             ₹{confirmedRev.toLocaleString("en-IN")}
           </p>
-          <p className="mt-1 text-xs text-ink-soft">
-            10% advance deposit secured
-          </p>
+          <p className="mt-1 text-xs text-ink-soft">10% advance deposit secured</p>
         </div>
 
         {/* Card 4: Active Artists */}
@@ -240,9 +233,7 @@ export default async function Dashboard(props: PageProps<"/admin">) {
               <Users className="size-4" />
             </span>
           </div>
-          <p className="mt-3 font-serif text-3xl font-bold text-plum-950">
-            {activePros}
-          </p>
+          <p className="mt-3 font-serif text-3xl font-bold text-plum-950">{activePros}</p>
           <p className="mt-1 text-xs text-ink-soft">
             {newApplications > 0
               ? `${newApplications} applications waiting`
@@ -264,7 +255,8 @@ export default async function Dashboard(props: PageProps<"/admin">) {
                   Urgent Dispatch: Bookings Awaiting Beauticians
                 </h2>
                 <p className="text-xs text-ink-soft">
-                  Assign the nearest verified artist based on customer location and service requirements.
+                  Assign the nearest verified artist based on customer location and service
+                  requirements.
                 </p>
               </div>
             </div>
@@ -309,8 +301,12 @@ export default async function Dashboard(props: PageProps<"/admin">) {
                     </p>
 
                     <div className="mt-2 text-xs text-ink-soft flex items-center justify-between">
-                      <span className="truncate max-w-[160px]">📍 {b.locationText || "Delhi NCR"}</span>
-                      <span>📅 {formatDate(b.eventDate)} ({b.timeSlot || "Flexible"})</span>
+                      <span className="truncate max-w-[160px]">
+                        📍 {b.locationText || "Delhi NCR"}
+                      </span>
+                      <span>
+                        📅 {formatDate(b.eventDate)} ({b.timeSlot || "Flexible"})
+                      </span>
                     </div>
                   </div>
 
@@ -345,9 +341,7 @@ export default async function Dashboard(props: PageProps<"/admin">) {
       <section className="rounded-2xl border border-line bg-white p-5 sm:p-6 shadow-soft">
         <div className="mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
-            <h2 className="font-serif text-lg font-bold text-plum-950">
-              Latest Customer Bookings
-            </h2>
+            <h2 className="font-serif text-lg font-bold text-plum-950">Latest Customer Bookings</h2>
             <p className="text-xs text-ink-soft">
               Most recent appointment requests, assigned beauticians, and WhatsApp actions
             </p>
@@ -426,9 +420,7 @@ export default async function Dashboard(props: PageProps<"/admin">) {
 
                       {/* Date & Slot */}
                       <td className="px-4 py-3.5 whitespace-nowrap text-xs">
-                        <p className="font-medium text-plum-900">
-                          {formatDate(b.eventDate)}
-                        </p>
+                        <p className="font-medium text-plum-900">{formatDate(b.eventDate)}</p>
                         <p className="text-ink-soft">{b.timeSlot || "Flexible slot"}</p>
                       </td>
 
@@ -504,7 +496,8 @@ export default async function Dashboard(props: PageProps<"/admin">) {
                 Customer Demand &amp; Search Intelligence
               </h2>
               <p className="text-xs text-ink-soft">
-                Live customer interest, most viewed salon services, and unserved search queries (Last 7 Days)
+                Live customer interest, most viewed salon services, and unserved search queries
+                (Last 7 Days)
               </p>
             </div>
           </div>
@@ -532,8 +525,13 @@ export default async function Dashboard(props: PageProps<"/admin">) {
             ) : (
               <ul className="space-y-2 text-xs">
                 {analyticsSummary.topServices.slice(0, 4).map((s) => (
-                  <li key={s.id} className="flex items-center justify-between gap-2 border-b border-line/60 pb-1.5 last:border-none">
-                    <span className="font-medium text-ink truncate" title={s.title}>{s.title}</span>
+                  <li
+                    key={s.id}
+                    className="flex items-center justify-between gap-2 border-b border-line/60 pb-1.5 last:border-none"
+                  >
+                    <span className="font-medium text-ink truncate" title={s.title}>
+                      {s.title}
+                    </span>
                     <span className="font-bold text-plum-900 bg-plum-50 px-2 py-0.5 rounded-full shrink-0">
                       {s.viewCount}
                     </span>
@@ -557,7 +555,10 @@ export default async function Dashboard(props: PageProps<"/admin">) {
             ) : (
               <ul className="space-y-2 text-xs">
                 {analyticsSummary.topSearches.slice(0, 4).map((s) => (
-                  <li key={s.query} className="flex items-center justify-between gap-2 border-b border-line/60 pb-1.5 last:border-none">
+                  <li
+                    key={s.query}
+                    className="flex items-center justify-between gap-2 border-b border-line/60 pb-1.5 last:border-none"
+                  >
                     <span className="font-medium text-ink truncate">&ldquo;{s.query}&rdquo;</span>
                     <span className="font-bold text-blue-900 bg-blue-50 px-2 py-0.5 rounded-full shrink-0">
                       {s.count}
@@ -580,12 +581,19 @@ export default async function Dashboard(props: PageProps<"/admin">) {
               </Pill>
             </div>
             {analyticsSummary.zeroResultSearches.length === 0 ? (
-              <p className="py-4 text-center text-xs text-emerald-800 font-medium">All searches matched live services!</p>
+              <p className="py-4 text-center text-xs text-emerald-800 font-medium">
+                All searches matched live services!
+              </p>
             ) : (
               <ul className="space-y-2 text-xs">
                 {analyticsSummary.zeroResultSearches.slice(0, 4).map((s) => (
-                  <li key={s.query} className="flex items-center justify-between gap-2 border-b border-amber-200/60 pb-1.5 last:border-none">
-                    <span className="font-semibold text-amber-950 truncate">&ldquo;{s.query}&rdquo;</span>
+                  <li
+                    key={s.query}
+                    className="flex items-center justify-between gap-2 border-b border-amber-200/60 pb-1.5 last:border-none"
+                  >
+                    <span className="font-semibold text-amber-950 truncate">
+                      &ldquo;{s.query}&rdquo;
+                    </span>
                     <span className="font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded-full shrink-0">
                       {s.count} searches
                     </span>

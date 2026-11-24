@@ -12,7 +12,9 @@ export interface SiteSettings {
 }
 
 let cache: { at: number; value: SiteSettings } | null = null;
-export const resetSettingsCache = () => { cache = null; };
+export const resetSettingsCache = () => {
+  cache = null;
+};
 
 export async function getSettings(): Promise<SiteSettings> {
   if (cache && Date.now() - cache.at < 60_000) return cache.value;
@@ -21,7 +23,11 @@ export async function getSettings(): Promise<SiteSettings> {
   const clean = (v: string | null | undefined) => (v && v.trim() ? v.trim() : null);
   const value: SiteSettings = {
     siteName: clean(raw.site_name) ?? "HerrGlow",
-    siteUrl: clean(raw.site_url) ?? process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "https://herrglow.com",
+    siteUrl:
+      clean(raw.site_url) ??
+      process.env.SITE_URL ??
+      process.env.NEXT_PUBLIC_SITE_URL ??
+      "https://herrglow.com",
     tagline: clean(raw.site_tagline),
     whatsappNumber: clean(raw.whatsapp_number),
     contactPhone: clean(raw.contact_phone),

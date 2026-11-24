@@ -35,7 +35,8 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "muslim-nikah-bridal-makeup",
         price: 13999,
         duration: "3 hours",
-        short: "Stunning royal Nikah bridal glam with radiant skin, passah setting, and dramatic eyes.",
+        short:
+          "Stunning royal Nikah bridal glam with radiant skin, passah setting, and dramatic eyes.",
       },
       {
         title: "Christian Bridal Makeup",
@@ -49,35 +50,40 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "south-indian-bridal-makeup",
         price: 13999,
         duration: "3.5 hours",
-        short: "Traditional South Indian bridal glam with gold jewellery setting, poola jada hairstyle & saree draping.",
+        short:
+          "Traditional South Indian bridal glam with gold jewellery setting, poola jada hairstyle & saree draping.",
       },
       {
         title: "Bengali Bridal Makeup",
         slug: "bengali-bridal-makeup",
         price: 13999,
         duration: "3 hours",
-        short: "Authentic Bengali bride look with traditional Chandan artwork, mukut placement and bold eyes.",
+        short:
+          "Authentic Bengali bride look with traditional Chandan artwork, mukut placement and bold eyes.",
       },
       {
         title: "Punjabi & Sikh Bridal Makeup",
         slug: "punjabi-sikh-bridal-makeup",
         price: 13999,
         duration: "3 hours",
-        short: "Royal Anand Karaj bridal makeover with maang tikka, bridal dupatta setting, and luminous glam.",
+        short:
+          "Royal Anand Karaj bridal makeover with maang tikka, bridal dupatta setting, and luminous glam.",
       },
       {
         title: "HD Bridal Makeup",
         slug: "hd-bridal-makeup",
         price: 14999,
         duration: "3 hours",
-        short: "High-definition camera-ready bridal makeover designed for 4K video and photography perfection.",
+        short:
+          "High-definition camera-ready bridal makeover designed for 4K video and photography perfection.",
       },
       {
         title: "Airbrush Bridal Makeup",
         slug: "airbrush-bridal-makeup",
         price: 17999,
         duration: "3 hours",
-        short: "Ultra-weightless, waterproof, 24-hour transfer-proof airbrush silicone finish for flawless skin.",
+        short:
+          "Ultra-weightless, waterproof, 24-hour transfer-proof airbrush silicone finish for flawless skin.",
       },
       {
         title: "Complete Bridal Package (Makeup, Hair, Draping & Trial)",
@@ -85,7 +91,8 @@ const CATALOG_DATA: CategoryGroup[] = [
         price: 18999,
         isPackage: true,
         duration: "4 hours",
-        short: "All-inclusive flagship luxury bridal bundle: HD/Airbrush makeup, hair styling, draping, mink lashes & pre-wedding trial.",
+        short:
+          "All-inclusive flagship luxury bridal bundle: HD/Airbrush makeup, hair styling, draping, mink lashes & pre-wedding trial.",
       },
       {
         title: "Multi-Function Wedding Makeup Package",
@@ -93,21 +100,24 @@ const CATALOG_DATA: CategoryGroup[] = [
         price: 21999,
         isPackage: true,
         duration: "6 hours",
-        short: "Comprehensive 2 or 3-function bridal package covering Mehndi, Sangeet, and Wedding Day looks.",
+        short:
+          "Comprehensive 2 or 3-function bridal package covering Mehndi, Sangeet, and Wedding Day looks.",
       },
       {
         title: "Bridal Makeup Trial Session",
         slug: "bridal-makeup-trial-session",
         price: 2999,
         duration: "90 mins",
-        short: "Pre-wedding hands-on makeup & hair consultation to test shades, skin prep, and camera finish.",
+        short:
+          "Pre-wedding hands-on makeup & hair consultation to test shades, skin prep, and camera finish.",
       },
       {
         title: "Groom Makeup & Grooming",
         slug: "groom-makeup-grooming",
         price: 3499,
         duration: "60 mins",
-        short: "Subtle matte grooming for the groom: beard shaping, hair styling, and photo-ready skin correction.",
+        short:
+          "Subtle matte grooming for the groom: beard shaping, hair styling, and photo-ready skin correction.",
       },
     ],
   },
@@ -123,7 +133,8 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "flawless-party-makeup-hair-styling",
         price: 1999,
         duration: "75 mins",
-        short: "Chic doorstep party glam with hairstyle (curls/straightening) and natural radiant base.",
+        short:
+          "Chic doorstep party glam with hairstyle (curls/straightening) and natural radiant base.",
       },
       {
         title: "Birthday Party Makeup",
@@ -137,7 +148,8 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "nude-no-makeup-look",
         price: 1999,
         duration: "60 mins",
-        short: "Subtle skin-first minimalist glam with tinted radiance, feathered brows, and nude lips.",
+        short:
+          "Subtle skin-first minimalist glam with tinted radiance, feathered brows, and nude lips.",
       },
       {
         title: "Karva Chauth Makeup",
@@ -151,21 +163,24 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "bridesmaid-family-makeup",
         price: 2499,
         duration: "75 mins",
-        short: "Camera-ready elegance for sisters, mothers, and bridesmaids tailored to match ethnic outfits.",
+        short:
+          "Camera-ready elegance for sisters, mothers, and bridesmaids tailored to match ethnic outfits.",
       },
       {
         title: "Wedding Guest Makeup",
         slug: "wedding-guest-makeup",
         price: 2499,
         duration: "75 mins",
-        short: "Polished celebration makeup for wedding attendees with custom eye look and hair styling.",
+        short:
+          "Polished celebration makeup for wedding attendees with custom eye look and hair styling.",
       },
       {
         title: "Korean Glass Skin Makeup",
         slug: "korean-glass-skin-makeup",
         price: 2999,
         duration: "75 mins",
-        short: "Dewy, hyper-hydrated Korean glass skin finish with gradient lips and subtle shimmer eyes.",
+        short:
+          "Dewy, hyper-hydrated Korean glass skin finish with gradient lips and subtle shimmer eyes.",
       },
       {
         title: "Professional Makeup Artist at Home",
@@ -179,21 +194,24 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "luxe-glam-up-makeup",
         price: 3499,
         duration: "90 mins",
-        short: "Luxury evening makeover with sculpted contours, cut-crease eyes, and luxury lashes.",
+        short:
+          "Luxury evening makeover with sculpted contours, cut-crease eyes, and luxury lashes.",
       },
       {
         title: "HD Party Makeup",
         slug: "hd-party-makeup",
         price: 3499,
         duration: "90 mins",
-        short: "Long-lasting high-definition party makeup with silicone primer and premium cosmetics.",
+        short:
+          "Long-lasting high-definition party makeup with silicone primer and premium cosmetics.",
       },
       {
         title: "Haldi Ceremony Makeup",
         slug: "haldi-ceremony-makeup",
         price: 3499,
         duration: "75 mins",
-        short: "Vibrant yellow-tone sweat-resistant glam with waterproof base and floral hair styling.",
+        short:
+          "Vibrant yellow-tone sweat-resistant glam with waterproof base and floral hair styling.",
       },
       {
         title: "Mehndi Function Makeup",
@@ -235,14 +253,16 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "pre-wedding-photoshoot-makeup",
         price: 5999,
         duration: "2.5 hours",
-        short: "High-impact outdoor/studio photoshoot makeup with touch-up kit and multi-look flexibility.",
+        short:
+          "High-impact outdoor/studio photoshoot makeup with touch-up kit and multi-look flexibility.",
       },
       {
         title: "Reception Makeup",
         slug: "reception-makeup",
         price: 6499,
         duration: "2.5 hours",
-        short: "Opulent grand reception look with statement contours, gown/lehenga draping and royal hairdo.",
+        short:
+          "Opulent grand reception look with statement contours, gown/lehenga draping and royal hairdo.",
       },
       {
         title: "Group Makeup Package (for 3)",
@@ -250,7 +270,8 @@ const CATALOG_DATA: CategoryGroup[] = [
         price: 6499,
         isPackage: true,
         duration: "3 hours",
-        short: "Special value bundle: Party makeup and hair styling for 3 persons (₹2,166 per person).",
+        short:
+          "Special value bundle: Party makeup and hair styling for 3 persons (₹2,166 per person).",
       },
       {
         title: "HD Engagement Makeup",
@@ -264,7 +285,8 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "airbrush-engagement-makeup",
         price: 8999,
         duration: "2.5 hours",
-        short: "Airbrush engagement glam with micro-fine mist base, mink eyelashes and luxury styling.",
+        short:
+          "Airbrush engagement glam with micro-fine mist base, mink eyelashes and luxury styling.",
       },
     ],
   },
@@ -281,7 +303,8 @@ const CATALOG_DATA: CategoryGroup[] = [
         price: 2499,
         isPackage: true,
         duration: "2 hours",
-        short: "Express radiance combo: Face cleanup, de-tan pack, threading, and express manicure.",
+        short:
+          "Express radiance combo: Face cleanup, de-tan pack, threading, and express manicure.",
       },
       {
         title: "Essential Glow Pre-Bridal Package",
@@ -297,7 +320,8 @@ const CATALOG_DATA: CategoryGroup[] = [
         price: 3999,
         isPackage: true,
         duration: "2.5 hours",
-        short: "Full party package: HD party makeup, advanced hairdo, saree draping, and nail polish.",
+        short:
+          "Full party package: HD party makeup, advanced hairdo, saree draping, and nail polish.",
       },
       {
         title: "Luxury Ultra-Radiance Pre-Bridal Package (Premium)",
@@ -305,7 +329,8 @@ const CATALOG_DATA: CategoryGroup[] = [
         price: 9999,
         isPackage: true,
         duration: "5 hours",
-        short: "Comprehensive bridal beauty therapy: O3+ bridal facial, full body Rica waxing, body polishing, and spa mani-pedi.",
+        short:
+          "Comprehensive bridal beauty therapy: O3+ bridal facial, full body Rica waxing, body polishing, and spa mani-pedi.",
       },
     ],
   },
@@ -328,28 +353,32 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "saree-draping-at-home",
         price: 850,
         duration: "30 mins",
-        short: "Professional pleating and pin-up for Kanjeevaram, chiffon, silk, or Bengali style sarees.",
+        short:
+          "Professional pleating and pin-up for Kanjeevaram, chiffon, silk, or Bengali style sarees.",
       },
       {
         title: "Premium Eye Makeup & Lash Extension",
         slug: "premium-eye-makeup-lash-extension",
         price: 1499,
         duration: "45 mins",
-        short: "Dramatic eye glam with cut-crease eyeshadow, winged eyeliner and natural lash extensions.",
+        short:
+          "Dramatic eye glam with cut-crease eyeshadow, winged eyeliner and natural lash extensions.",
       },
       {
         title: "Bridal Saree & Lehenga Draping",
         slug: "bridal-saree-lehenga-draping",
         price: 1999,
         duration: "45 mins",
-        short: "Heavy bridal lehenga dupatta double-draping, can-can setting, and waistband pinning.",
+        short:
+          "Heavy bridal lehenga dupatta double-draping, can-can setting, and waistband pinning.",
       },
       {
         title: "Bridal Mehndi Artist",
         slug: "bridal-mehndi-artist",
         price: 5999,
         duration: "4 hours",
-        short: "Intricate bridal mehndi up to elbows and calves with personalized wedding motifs and dark herbal stain.",
+        short:
+          "Intricate bridal mehndi up to elbows and calves with personalized wedding motifs and dark herbal stain.",
       },
     ],
   },
@@ -365,28 +394,32 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "anti-hair-fall-treatment",
         price: 1499,
         duration: "60 mins",
-        short: "Scalp detoxification, follicle strengthening serum therapy, and deep pressure massage.",
+        short:
+          "Scalp detoxification, follicle strengthening serum therapy, and deep pressure massage.",
       },
       {
         title: "Bridal Hairstyling & Advanced Hairdo",
         slug: "bridal-hairstyling-advanced-hairdo",
         price: 1799,
         duration: "60 mins",
-        short: "Elaborate bridal bun, textured braid, or Hollywood waves with floral and accessory pinning.",
+        short:
+          "Elaborate bridal bun, textured braid, or Hollywood waves with floral and accessory pinning.",
       },
       {
         title: "Hair Smoothing Treatment",
         slug: "hair-smoothing-treatment",
         price: 1999,
         duration: "90 mins",
-        short: "Keratin protein smoothing therapy for frizz-free, silky soft, and mirror-shine hair.",
+        short:
+          "Keratin protein smoothing therapy for frizz-free, silky soft, and mirror-shine hair.",
       },
       {
         title: "Premium Hair Extensions & Volumizing Service",
         slug: "premium-hair-extensions-volumizing",
         price: 3999,
         duration: "60 mins",
-        short: "Seamless 100% human hair extension clip-in, blending, and heat styling for maximum volume.",
+        short:
+          "Seamless 100% human hair extension clip-in, blending, and heat styling for maximum volume.",
       },
     ],
   },
@@ -409,49 +442,56 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "classic-cleanup",
         price: 599,
         duration: "40 mins",
-        short: "Deep pore cleansing, gentle exfoliation, blackhead removal, and soothing fruit pack.",
+        short:
+          "Deep pore cleansing, gentle exfoliation, blackhead removal, and soothing fruit pack.",
       },
       {
         title: "Professional Face Cleanup",
         slug: "professional-face-cleanup",
         price: 700,
         duration: "45 mins",
-        short: "Targeted deep-cleansing facial cleanup with ultrasonic scrubbing and herbal de-tan pack.",
+        short:
+          "Targeted deep-cleansing facial cleanup with ultrasonic scrubbing and herbal de-tan pack.",
       },
       {
         title: "Professional Facial",
         slug: "professional-facial",
         price: 999,
         duration: "60 mins",
-        short: "Rejuvenating skin facial with 5-step massage, steam extraction, and nourishing face mask.",
+        short:
+          "Rejuvenating skin facial with 5-step massage, steam extraction, and nourishing face mask.",
       },
       {
         title: "Premium Glow Facial",
         slug: "premium-glow-facial",
         price: 1000,
         duration: "60 mins",
-        short: "O3+ brightening facial formulated to eliminate dullness and restore glass-skin glow.",
+        short:
+          "O3+ brightening facial formulated to eliminate dullness and restore glass-skin glow.",
       },
       {
         title: "Pigmentation Treatment Facial",
         slug: "pigmentation-treatment-facial",
         price: 1999,
         duration: "75 mins",
-        short: "Specialized clinical derma-facial targeting dark spots, blemish scars, and uneven tone.",
+        short:
+          "Specialized clinical derma-facial targeting dark spots, blemish scars, and uneven tone.",
       },
       {
         title: "Premium Full Body Massage",
         slug: "premium-full-body-massage",
         price: 2000,
         duration: "60 mins",
-        short: "Holistic full-body Swedish or aroma oil massage by female therapist for deep relaxation.",
+        short:
+          "Holistic full-body Swedish or aroma oil massage by female therapist for deep relaxation.",
       },
       {
         title: "Premium Full Body Polishing",
         slug: "premium-full-body-polishing",
         price: 2000,
         duration: "75 mins",
-        short: "Whole-body walnut/sugar scrub exfoliation followed by nourishing cream moisture wrap.",
+        short:
+          "Whole-body walnut/sugar scrub exfoliation followed by nourishing cream moisture wrap.",
       },
     ],
   },
@@ -467,7 +507,8 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "half-back-waxing",
         price: 249,
         duration: "20 mins",
-        short: "Gentle honey or chocolate wax hair removal for upper/lower half back with soothing gel.",
+        short:
+          "Gentle honey or chocolate wax hair removal for upper/lower half back with soothing gel.",
       },
       {
         title: "Breast Waxing",
@@ -488,7 +529,8 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "stomach-waxing",
         price: 299,
         duration: "25 mins",
-        short: "Clean, painless stomach hair removal with disposable bedsheets and wooden spatulas.",
+        short:
+          "Clean, painless stomach hair removal with disposable bedsheets and wooden spatulas.",
       },
       {
         title: "Full Legs Waxing",
@@ -516,7 +558,8 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "full-body-waxing-at-home",
         price: 1899,
         duration: "90 mins",
-        short: "Complete full body waxing package (arms, underarms, full legs, stomach & full back).",
+        short:
+          "Complete full body waxing package (arms, underarms, full legs, stomach & full back).",
       },
     ],
   },
@@ -532,7 +575,8 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "classic-manicure-at-home",
         price: 499,
         duration: "40 mins",
-        short: "Nail shaping, cuticle trimming, exfoliating hand scrub, relaxing massage, and polish.",
+        short:
+          "Nail shaping, cuticle trimming, exfoliating hand scrub, relaxing massage, and polish.",
       },
       {
         title: "Classic Pedicure at Home",
@@ -546,14 +590,16 @@ const CATALOG_DATA: CategoryGroup[] = [
         slug: "aroma-spa-manicure",
         price: 799,
         duration: "50 mins",
-        short: "Essential oil infused hand spa with deep cuticle treatment and hydrating glove mask.",
+        short:
+          "Essential oil infused hand spa with deep cuticle treatment and hydrating glove mask.",
       },
       {
         title: "Aroma Spa Pedicure",
         slug: "aroma-spa-pedicure",
         price: 899,
         duration: "60 mins",
-        short: "Aromatherapy foot bath, crack-heel smoothing, exfoliating scrub, and reflexology massage.",
+        short:
+          "Aromatherapy foot bath, crack-heel smoothing, exfoliating scrub, and reflexology massage.",
       },
       {
         title: "FYC Jelly Luxury Pedicure",
@@ -583,7 +629,8 @@ const CATALOG_DATA: CategoryGroup[] = [
         price: 1499,
         isPackage: true,
         duration: "90 mins",
-        short: "Premium O3+ de-tan and brightening manicure & pedicure spa for radiant hands and feet.",
+        short:
+          "Premium O3+ de-tan and brightening manicure & pedicure spa for radiant hands and feet.",
       },
     ],
   },

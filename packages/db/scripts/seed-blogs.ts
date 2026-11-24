@@ -6,11 +6,14 @@ export const PREMIUM_BLOGS = [
     slug: "bridal-skincare-and-beauty-timeline-delhi-ncr",
     title: "The Ultimate 6-Month Bridal Skincare & Beauty Timeline",
     seoTitle: "Bridal Skincare & Beauty Timeline: 6-Month Guide",
-    seoDescription: "The ultimate 6-month pre-bridal beauty timeline for Delhi NCR brides. When to book HydraFacials, Rica waxing, hair spas, and trial makeup sessions.",
+    seoDescription:
+      "The ultimate 6-month pre-bridal beauty timeline for Delhi NCR brides. When to book HydraFacials, Rica waxing, hair spas, and trial makeup sessions.",
     image: "/images/services/hd-bridal-makeup.jpg",
-    imageAlt: "Bridal skincare and beauty preparation flatlay with authentic luxury serums and single-use tools",
+    imageAlt:
+      "Bridal skincare and beauty preparation flatlay with authentic luxury serums and single-use tools",
     authorName: "Dr. Aanchal Sharma, Senior Bridal Consultant",
-    excerpt: "Planning a wedding in Delhi NCR? From tackling hard water damage to scheduling your final Rica peel, here is your month-by-month bridal glow blueprint.",
+    excerpt:
+      "Planning a wedding in Delhi NCR? From tackling hard water damage to scheduling your final Rica peel, here is your month-by-month bridal glow blueprint.",
     content: `
       <p class="lead">Preparing for your wedding day is one of the most exciting journeys of your life, but Delhi NCR's intense pollution, fluctuating weather, and mineral-heavy tap water present unique challenges for brides-to-be. To walk down the aisle with flawless, lit-from-within skin that photographs seamlessly under 4K video lights, you need a disciplined, chronological roadmap.</p>
 
@@ -82,11 +85,14 @@ export const PREMIUM_BLOGS = [
     slug: "hd-makeup-vs-airbrush-bridal-makeup-comparison",
     title: "HD vs Airbrush Bridal Makeup: Which Lasts Longer in Delhi?",
     seoTitle: "HD vs Airbrush Bridal Makeup Guide | Delhi NCR",
-    seoDescription: "Compare HD vs Airbrush bridal makeup for Delhi NCR weddings. Discover heat, humidity resistance, flash photography finish, pricing, and skin type fit.",
+    seoDescription:
+      "Compare HD vs Airbrush bridal makeup for Delhi NCR weddings. Discover heat, humidity resistance, flash photography finish, pricing, and skin type fit.",
     image: "/images/services/airbrush-bridal-makeup.jpg",
-    imageAlt: "Side by side comparison of HD bridal makeup and Airbrush bridal finish under professional wedding photography lights",
+    imageAlt:
+      "Side by side comparison of HD bridal makeup and Airbrush bridal finish under professional wedding photography lights",
     authorName: "Kritika Sharma, Master Bridal Artist",
-    excerpt: "Confused between High Definition (HD) and Airbrush makeup for your big day? Here is a technical breakdown of coverage, longevity, and Delhi NCR weather suitability.",
+    excerpt:
+      "Confused between High Definition (HD) and Airbrush makeup for your big day? Here is a technical breakdown of coverage, longevity, and Delhi NCR weather suitability.",
     content: `
       <p class="lead">Every Indian bride wants a complexion that looks breathtaking in intimate, real-life conversation, yet stays completely impervious to hours of emotional tears, warm stage lights, heavy lehengas, and continuous 4K wedding videography. When selecting your bridal look, the first technical dilemma is almost always: <strong>Should I choose High Definition (HD) Makeup or Airbrush Makeup?</strong></p>
 
@@ -160,11 +166,14 @@ export const PREMIUM_BLOGS = [
     slug: "why-at-home-salon-is-better-than-traditional-salons",
     title: "Why At-Home Salon Services Are Better Than Traditional Salons",
     seoTitle: "At-Home Salon vs Traditional Salons: Safety & Cost",
-    seoDescription: "Discover why luxury at-home salon services in Delhi NCR beat crowded parlors. Sanitized equipment, authentic branded products, verified female artists, and zero travel.",
+    seoDescription:
+      "Discover why luxury at-home salon services in Delhi NCR beat crowded parlors. Sanitized equipment, authentic branded products, verified female artists, and zero travel.",
     image: "/hero/doorstep-salon.jpg",
-    imageAlt: "Professional at-home salon setup with sanitized tools, clean towels, and certified female beautician in Delhi NCR",
+    imageAlt:
+      "Professional at-home salon setup with sanitized tools, clean towels, and certified female beautician in Delhi NCR",
     authorName: "Neha Bisht, Head of Hygiene & Standards",
-    excerpt: "Tired of salon waiting rooms, traffic jams, and double-dipped wax pots? Here is why thousands of women in Delhi NCR have permanently switched to luxury at-home salon pampering.",
+    excerpt:
+      "Tired of salon waiting rooms, traffic jams, and double-dipped wax pots? Here is why thousands of women in Delhi NCR have permanently switched to luxury at-home salon pampering.",
     content: `
       <p class="lead">For decades, taking care of your self-care checklist meant driving through chaotic Delhi NCR traffic, hunting for elusive parking spots in crowded sector markets, and waiting 45 minutes on cramped parlor sofas while listening to hair dryers and neighborhood gossip. Today, a quiet revolution in personal luxury is underway: discerning women are choosing five-star salon pampering delivered directly to their living rooms.</p>
 
@@ -213,11 +222,14 @@ export const PREMIUM_BLOGS = [
     slug: "complete-pre-bridal-package-checklist-guide",
     title: "Complete Pre-Bridal Package Checklist: What to Book & When",
     seoTitle: "Pre-Bridal Package Checklist: Services & Timeline",
-    seoDescription: "Complete pre-bridal package checklist for modern brides. Full body polishing, Rica waxing, Korean facials, and hair spas planned week-by-week at home.",
+    seoDescription:
+      "Complete pre-bridal package checklist for modern brides. Full body polishing, Rica waxing, Korean facials, and hair spas planned week-by-week at home.",
     image: "/images/packages/complete-bridal-package.jpg",
-    imageAlt: "Complete pre-bridal package checklist with luxury facial serums, waxing strips, and body polishing botanicals",
+    imageAlt:
+      "Complete pre-bridal package checklist with luxury facial serums, waxing strips, and body polishing botanicals",
     authorName: "Sunita Rawat, Senior Skin Aesthetician",
-    excerpt: "From D-tan body scrubs to crystal pedicures and radiance facials, here is the ultimate checklist of essential pre-bridal salon treatments every bride needs.",
+    excerpt:
+      "From D-tan body scrubs to crystal pedicures and radiance facials, here is the ultimate checklist of essential pre-bridal salon treatments every bride needs.",
     content: `
       <p class="lead">Between final lehenga fittings, venue walkthroughs, choreographer sessions, and jewelry coordination, wedding planning can quickly feel like a full-time corporate job. In the midst of all this bustle, many brides leave their pre-bridal beauty grooming until the last two weeks—leading to rushed decisions, skin irritation, and unnecessary anxiety.</p>
 
@@ -323,11 +335,14 @@ export const PREMIUM_BLOGS = [
     slug: "rica-wax-vs-honey-wax-sensitive-skin-guide",
     title: "Rica Wax vs Honey Wax: Which Is Best for Sensitive Skin?",
     seoTitle: "Rica Wax vs Honey Wax Guide: Pain, Tan & Skin Fit",
-    seoDescription: "Compare Rica wax vs honey wax for sensitive skin, pain levels, and tan removal. Discover which at-home waxing option suits your skin in Delhi NCR.",
+    seoDescription:
+      "Compare Rica wax vs honey wax for sensitive skin, pain levels, and tan removal. Discover which at-home waxing option suits your skin in Delhi NCR.",
     image: "/images/blogs/rica-wax-vs-honey-wax.jpg",
-    imageAlt: "Professional female beautician performing gentle Rica waxing at home with sanitized spatulas in Delhi NCR",
+    imageAlt:
+      "Professional female beautician performing gentle Rica waxing at home with sanitized spatulas in Delhi NCR",
     authorName: "Neha Bisht, Head of Hygiene & Standards",
-    excerpt: "Struggling with post-wax redness, ingrown hairs, or pain? Here is an expert comparison of Italian Rica Liposoluble Wax vs traditional Honey Wax for Indian skin.",
+    excerpt:
+      "Struggling with post-wax redness, ingrown hairs, or pain? Here is an expert comparison of Italian Rica Liposoluble Wax vs traditional Honey Wax for Indian skin.",
     content: `
       <p class="lead">If you have ever walked out of a beauty parlor with angry red patches, skin burns, or painful ingrown hairs, you are not alone. Waxing is the most frequently booked salon service in Delhi NCR, yet thousands of women struggle with a crucial decision: should you stick with traditional honey wax or invest in premium Italian Rica liposoluble wax?</p>
 
@@ -429,11 +444,14 @@ export const PREMIUM_BLOGS = [
     slug: "facial-vs-cleanup-difference-skincare-guide",
     title: "Cleanup vs Facial: Which Does Your Skin Need in Delhi NCR?",
     seoTitle: "Cleanup vs Facial Guide: Differences, Benefits & Cost",
-    seoDescription: "Unsure whether to book a cleanup or facial in Delhi NCR? Compare exfoliation depth, anti-tan packs, O3+ glow facials, frequency, and costs for clear skin.",
+    seoDescription:
+      "Unsure whether to book a cleanup or facial in Delhi NCR? Compare exfoliation depth, anti-tan packs, O3+ glow facials, frequency, and costs for clear skin.",
     image: "/images/blogs/facial-vs-cleanup.jpg",
-    imageAlt: "Certified aesthetician providing deep pore cleansing and facial massage at home in Noida Delhi NCR",
+    imageAlt:
+      "Certified aesthetician providing deep pore cleansing and facial massage at home in Noida Delhi NCR",
     authorName: "Pooja Malhotra, Senior Esthetician & Skin Specialist",
-    excerpt: "Wondering whether a 35-minute cleanup or an intensive 60-minute facial is right for your skin? Here is a clear guide on exfoliation, extraction, massage, and costs.",
+    excerpt:
+      "Wondering whether a 35-minute cleanup or an intensive 60-minute facial is right for your skin? Here is a clear guide on exfoliation, extraction, massage, and costs.",
     content: `
       <p class="lead">Living in Delhi, Noida, or Greater Noida means your skin battles severe air pollution, vehicle exhaust, extreme temperature swings, and mineral-heavy hard water every single day. When your mirror reveals dullness, clogged pores, and uneven tanning, the question inevitably arises: Should you book a 35-minute cleanup or an intensive 60-minute facial?</p>
 
@@ -530,11 +548,14 @@ export const PREMIUM_BLOGS = [
     slug: "party-makeup-at-home-guide-delhi-ncr",
     title: "Party Makeup at Home in Delhi NCR: The Complete Glam Guide",
     seoTitle: "Party Makeup at Home Guide: Looks, Hair & Pricing",
-    seoDescription: "The complete guide to booking party makeup and hairstyling at home in Delhi NCR. Compare cocktail glam, HD guest makeup, saree draping, and doorstep rates.",
+    seoDescription:
+      "The complete guide to booking party makeup and hairstyling at home in Delhi NCR. Compare cocktail glam, HD guest makeup, saree draping, and doorstep rates.",
     image: "/hero/party-glam.jpg",
-    imageAlt: "Professional makeup artist creating smoky eye glam and hairstyle for wedding guest at home in Delhi NCR",
+    imageAlt:
+      "Professional makeup artist creating smoky eye glam and hairstyle for wedding guest at home in Delhi NCR",
     authorName: "Ritika Verma, Senior Makeup Artist & Stylist",
-    excerpt: "Attending a wedding, sangeet, or cocktail evening in Delhi NCR? Here is how to book verified female makeup artists at home, choose the right look, and save time.",
+    excerpt:
+      "Attending a wedding, sangeet, or cocktail evening in Delhi NCR? Here is how to book verified female makeup artists at home, choose the right look, and save time.",
     content: `
       <p class="lead">Wedding and festive season in Delhi NCR is pure celebration—glittering sangeet nights, vibrant mehendi afternoons, cocktail parties, and grand receptions. But for guests, bridesmaids, and family members, getting ready is often the most stressful part of the entire evening.</p>
 
@@ -585,13 +606,17 @@ export const PREMIUM_BLOGS = [
   },
   {
     slug: "hard-water-pollution-skin-hair-detox-at-home",
-    title: "The Winter Hard Water & Pollution Detox: How to Save Your Hair and Skin at Home in Delhi NCR",
+    title:
+      "The Winter Hard Water & Pollution Detox: How to Save Your Hair and Skin at Home in Delhi NCR",
     seoTitle: "Hard Water & Winter Smog Detox for Hair & Skin | Delhi NCR",
-    seoDescription: "Combat Delhi NCR winter smog, AQI 400+ pollution and high-mineral hard tap water. Learn how doorstep scalp scrubs, hair spas & hydra facials restore glowing skin.",
+    seoDescription:
+      "Combat Delhi NCR winter smog, AQI 400+ pollution and high-mineral hard tap water. Learn how doorstep scalp scrubs, hair spas & hydra facials restore glowing skin.",
     image: "/images/services/hair-spa-at-home.jpg",
-    imageAlt: "Deep conditioning hair spa and scalp detox treatment at home for winter pollution relief",
+    imageAlt:
+      "Deep conditioning hair spa and scalp detox treatment at home for winter pollution relief",
     authorName: "Dr. Shweta Rastogi, Dermatological Beauty Consultant",
-    excerpt: "Winter in Delhi NCR brings wedding glam but severe pollution and hard tap water damage. Here is our step-by-step detox protocol to restore glossy hair and radiant skin at home.",
+    excerpt:
+      "Winter in Delhi NCR brings wedding glam but severe pollution and hard tap water damage. Here is our step-by-step detox protocol to restore glossy hair and radiant skin at home.",
     content: `
       <p class="lead">Living in Delhi NCR during the winter months brings festive excitement and wedding celebrations, but it forces your hair and skin to pay a heavy daily tax. If you have noticed extreme hair frizz, sudden scalp buildup, or skin that feels rough, dehydrated, and persistently dull despite using expensive moisturizers, you are battling two aggressive winter enemies: <strong>severe air pollution (smog) and high-mineral hard tap water</strong>.</p>
 
@@ -641,11 +666,14 @@ export const PREMIUM_BLOGS = [
     slug: "pre-bridal-skincare-haircare-guide-gaur-city",
     title: "Pre-Bridal Skincare & Haircare Guide for Gaur City Brides: Complete Glow Blueprint",
     seoTitle: "Pre-Bridal Skincare & Haircare Guide | Gaur City Brides",
-    seoDescription: "The ultimate pre-bridal skincare & haircare guide for brides in Gaur City & Greater Noida West. Combat hard water, banish dullness & book doorstep facials.",
+    seoDescription:
+      "The ultimate pre-bridal skincare & haircare guide for brides in Gaur City & Greater Noida West. Combat hard water, banish dullness & book doorstep facials.",
     image: "/images/packages/pre-bridal-glow-package.jpg",
-    imageAlt: "Indian bride getting a nourishing pre-bridal facial pampering session at home in Gaur City",
+    imageAlt:
+      "Indian bride getting a nourishing pre-bridal facial pampering session at home in Gaur City",
     authorName: "Dr. Shweta Rastogi, Aesthetic & Bridal Skincare Advisor",
-    excerpt: "Planning a wedding in Gaur City or Greater Noida West? Overcome hard tap water issues, pollution damage, and hectic trousseau shopping stress with our step-by-step pre-bridal care countdown.",
+    excerpt:
+      "Planning a wedding in Gaur City or Greater Noida West? Overcome hard tap water issues, pollution damage, and hectic trousseau shopping stress with our step-by-step pre-bridal care countdown.",
     content: `
       <p class="lead">Every Indian bride dreams of stepping into the mandap with a naturally radiant, lit-from-within glow that looks breathtaking under 4K video cameras and intimate candlelight. But for brides residing in <strong>Gaur City 1, Gaur City 2, and Greater Noida West (Noida Extension)</strong>, achieving that flawless skin canvas comes with specific local obstacles: high-TDS mineral-heavy tap water, winter pollution smog, and the exhausting rush of wedding shopping across Delhi NCR markets.</p>
 
@@ -692,13 +720,17 @@ export const PREMIUM_BLOGS = [
   },
   {
     slug: "gaur-city-bridal-makeup-artist-booking-guide",
-    title: "Gaur City Bridal Makeup Artist Booking Guide: 11 Essential Things Every Noida Extension Bride Must Check",
+    title:
+      "Gaur City Bridal Makeup Artist Booking Guide: 11 Essential Things Every Noida Extension Bride Must Check",
     seoTitle: "Gaur City Bridal Makeup Booking: 11-Point Checklist",
-    seoDescription: "Planning your wedding in Gaur City or Greater Noida West? Check our 11-point bridal makeup booking guide covering HD vs Airbrush, trials, pricing & doorstep artists.",
+    seoDescription:
+      "Planning your wedding in Gaur City or Greater Noida West? Check our 11-point bridal makeup booking guide covering HD vs Airbrush, trials, pricing & doorstep artists.",
     image: "/hero/bridal-glam.jpg",
-    imageAlt: "Professional HerrGlow bridal makeup artist doing HD makeover for a bride in Gaur City apartment",
+    imageAlt:
+      "Professional HerrGlow bridal makeup artist doing HD makeover for a bride in Gaur City apartment",
     authorName: "Pooja Malhotra, Senior Bridal Stylist & NCR Beauty Consultant",
-    excerpt: "Planning a wedding in Gaur City or Greater Noida West? Avoid the stress of rush-hour salon commutes and high-rise apartment lighting dilemmas. Here is our insider 11-point guide to booking the perfect bridal makeup artist for your big day.",
+    excerpt:
+      "Planning a wedding in Gaur City or Greater Noida West? Avoid the stress of rush-hour salon commutes and high-rise apartment lighting dilemmas. Here is our insider 11-point guide to booking the perfect bridal makeup artist for your big day.",
     content: `
       <p class="lead">Your wedding day is one of the most memorable milestones of your life. Every bride dreams of looking timeless, radiant, and effortlessly glowing—both in person and under high-definition 4K photography. But if you are planning your wedding in <strong>Gaur City 1, Gaur City 2, or Noida Extension (Greater Noida West)</strong>, booking the right bridal makeup artist comes with very real local logistics that most generic beauty blogs never talk about.</p>
 
@@ -881,7 +913,9 @@ async function seedBlogs() {
 
   console.log("Blogs saved to database. Now syncing SEO pages...");
   const syncResult = await syncPages();
-  console.log(`SEO Pages sync complete: ${syncResult.upserted} pages upserted, ${syncResult.removed} stale removed.`);
+  console.log(
+    `SEO Pages sync complete: ${syncResult.upserted} pages upserted, ${syncResult.removed} stale removed.`
+  );
 }
 
 seedBlogs()

@@ -12,9 +12,7 @@ export function Included({ items }: { items: string[] }) {
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/80 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-emerald-800">
             <ShieldCheck className="size-3.5 text-emerald-700" /> Transparency
           </span>
-          <h2 className="mt-2 font-serif text-2xl font-bold text-plum-950">
-            What&apos;s Included
-          </h2>
+          <h2 className="mt-2 font-serif text-2xl font-bold text-plum-950">What&apos;s Included</h2>
           <p className="mt-1 text-xs sm:text-sm text-ink-soft">
             100% genuine products, single-use disposables &amp; sanitized tools.
           </p>
@@ -39,8 +37,16 @@ export function Included({ items }: { items: string[] }) {
 
 const STEPS = [
   { icon: ClipboardCheck, t: "You book", d: "Choose your option and share your area and date." },
-  { icon: UserCheck, t: "We confirm", d: "We match an artist who covers your location and confirm the details." },
-  { icon: Home, t: "Artist arrives", d: "They arrive on time and set up clean, sanitized tools at home." },
+  {
+    icon: UserCheck,
+    t: "We confirm",
+    d: "We match an artist who covers your location and confirm the details.",
+  },
+  {
+    icon: Home,
+    t: "Artist arrives",
+    d: "They arrive on time and set up clean, sanitized tools at home.",
+  },
   { icon: Sparkles, t: "You glow", d: "Enjoy the result, without travelling anywhere." },
 ];
 export function ProcessSteps() {
@@ -52,7 +58,15 @@ export function ProcessSteps() {
           {STEPS.map((s, i) => (
             <li key={s.t}>
               <BlurFade delay={i * 0.08} className="h-full">
-                <div className="h-full rounded-[1.5rem] border border-line bg-white/80 p-6"><span className="grid size-12 place-items-center rounded-full bg-plum-700 text-ivory"><s.icon className="size-5" strokeWidth={1.5} /></span><h3 className="mt-4">{i + 1}. {s.t}</h3><p className="mt-1.5 text-sm text-ink-soft">{s.d}</p></div>
+                <div className="h-full rounded-[1.5rem] border border-line bg-white/80 p-6">
+                  <span className="grid size-12 place-items-center rounded-full bg-plum-700 text-ivory">
+                    <s.icon className="size-5" strokeWidth={1.5} />
+                  </span>
+                  <h3 className="mt-4">
+                    {i + 1}. {s.t}
+                  </h3>
+                  <p className="mt-1.5 text-sm text-ink-soft">{s.d}</p>
+                </div>
               </BlurFade>
             </li>
           ))}
@@ -67,7 +81,16 @@ export function ProductsUsed() {
   return (
     <div>
       <h2 className="mb-4 !text-2xl sm:!text-3xl">Products our artists work with</h2>
-      <div className="flex flex-wrap gap-2">{BRANDS.slice(0, 6).map((b) => <span key={b} className="rounded-full border border-line bg-white px-4 py-2 font-serif text-lg text-plum-700/80">{b}</span>)}</div>
+      <div className="flex flex-wrap gap-2">
+        {BRANDS.slice(0, 6).map((b) => (
+          <span
+            key={b}
+            className="rounded-full border border-line bg-white px-4 py-2 font-serif text-lg text-plum-700/80"
+          >
+            {b}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
@@ -100,8 +123,12 @@ export function SafetyHygienePromise() {
           <ShieldCheck className="size-6" />
         </span>
         <div>
-          <h2 className="!text-xl sm:!text-2xl font-serif text-plum-900">Our Home Safety &amp; Hygiene Promise</h2>
-          <p className="text-xs sm:text-sm text-ink-soft">Your safety, privacy, and hygiene at home are our top priorities.</p>
+          <h2 className="!text-xl sm:!text-2xl font-serif text-plum-900">
+            Our Home Safety &amp; Hygiene Promise
+          </h2>
+          <p className="text-xs sm:text-sm text-ink-soft">
+            Your safety, privacy, and hygiene at home are our top priorities.
+          </p>
         </div>
       </div>
       <div className="grid gap-3.5 sm:grid-cols-2">
@@ -120,25 +147,58 @@ export function SafetyHygienePromise() {
 export function HomeSetupGuide() {
   return (
     <div className="rounded-3xl border border-line bg-white p-6 sm:p-8">
-      <h2 className="mb-2 !text-xl sm:!text-2xl font-serif text-plum-900">What to Expect at Home</h2>
-      <p className="mb-6 text-sm text-ink-soft">Zero stress preparation. Here is how we ensure a seamless salon experience in your living space:</p>
+      <h2 className="mb-2 !text-xl sm:!text-2xl font-serif text-plum-900">
+        What to Expect at Home
+      </h2>
+      <p className="mb-6 text-sm text-ink-soft">
+        Zero stress preparation. Here is how we ensure a seamless salon experience in your living
+        space:
+      </p>
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="rounded-2xl border border-emerald-600/20 bg-emerald-50/40 p-5">
-          <p className="text-xs font-semibold uppercase tracking-wider text-emerald-800">What Our Artist Brings</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-emerald-800">
+            What Our Artist Brings
+          </p>
           <ul className="mt-3 space-y-2 text-xs sm:text-sm text-emerald-950">
-            <li className="flex items-start gap-2"><span className="text-emerald-700 font-bold">✓</span><span>Complete professional product kit and sanitized tools</span></li>
-            <li className="flex items-start gap-2"><span className="text-emerald-700 font-bold">✓</span><span>Fresh disposable bedsheet, gown &amp; towels</span></li>
-            <li className="flex items-start gap-2"><span className="text-emerald-700 font-bold">✓</span><span>Professional ring light &amp; power extension board</span></li>
-            <li className="flex items-start gap-2"><span className="text-emerald-700 font-bold">✓</span><span>Post-service cleanup and disposable waste bag</span></li>
+            <li className="flex items-start gap-2">
+              <span className="text-emerald-700 font-bold">✓</span>
+              <span>Complete professional product kit and sanitized tools</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-emerald-700 font-bold">✓</span>
+              <span>Fresh disposable bedsheet, gown &amp; towels</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-emerald-700 font-bold">✓</span>
+              <span>Professional ring light &amp; power extension board</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-emerald-700 font-bold">✓</span>
+              <span>Post-service cleanup and disposable waste bag</span>
+            </li>
           </ul>
         </div>
         <div className="rounded-2xl border border-line bg-blush-50/40 p-5">
-          <p className="text-xs font-semibold uppercase tracking-wider text-plum-800">What You Provide</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-plum-800">
+            What You Provide
+          </p>
           <ul className="mt-3 space-y-2 text-xs sm:text-sm text-ink-soft">
-            <li className="flex items-start gap-2"><span>•</span><span>A normal comfortable chair near a mirror</span></li>
-            <li className="flex items-start gap-2"><span>•</span><span>Access to a standard electrical power socket</span></li>
-            <li className="flex items-start gap-2"><span>•</span><span>Clean running water (warm water for facials/pedicures)</span></li>
-            <li className="flex items-start gap-2"><span>•</span><span>A well-lit, comfortable room for your privacy</span></li>
+            <li className="flex items-start gap-2">
+              <span>•</span>
+              <span>A normal comfortable chair near a mirror</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span>•</span>
+              <span>Access to a standard electrical power socket</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span>•</span>
+              <span>Clean running water (warm water for facials/pedicures)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span>•</span>
+              <span>A well-lit, comfortable room for your privacy</span>
+            </li>
           </ul>
         </div>
       </div>

@@ -22,7 +22,8 @@ export function calculateComboTotals(prices: number[]): {
   progressPercent: number;
 } {
   const subtotal = prices.reduce((sum, p) => sum + p, 0);
-  const discount = subtotal >= BUNDLE_DISCOUNT_THRESHOLD_INR ? Math.round(subtotal * BUNDLE_DISCOUNT_RATE) : 0;
+  const discount =
+    subtotal >= BUNDLE_DISCOUNT_THRESHOLD_INR ? Math.round(subtotal * BUNDLE_DISCOUNT_RATE) : 0;
   const finalAmount = subtotal - discount;
   const advanceDeposit = Math.round(finalAmount * 0.1);
   const isEligibleForDoorstep = subtotal >= MIN_DOORSTEP_ORDER_INR;

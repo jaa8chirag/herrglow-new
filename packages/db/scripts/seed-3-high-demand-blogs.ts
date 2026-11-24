@@ -3,13 +3,17 @@ import { prisma, PageType, Status } from "../src/index.js";
 const blogs = [
   {
     slug: "o3-plus-facial-benefits-at-home-glow-guide",
-    title: "O3+ Facial Benefits & Step-by-Step Glow Guide: Instant Radiance for Tan, Pigmentation & Dull Skin",
+    title:
+      "O3+ Facial Benefits & Step-by-Step Glow Guide: Instant Radiance for Tan, Pigmentation & Dull Skin",
     image: "/images/blogs/o3-plus-facial-guide.jpg",
-    imageAlt: "Professional O3+ bridal facial massage with active brightening serum at home in Delhi NCR",
-    excerpt: "Wondering why O3+ facials are the #1 salon treatment in Delhi NCR? Discover the key benefits, step-by-step process, skin type matching, and how to get an authentic O3+ facial at home.",
+    imageAlt:
+      "Professional O3+ bridal facial massage with active brightening serum at home in Delhi NCR",
+    excerpt:
+      "Wondering why O3+ facials are the #1 salon treatment in Delhi NCR? Discover the key benefits, step-by-step process, skin type matching, and how to get an authentic O3+ facial at home.",
     authorName: "Pooja Sharma (Senior Aesthetician, HerrGlow)",
     seoTitle: "O3+ Facial Benefits, Steps & Cost at Home | HerrGlow Delhi NCR",
-    seoDescription: "Learn everything about O3+ facials: benefits for tan and pigmentation, 6-step protocol, skin type guide, and prices for salon-at-home in Delhi, Noida & Gurgaon.",
+    seoDescription:
+      "Learn everything about O3+ facials: benefits for tan and pigmentation, 6-step protocol, skin type guide, and prices for salon-at-home in Delhi, Noida & Gurgaon.",
     content: `
       <p class="lead">If you have ever asked a Delhi NCR makeup artist or beauty aesthetician for an instant bridal glow, the very first recommendation is almost always an <strong>O3+ Facial</strong>. From wedding seasons to post-vacation sun tan recovery, O3+ is celebrated as the undisputed gold standard of brightening skincare across India.</p>
 
@@ -106,13 +110,17 @@ const blogs = [
   },
   {
     slug: "gel-nail-extensions-vs-acrylic-durability-care-guide",
-    title: "Gel Nail Extensions vs Acrylic Nails: Which Lasts Longer? Complete Delhi NCR Care Guide",
+    title:
+      "Gel Nail Extensions vs Acrylic Nails: Which Lasts Longer? Complete Delhi NCR Care Guide",
     image: "/images/blogs/gel-nail-extensions-guide.jpg",
-    imageAlt: "Almond shaped gel nail extensions with French ombre and chrome art on luxury marble cushion",
-    excerpt: "Planning a glam manicure? Here is an honest, expert comparison of Gel Nail Extensions vs Acrylic Nails: durability, nail bed damage, price in Delhi NCR, and at-home maintenance tips.",
+    imageAlt:
+      "Almond shaped gel nail extensions with French ombre and chrome art on luxury marble cushion",
+    excerpt:
+      "Planning a glam manicure? Here is an honest, expert comparison of Gel Nail Extensions vs Acrylic Nails: durability, nail bed damage, price in Delhi NCR, and at-home maintenance tips.",
     authorName: "Ritu Verma (Master Nail Artist, HerrGlow)",
     seoTitle: "Gel vs Acrylic Nail Extensions: Price & Care at Home | HerrGlow",
-    seoDescription: "Compare Gel vs Acrylic nail extensions: durability, nail bed health, prices in Delhi NCR, and aftercare. Book doorstep nail art and extensions at home.",
+    seoDescription:
+      "Compare Gel vs Acrylic nail extensions: durability, nail bed health, prices in Delhi NCR, and aftercare. Book doorstep nail art and extensions at home.",
     content: `
       <p class="lead">From bridal lehengas to sleek cocktail gowns, no modern look in Delhi NCR is complete without an immaculate set of manicured nails. But when stepping into the world of nail enhancement, every woman faces the classic dilemma: <strong>Should you choose Gel Nail Extensions or traditional Acrylic Nails?</strong></p>
 
@@ -169,13 +177,17 @@ const blogs = [
   },
   {
     slug: "full-body-waxing-at-home-painless-tips-guide",
-    title: "Full Body Waxing at Home Guide: Painless Liposoluble Rica Wax, Preparation & Post-Wax Care",
+    title:
+      "Full Body Waxing at Home Guide: Painless Liposoluble Rica Wax, Preparation & Post-Wax Care",
     image: "/images/blogs/full-body-waxing-guide.jpg",
-    imageAlt: "Hygienic salon-at-home waxing setup with Rica wax heater, calming lotion, and single-use disposables",
-    excerpt: "Say goodbye to awkward salon visits and painful rashes. Learn everything about full body waxing at home: Rica vs honey wax, step-by-step painless preparation, bikini wax etiquette, and aftercare.",
+    imageAlt:
+      "Hygienic salon-at-home waxing setup with Rica wax heater, calming lotion, and single-use disposables",
+    excerpt:
+      "Say goodbye to awkward salon visits and painful rashes. Learn everything about full body waxing at home: Rica vs honey wax, step-by-step painless preparation, bikini wax etiquette, and aftercare.",
     authorName: "Suman Rawat (Head of Salon Training, HerrGlow)",
     seoTitle: "Full Body Waxing at Home: Rica Wax, Prep & Price | HerrGlow",
-    seoDescription: "Complete guide to full body waxing at home in Delhi NCR. Discover painless Italian Rica waxing, pre-wax exfoliation, bikini wax hygiene, and prices.",
+    seoDescription:
+      "Complete guide to full body waxing at home in Delhi NCR. Discover painless Italian Rica waxing, pre-wax exfoliation, bikini wax hygiene, and prices.",
     content: `
       <p class="lead">Visiting a commercial salon for a full body wax can be an exhausting ordeal: navigating Delhi NCR's chaotic traffic, waiting in crowded parlors, dealing with questionable wax pot hygiene, and then driving back home drenched in sweat while your fresh skin burns. It is no surprise that <strong>Full Body Waxing at Home</strong> has become the #1 most frequently booked beauty service for urban women.</p>
 
@@ -279,7 +291,7 @@ async function main() {
         qualityScore: 95,
       },
       create: {
-        url: `/blog/${b.slug}` ,
+        url: `/blog/${b.slug}`,
         type: PageType.BLOG,
         entityId: blog.id,
         seoTitle: b.seoTitle,

@@ -28,8 +28,8 @@ A standard, production-ready monorepo layout:
 
 ```yaml
 packages:
-  - 'apps/*'
-  - 'packages/*'
+  - "apps/*"
+  - "packages/*"
 ```
 
 ---
@@ -65,6 +65,7 @@ packages:
 ## 4. Shared Package Pattern (Example: `@herrglow/core`)
 
 ### `packages/core/package.json`
+
 ```json
 {
   "name": "@herrglow/core",
