@@ -32,16 +32,14 @@ test.describe("Services Hub Search & Live Filtering (/services)", () => {
     await expect(serviceCardLink).toBeVisible();
   });
 
-  test("location switcher updates area guarantee and zero surcharge banner", async ({ page }) => {
-    // Check default location guarantee banner
-    await expect(page.getByText("Zero Travel Surcharge")).toBeVisible();
+  test("category selection exposes targeted sub-category filter pills", async ({ page }) => {
+    // Click Waxing category tab
+    const waxingTab = page.getByRole("tab", { name: /Waxing/i }).first();
+    await expect(waxingTab).toBeVisible();
+    await waxingTab.click();
 
-    // Click Noida location button
-    const noidaBtn = page.getByRole("button", { name: "Noida", exact: true });
-    await expect(noidaBtn).toBeVisible();
-    await noidaBtn.click();
-
-    // Verify Noida verified hub tag appears
-    await expect(page.getByText(/Noida Verified Hub/i)).toBeVisible();
+    // Verify subcategory filters appear
+    await expect(page.getByRole("button", { name: /Rica Wax/i }).first()).toBeVisible();
+    await expect(page.getByRole("button", { name: /Honey \/ Regular Wax/i }).first()).toBeVisible();
   });
 });

@@ -11,16 +11,17 @@ concurrency:
 
 jobs:
   pre-flight:
-    name: Pre-Flight Validation
+    name: Pre-Flight Production Validation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
           version: 12.6.0
+          run_install: false
 
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
@@ -38,10 +39,17 @@ jobs:
         run: pnpm -r run typecheck
 
       - name: Run SEO Guard Tests
-        run: pnpm --filter @herrglow/web test:seo
+        run: pnpm test:seo
+
+      - name: Production Build Check
+        run: pnpm build
+        env:
+          ALLOW_INDEXING: 'true'
+          DEPLOY_ENV: 'production'
+          NEXT_PUBLIC_SITE_URL: 'https://herrglow.com'
 
   deploy:
-    name: Deploy to Production
+    name: Deploy to Production VPS
     needs: [pre-flight]
     runs-on: ubuntu-latest
     environment:
@@ -51,26 +59,100 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Execute Deployment
+      - name: Deploy via SSH
+        if: "${{ secrets.SSH_HOST != '' }}"
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script_stop: true
+          command_timeout: 15m
+          envs: GITHUB_SHA
+          script: |
+            TARGET_DIR="${{ secrets.DEPLOY_DIR || '/opt/herrglow' }}"
+            echo "🚀 Connecting to production server..."
+            echo "Target Directory: ${TARGET_DIR}"
+            echo "Deploying Git SHA: ${GITHUB_SHA}"
+
+            if [ ! -d "${TARGET_DIR}" ]; then
+              echo "❌ Error: Target deployment directory '${TARGET_DIR}' does not exist on server."
+              exit 1
+            fi
+
+            cd "${TARGET_DIR}"
+
+            if [ -f "deploy/vps/deploy.sh" ]; then
+              chmod +x deploy/vps/deploy.sh
+              bash deploy/vps/deploy.sh "${GITHUB_SHA}"
+            else
+              echo "📥 Pulling latest git commit..."
+              git fetch origin main && git reset --hard "${GITHUB_SHA}"
+              echo "🗄️ Running migrations..."
+              docker compose -f deploy/vps/docker-compose.yml run --rm migrate
+              echo "🔨 Rebuilding services..."
+              docker compose -f deploy/vps/docker-compose.yml up -d --build --remove-orphans web worker caddy
+              docker image prune -f --filter "until=48h" || true
+            fi
+
+      - name: Fallback Deploy via Webhook
+        if: "${{ secrets.SSH_HOST == '' && secrets.DEPLOY_WEBHOOK_URL != '' }}"
         run: |
-          echo "🚀 Initiating production deployment for commit ${{ github.sha }}"
-          # Optional: trigger webhook, Vercel CLI, Coolify webhook, or Docker deploy
-          if [ -n "${{ secrets.DEPLOY_WEBHOOK_URL }}" ]; then
-            curl -X POST "${{ secrets.DEPLOY_WEBHOOK_URL }}"
-          else
-            echo "DEPLOY_WEBHOOK_URL not configured. Add your hosting webhook in GitHub Secrets."
-          fi
+          echo "🚀 Triggering production deployment webhook..."
+          curl -f -X POST "${{ secrets.DEPLOY_WEBHOOK_URL }}"
+
+      - name: Warn Missing Configuration
+        if: "${{ secrets.SSH_HOST == '' && secrets.DEPLOY_WEBHOOK_URL == '' }}"
+        run: |
+          echo "⚠️ Neither SSH_HOST nor DEPLOY_WEBHOOK_URL secret is configured in GitHub repository settings."
+          echo "Please add SSH_HOST, SSH_USER, SSH_PRIVATE_KEY in GitHub Settings -> Secrets -> Actions."
+          exit 1
 
       - name: Post-Deployment Verification
         run: |
-          echo "Verifying production health check at https://herrglow.com/api/v1/health"
-          for i in {1..12}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://herrglow.com/api/v1/health || true)
+          echo "🩺 Verifying production health check at https://herrglow.com/api/v1/health"
+          for i in {1..15}; do
+            RESP=$(curl -s -w "\n%{http_code}" https://herrglow.com/api/v1/health || true)
+            STATUS=$(echo "$RESP" | tail -n1)
+            BODY=$(echo "$RESP" | head -n -1)
             if [ "$STATUS" = "200" ]; then
-              echo "✓ Production health check passed with HTTP 200!"
+              echo "✓ Production health check passed (HTTP 200) on attempt $i!"
+              echo "Response payload: $BODY"
               exit 0
             fi
-            echo "Waiting for deployment to propagate... attempt $i/12"
+            echo "Waiting for deployment propagation... attempt $i/15 (HTTP $STATUS)"
             sleep 10
           done
-          echo "⚠️ Health check timed out or returned non-200"
+          echo "❌ Production health check failed or timed out after 150 seconds."
+          exit 1
+
+      - name: Notify Telegram on Success
+        if: success() && secrets.TELEGRAM_BOT_TOKEN != '' && secrets.TELEGRAM_CHAT_ID != ''
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          COMMIT_SHA: ${{ github.sha }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          TEXT="✅ *HerrGlow Production Deployment Successful*%0A%0A*Commit:* \`${COMMIT_SHA:0:7}\`%0A*Triggered By:* ${ACTOR}%0A*Health Check:* PASSED (HTTP 200)%0A*URL:* https://herrglow.com"
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d "chat_id=${TELEGRAM_CHAT_ID}" \
+            -d "text=${TEXT}" \
+            -d "parse_mode=Markdown" > /dev/null || true
+
+      - name: Notify Telegram on Failure
+        if: failure() && secrets.TELEGRAM_BOT_TOKEN != '' && secrets.TELEGRAM_CHAT_ID != ''
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          COMMIT_SHA: ${{ github.sha }}
+          ACTOR: ${{ github.actor }}
+          RUN_ID: ${{ github.run_id }}
+          REPO: ${{ github.repository }}
+        run: |
+          TEXT="❌ *HerrGlow Production Deployment FAILED*%0A%0A*Commit:* \`${COMMIT_SHA:0:7}\`%0A*Triggered By:* ${ACTOR}%0A*Logs:* https://github.com/${REPO}/actions/runs/${RUN_ID}"
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d "chat_id=${TELEGRAM_CHAT_ID}" \
+            -d "text=${TEXT}" \
+            -d "parse_mode=Markdown" > /dev/null || true

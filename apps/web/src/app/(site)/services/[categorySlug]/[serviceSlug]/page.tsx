@@ -23,21 +23,9 @@ interface ServicePageParams {
   serviceSlug: string;
 }
 
-const LEGACY_CAT_REDIRECTS: Record<string, string> = {
-  waxing: "salon-at-home",
-  "facial-and-skincare": "facial-skincare",
-  "hair-styling": "hair",
-  "nail-art": "nails",
-  "bridal-makeup": "makeup",
-  "engagement-party-makeup": "makeup",
-  "pre-bridal-packages": "pre-bridal",
-  "draping-eye-mehndi": "mehndi",
-};
-
 export async function generateMetadata({ params }: { params: Promise<ServicePageParams> }): Promise<Metadata> {
   const { categorySlug, serviceSlug } = await params;
-  const canonicalCat = LEGACY_CAT_REDIRECTS[categorySlug] || categorySlug;
-  const data = await getServicePage(serviceSlug, canonicalCat);
+  const data = (await getServicePage(serviceSlug, categorySlug)) || (await getServicePage(serviceSlug));
   if (!data) return {};
   const { svc } = data;
   const page = await findPage(`/services/${svc.category.slug}/${svc.slug}`);
@@ -86,8 +74,7 @@ const DEFAULT_FAQS = [
 
 export default async function ServicePage({ params }: { params: Promise<ServicePageParams> }) {
   const { categorySlug, serviceSlug } = await params;
-  const canonicalCat = LEGACY_CAT_REDIRECTS[categorySlug] || categorySlug;
-  let data = await getServicePage(serviceSlug, canonicalCat);
+  let data = await getServicePage(serviceSlug, categorySlug);
 
   // Fallback: If service wasn't found under categorySlug, check if serviceSlug exists under any category
   if (!data) {

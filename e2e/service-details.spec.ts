@@ -17,8 +17,8 @@ test.describe("Service Details Page & Add-on Threshold Protection", () => {
     const comboLink = amberNotice.getByRole("link", { name: /Make Your Own Combo →/i });
     await expect(comboLink).toHaveAttribute("href", "/custom-combo");
 
-    const fullFaceLink = amberNotice.getByRole("link", { name: /Full Face Combo @ ₹499/i });
-    await expect(fullFaceLink).toHaveAttribute("href", "/services/face-hair-removal/full-face-grooming-glow-combo");
+    const exploreLink = amberNotice.getByRole("link", { name: /Explore Salon at Home/i });
+    await expect(exploreLink).toHaveAttribute("href", "/services/salon-at-home");
 
     // Rate card booking button states Add-on warning
     const bookBtn = page.getByRole("button", { name: /Book with Add-ons \(Min. ₹499\)/i }).first();

@@ -19,9 +19,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
           version: 12.6.0
+          run_install: false
 
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
@@ -39,10 +40,11 @@ jobs:
         run: pnpm -r run typecheck
 
       - name: Run SEO Guard Tests
-        run: pnpm --filter @herrglow/web test:seo
+        run: pnpm test:seo
 
       - name: Build Web Application
-        run: pnpm --filter @herrglow/web build
+        run: pnpm build
         env:
           ALLOW_INDEXING: 'false'
+          DEPLOY_ENV: 'staging'
           NEXT_PUBLIC_SITE_URL: 'https://staging.herrglow.com'
