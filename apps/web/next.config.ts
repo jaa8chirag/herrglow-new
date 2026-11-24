@@ -2,6 +2,10 @@ import path from "node:path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  compress: true,
+  experimental: {
+    optimizePackageImports: ["lucide-react", "@herrglow/ui"],
+  },
   // Docker/VPS: self-contained server bundle. The monorepo root is traced so workspace packages are included.
   output: "standalone",
   // lets a second build (e.g. for Lighthouse) run next to a live dev server without clobbering .next

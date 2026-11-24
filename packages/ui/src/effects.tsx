@@ -143,6 +143,7 @@ export function TiltCard({
     y = useMotionValue(0);
   const rx = useSpring(useTransform(y, [-0.5, 0.5], [max, -max]), { stiffness: 180, damping: 18 });
   const ry = useSpring(useTransform(x, [-0.5, 0.5], [-max, max]), { stiffness: 180, damping: 18 });
+
   if (reduce) return <div className={className}>{children}</div>;
   return (
     <div className={cn("[perspective:900px]", className)}>
@@ -159,7 +160,6 @@ export function TiltCard({
           x.set(0);
           y.set(0);
         }}
-        className="size-full"
       >
         {children}
       </m.div>
