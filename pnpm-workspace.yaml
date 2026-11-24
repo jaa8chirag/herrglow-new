@@ -1,6 +1,8 @@
 packages:
   - "apps/*"
   - "packages/*"
+overrides:
+  effect: "^3.22.1"
 allowBuilds:
   "@prisma/client": true
   "@prisma/engines": true
