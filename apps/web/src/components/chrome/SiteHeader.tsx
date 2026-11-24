@@ -1,12 +1,13 @@
 "use client";
 
-import { ArrowRight, ChevronDown, Menu, MapPin, X, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, ChevronDown, Menu, MapPin, X, ShieldCheck, Sparkles, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Drawer, DrawerShell, FallbackArt, buttonStyles, categoryIcon, cn } from "@herrglow/ui";
 import { Logo } from "@/components/brand/Logo";
+import { GlobalSearchModal } from "@/components/search/GlobalSearchModal";
 
 const cityHubUrl = (slug: string) => `/salon-at-home-${slug}`;
 
@@ -39,6 +40,7 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mega, setMega] = useState(false);
   const [city, setCity] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [active, setActive] = useState(0);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -78,6 +80,32 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
         </nav>
 
         <div className="flex items-center gap-2">
+          {/* Desktop Search Trigger */}
+          <button
+            type="button"
+            data-search-trigger
+            onClick={() => setSearchOpen(true)}
+            aria-label="Search services"
+            className="hidden sm:flex items-center gap-2 rounded-full border border-line bg-white/70 px-3.5 py-2 text-sm text-ink-soft transition hover:border-plum-400 hover:bg-white hover:text-plum-900 shadow-xs active:scale-95 cursor-pointer"
+          >
+            <Search className="size-4 text-rose-600" />
+            <span className="hidden xl:inline text-xs font-medium text-ink-soft">Search services...</span>
+            <kbd className="hidden xl:inline-flex items-center rounded border border-line/70 bg-blush-50 px-1.5 py-0.5 text-[10px] font-semibold text-plum-800">
+              ⌘K
+            </kbd>
+          </button>
+
+          {/* Mobile Search Button */}
+          <button
+            type="button"
+            data-search-trigger
+            onClick={() => setSearchOpen(true)}
+            aria-label="Search services"
+            className="grid size-12 place-items-center rounded-full border border-line bg-white/80 text-plum-900 lg:hidden shadow-xs hover:bg-blush-50 active:scale-95 cursor-pointer"
+          >
+            <Search className="size-5 text-rose-600" />
+          </button>
+
           {cities.length > 0 && (
             <div className="relative hidden md:block" data-city-menu>
               <button type="button" aria-expanded={city} onClick={() => setCity((c) => !c)} className="flex items-center gap-1.5 rounded-full border border-line bg-white/70 px-3.5 py-2 text-sm text-plum-800 transition hover:bg-white">
@@ -108,6 +136,19 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
                 <div className="mx-5 my-3 flex items-center gap-2 rounded-xl border border-emerald-300/60 bg-emerald-50/70 p-2.5 text-xs text-emerald-900 font-medium">
                   <ShieldCheck className="size-4 text-emerald-600 shrink-0" />
                   <span>100% Female Verified · 10% Advance · 100% Refund Guarantee</span>
+                </div>
+                {/* Search Bar inside Drawer */}
+                <div className="mx-5 mb-2">
+                  <Drawer.Close asChild>
+                    <button
+                      type="button"
+                      onClick={() => setSearchOpen(true)}
+                      className="flex w-full items-center gap-3 rounded-xl border border-line bg-white px-3.5 py-2.5 text-left text-sm text-ink-soft shadow-xs hover:border-plum-400 hover:bg-blush-50 transition cursor-pointer"
+                    >
+                      <Search className="size-4 text-rose-600 shrink-0" />
+                      <span className="text-xs">Search Rica wax, facial, bridal...</span>
+                    </button>
+                  </Drawer.Close>
                 </div>
                 <nav className="flex-1 space-y-1 p-5" aria-label="Mobile">
                   <Drawer.Close asChild><Link href="/" className="flex items-center min-h-[48px] rounded-xl px-3 py-3 font-serif text-2xl text-plum-800">Home</Link></Drawer.Close>
@@ -263,6 +304,9 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
           </div>
         </div>
       )}
+
+      {/* Global Search Spotlight Modal */}
+      <GlobalSearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 }

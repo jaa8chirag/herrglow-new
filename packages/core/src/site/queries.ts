@@ -329,3 +329,136 @@ export async function getCategoryExtras(categoryId: string) {
   const pk = await prisma.service.findMany({ where: { ...liveService, isPackage: true, categoryId }, take: 3, select: { slug: true, title: true, price: true, offerPrice: true, image: true, imageAlt: true, shortDescription: true, categoryId: true } });
   return { packages: pk };
 }
+
+export interface GlobalSearchResult {
+  services: {
+    id: string;
+    slug: string;
+    title: string;
+    shortDescription: string | null;
+    price: number | null;
+    offerPrice: number | null;
+    duration: string | null;
+    image: string | null;
+    imageAlt: string | null;
+    category: { slug: string; name: string };
+  }[];
+  packages: {
+    id: string;
+    slug: string;
+    title: string;
+    shortDescription: string | null;
+    price: number;
+    offerPrice: number | null;
+    duration: string | null;
+    image: string | null;
+  }[];
+  blogs: {
+    id: string;
+    slug: string;
+    title: string;
+    excerpt: string | null;
+    image: string | null;
+  }[];
+  totalCount: number;
+}
+
+/** Global site-wide search across Services, Packages, and Editorial Blogs. */
+export async function searchGlobalCatalog(query: string, limit = 6): Promise<GlobalSearchResult> {
+  const q = query.trim();
+  if (!q) {
+    return { services: [], packages: [], blogs: [], totalCount: 0 };
+  }
+
+  const [services, packages, blogs] = await Promise.all([
+    prisma.service.findMany({
+      where: {
+        status: "ACTIVE",
+        mergedIntoId: null,
+        OR: [
+          { title: { contains: q, mode: "insensitive" } },
+          { shortDescription: { contains: q, mode: "insensitive" } },
+          { features: { contains: q, mode: "insensitive" } },
+          { category: { name: { contains: q, mode: "insensitive" } } },
+        ],
+      },
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        shortDescription: true,
+        price: true,
+        offerPrice: true,
+        duration: true,
+        image: true,
+        imageAlt: true,
+        category: { select: { slug: true, name: true } },
+      },
+      orderBy: [{ leadCount: "desc" }, { sort: "asc" }],
+      take: limit,
+    }),
+    prisma.package.findMany({
+      where: {
+        status: "ACTIVE",
+        OR: [
+          { title: { contains: q, mode: "insensitive" } },
+          { shortDescription: { contains: q, mode: "insensitive" } },
+          { description: { contains: q, mode: "insensitive" } },
+        ],
+      },
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        shortDescription: true,
+        price: true,
+        offerPrice: true,
+        duration: true,
+        image: true,
+      },
+      orderBy: { price: "asc" },
+      take: limit,
+    }),
+    prisma.blog.findMany({
+      where: {
+        status: "ACTIVE",
+        OR: [
+          { title: { contains: q, mode: "insensitive" } },
+          { excerpt: { contains: q, mode: "insensitive" } },
+        ],
+      },
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        excerpt: true,
+        image: true,
+      },
+      orderBy: { publishedAt: "desc" },
+      take: limit,
+    }),
+  ]);
+
+  const num = (v: unknown) => (v == null ? null : Number(v));
+
+  const mappedServices = services.map((s) => ({
+    ...s,
+    price: num(s.price),
+    offerPrice: num(s.offerPrice),
+  }));
+
+  const mappedPackages = packages.map((p) => ({
+    ...p,
+    price: Number(p.price),
+    offerPrice: num(p.offerPrice),
+  }));
+
+  const totalCount = mappedServices.length + mappedPackages.length + blogs.length;
+
+  return {
+    services: mappedServices,
+    packages: mappedPackages,
+    blogs,
+    totalCount,
+  };
+}
