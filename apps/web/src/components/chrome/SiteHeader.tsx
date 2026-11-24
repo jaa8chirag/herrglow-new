@@ -170,7 +170,7 @@ export function SiteHeader({ siteName, logo, menu, cities }: HeaderProps) {
             type="button"
             data-search-trigger
             onClick={() => setSearchOpen(true)}
-            aria-label="Search services"
+            aria-label="Search services... ⌘K"
             className="hidden sm:flex items-center gap-2 rounded-full border border-line bg-white/70 px-3.5 py-2 text-sm text-ink-soft transition hover:border-plum-400 hover:bg-white hover:text-plum-900 shadow-xs active:scale-95 cursor-pointer"
           >
             <Search className="size-4 text-rose-600" />

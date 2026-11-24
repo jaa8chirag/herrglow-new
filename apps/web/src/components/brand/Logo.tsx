@@ -152,7 +152,7 @@ export function Logo({
     return (
       <Link
         href="/"
-        aria-label="HerrGlow Home"
+        aria-label="HerrGlow Luxury Salon at Home"
         className="group inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 rounded-xl transition-transform active:scale-[0.98]"
       >
         {content}

@@ -149,9 +149,9 @@ export function HeroCarousel({ slides = DEFAULT_SLIDES }: { slides?: HeroSlide[]
               <p className="text-[0.7rem] font-semibold uppercase tracking-widest text-gold-300">
                 HerrGlow Signature
               </p>
-              <h3 className="mt-1 text-xl sm:text-2xl font-serif text-ivory font-normal leading-tight">
+              <p className="mt-1 text-xl sm:text-2xl font-serif text-ivory font-normal leading-tight font-medium">
                 {slide.title}
-              </h3>
+              </p>
               <p className="mt-1.5 text-xs text-blush-100/90 leading-relaxed max-w-xs line-clamp-2">
                 {slide.subtitle}
               </p>
