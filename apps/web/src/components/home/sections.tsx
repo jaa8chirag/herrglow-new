@@ -154,11 +154,11 @@ export function CategoryBento({ cats }: { cats: CatTile[] }) {
           {cats.slice(0, 7).map((c, i) => {
             const Icon = categoryIcon(c.slug);
             return (
-              <BlurFade key={c.slug} delay={i * 0.06} className={cn("min-h-0", BENTO[i])}>
+              <BlurFade key={c.slug} delay={i * 0.06} className={cn("size-full min-h-0", BENTO[i])}>
                 <TiltCard className="size-full">
                   <Link
                     href={`/services/${c.slug}`}
-                    className="group relative block size-full overflow-hidden rounded-[1.5rem] shadow-soft transition-shadow hover:shadow-lift"
+                    className="group relative block size-full min-h-[15rem] md:min-h-[17rem] overflow-hidden rounded-[1.5rem] shadow-soft transition-shadow hover:shadow-lift"
                   >
                     <Photo
                       src={c.image}

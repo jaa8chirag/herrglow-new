@@ -44,7 +44,7 @@ function observe(el: Element) {
           observer?.unobserve(e.target);
         }
     },
-    { rootMargin: "0px 0px -60px 0px" }
+    { rootMargin: "0px 0px 100px 0px" }
   );
   observer.observe(el);
 }

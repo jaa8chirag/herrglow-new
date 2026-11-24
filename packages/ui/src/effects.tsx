@@ -144,11 +144,12 @@ export function TiltCard({
   const rx = useSpring(useTransform(y, [-0.5, 0.5], [max, -max]), { stiffness: 180, damping: 18 });
   const ry = useSpring(useTransform(x, [-0.5, 0.5], [-max, max]), { stiffness: 180, damping: 18 });
 
-  if (reduce) return <div className={className}>{children}</div>;
+  if (reduce) return <div className={cn("size-full", className)}>{children}</div>;
   return (
     <div className={cn("[perspective:900px]", className)}>
       <m.div
         ref={ref}
+        className="size-full"
         style={{ rotateX: rx, rotateY: ry, transformStyle: "preserve-3d" }}
         onPointerMove={(e) => {
           if (e.pointerType !== "mouse" || !ref.current) return;
